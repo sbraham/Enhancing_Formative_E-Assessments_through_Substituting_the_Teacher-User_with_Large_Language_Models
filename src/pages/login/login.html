@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<title>Login</title>
+
+	<!-- Ensures the web-page correctly interprets a wide range of characters -->
+	<meta charset="utf-8">
+
+	<!-- Ensures the page is scaled based on the devised scale -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Include bootstrap styling and functionality -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+	<!-- Include the custom style sheet -->
+	<link rel="stylesheet" href="../../stylesheet.css">
+
+	<!-- Include the pages logic -->
+	<script defer type="module" src="./login.js"></script>
+</head>
+
+<body>
+	<div class="container">
+		<h1>Login</h1>
+
+		<form id="loginForm">
+			<div class="form-group">
+				<label for="email">Email address:</label>
+				<input type="email" class="form-control" name="email"
+					required placeholder="Email" autocomplete="email">
+			</div>
+			<div class="form-group">
+				<label for="password">Password:</label>
+				<input type="password" class="form-control" name="password"
+					required placeholder="Password" autocomplete="current-password">
+			</div>
+			<button type="submit" class="btn btn-success">Log in</button>
+		</form>
+	</div>
+	<div class="container margin-top">
+		<div class="well">
+			If you don't already have an account, you can create one <a href="../create_account/create_account.html" target="_blank">here.</a>
+		</div>
+	</div>
+</body>
+
+</html>
