@@ -7,11 +7,10 @@ import { loginUser } from "../../firebase/auth-helper.js";
 const loginForm = document.getElementById('loginForm');
 
 /**
- * Gets the email and password from the login-form element,
- * checks if the user credentials are correct.
- * Called when the login-form element is submitted.
- * @param {Event} event - used to prevent the page from reloading when the form is submitted.
-*/
+ * The event listener for the login form.
+ * Runs when the form has been submitted.
+ * @type {EventListener}
+ */
 loginForm.addEventListener("submit", async (event) => {
     console.log(`login-form submit`);
 
@@ -22,16 +21,16 @@ loginForm.addEventListener("submit", async (event) => {
 
     console.debug(`Email`, email);
 
-    console.log(`Awaiting loginUser...`);
+    console.log(`loginUser: awaiting response...`);
     let responce = await loginUser(email, password);
-    console.log(`loginUser received...`);
+    console.log(`loginUser: received`);
     /** @type {Promise<string>} */
 
     if (responce === `successful-login`) {
         console.log(`User successfully logged in.`);
 
         alert("You have successfully logged in.\nClick OK to continue to the chatbot.");
-        window.location.href = "./chatbot.html";
+        window.location.href = "../dashboard/dashboard.html";
     } else {
         if (responce.code === 'auth/invalid-login-credentials' || responce.code === 'auth/user-not-found') {
             console.log(`Email and/or password are incorrect.`);

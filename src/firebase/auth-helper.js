@@ -12,11 +12,13 @@ import { auth } from "./config.js";
  * @module auth-helper
  */
 
+
 /**
- * Creates a new user with the given email and password.
- * @param {string} email - The email of the user to be created.
- * @param {string} password - The password of the user to be created.
- * @returns {Promise<string>} - A promise that resolves to 'successful-sign-up' if the user was created successfully, or an error code if there was an error.
+ * Creates a new user with the provided email and password.
+ * 
+ * @param {string} email - The email of the user.
+ * @param {string} password - The password of the user.
+ * @returns {Promise<string|Error>} - A promise that resolves to "successful-sign-up" if the user is created successfully, or an Error object if there is an error.
  */
 export async function createUser(email, password) {
 	console.log(`auth-helper: createUser called`);
@@ -25,30 +27,22 @@ export async function createUser(email, password) {
 	try {
 		console.log(`auth-helper: createUserWithEmailAndPassword: awaiting response...`);
 		let userCredential = await authenticator.createUserWithEmailAndPassword(auth, email, password)
+		console.log(`auth-helper: createUserWithEmailAndPassword: received`);
 		/** @type {userCredential} */
 
 		console.assert(userCredential.user.email != null && userCredential.user.email != undefined, `ERROR: userCredential.user.email is null or undefined`);
 
 		return `successful-sign-up`;
-	}
-	catch (error) {
-		console.error(error);
-
-		return error.code;
+	} catch (error) {
+		return error;
 	}
 }
 
 /**
- * Attempt to sign in a user with the given email and password.
- * @param {string} email - The email of the user to be created.
- * @param {string} password - The password of the user to be created.
- * @returns {Promise<string>} - A promise that resolves to 'successful-login' if the user was signed in successfully, or an error code if there was an error.
- */
-/**
  * Logs in a user with the provided email and password.
  * @param {string} email - The user's email.
  * @param {string} password - The user's password.
- * @returns {Promise<string>} - A promise that resolves to "successful-login" if the login is successful, or an error message if there is an error.
+ * @returns {Promise<string|Error>} - A promise that resolves to "successful-login" if the login is successful, or an Error object if there is an error.
  */
 export async function loginUser(email, password) {
 	console.log(`auth-helper: loginUser called`);
@@ -57,6 +51,7 @@ export async function loginUser(email, password) {
 	try {
 		console.log(`auth-helper: signInWithEmailAndPassword: awaiting response...`);
 		let userCredential = await authenticator.signInWithEmailAndPassword(auth, email, password);
+		console.log(`auth-helper: signInWithEmailAndPassword: received`);
 		/** @type {userCredential} */
 
 		console.assert(userCredential.user.email != null && userCredential.user.email != undefined, `ERROR: userCredential.user.email is null or undefined`);

@@ -1,37 +1,45 @@
 console.log('sign-up.js loaded');
 
 /* Importing Firebase helper functions from setup file */
-import { createUser } from '../firebase/firebase-helper.js';
-
-/* Fetching elements front HTML */
-const signUpForm = document.getElementById('sign-up-form');
-
+import { createUser } from '../../firebase/auth-helper.js';
 
 /**
- * Gets the email and password from the sign-up-form element,
- * checks there are not empty,
- * and attempts to create a new user with the given email and password.
- * Called when the sign-up-form element is submitted.
- * @param {Event} event - used to prevent the page from reloading when the form is submitted.
-*/
-signUpForm.addEventListener("submit", async (event) => {
+ * The sign up form element.
+ * @type {HTMLElement}
+ */
+const createAccountForm = document.getElementById('createAccountForm');
+
+/**
+ * The event listener for the create account form.
+ * Runs when the form has been submitted.
+ * @type {EventListener}
+ */
+createAccountForm.addEventListener("submit", async (event) => {
+    console.log(`signUpForm submit`);
+
     event.preventDefault(); // Prevents the page from reloading when the form is submitted.
 
-    console.log(`sign-up-form submit`);
-    console.debug(`Event:`, event);
-    console.debug(`signUpForm:`, signUpForm);
+    const email = createAccountForm.email.value;
+    const password = createAccountForm.password.value;
+    const confirmPassword = createAccountForm.confirmPassword.value;
 
-    const email = signUpForm.email.value;
-    const password = signUpForm.password.value;
+    console.log(`Email:`, email);
+
+    if (password !== confirmPassword) {
+        console.warn(`Passwords do not match.`);
+        alert(`Passwords do not match. Please take care when inputting your password.`);
+        return;
+    }
     
-    console.log(`Attempting sign up. awaiting response...`);
+    console.log(`createUser: awaiting response...`);
     let responce = await createUser(email, password);
+    console.log(`createUser: received`);
     /** @type {Promise<string>} */
 
     if (responce === 'successful-sign-up') {
         console.log(`User successfully signed up.`);
         alert("You have successfully signed up. Click OK to continue to the chatbot.");
-        window.location.href = "../_pages/chatbot.html";
+        window.location.href = "../dashboard/dashboard.html";
     }
     else {
         if (responce === 'auth/email-already-in-use') {
