@@ -14,12 +14,12 @@ onAuthStateChanged(auth, (user) => {
         console.log("User is logged in:", user);
 
         // Redirect to the chat page
-        window.location.href = `./pages/login/login.html`
+        window.location.href = `./pages/dashboard/dashboard.html`
     } else {
         // No user is signed in.
         console.log("User is not logged in");
 
         // Redirect to the login page
-        window.location.href = `./pages/dashboard/dashboard.html`
+        window.location.href = `./pages/login/login.html`
     }
 });

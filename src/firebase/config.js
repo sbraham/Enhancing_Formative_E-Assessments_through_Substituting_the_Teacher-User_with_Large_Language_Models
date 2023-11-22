@@ -1,4 +1,4 @@
-console.log("firebase-config.js loaded");
+console.log("firebase/config.js loaded");
 
 /* Importing Firebase SDK from the CDN (Content Delivery Network) */
 import * as firebase from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js';
