@@ -1,11 +1,34 @@
 console.log(`index.js loaded`);
 
-// This is the code that will run when the page loads
-// It will check if the user is logged in or not
-// If the user is logged in, it will redirect to the user dashboard
-// Otherwise, it will redirect to the login page
+/* Importing Firebase helper functions from setup file */
+import { logout } from "./firebase/auth-helper.js";
 
-import { auth } from './firebase/config.js';
+/* Fetching elements front HTML */
+const main = document.getElementById('main');
+const dashboardButton = document.getElementById('dashboard');
+const loginButton = document.getElementById('login');
+const logoutButton = document.getElementById('logout');
+const loginStatus = document.getElementById('loginStatus');
+
+/* Adding event listeners to buttons */
+dashboardButton.addEventListener("click", async () => {
+    console.log(`Dashboard button clicked`);
+    main.src = "./pages/dashboard/dashboard.html";
+});
+
+loginButton.addEventListener("click", async () => {
+    console.log(`Log in button clicked`);
+    main.src = "./pages/login/login.html";
+});
+
+logoutButton.addEventListener("click", async () => {
+    console.log(`Logout button clicked`);
+    await logout();
+    main.src = "./pages/login/login.html";
+});
+
+/* Adding event listener to auth state change */
+import { auth } from '../../firebase/config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
 
 onAuthStateChanged(auth, (user) => {
@@ -13,13 +36,11 @@ onAuthStateChanged(auth, (user) => {
         // User is signed in.
         console.log("User is logged in:", user);
 
-        // Redirect to the chat page
-        window.location.href = `./pages/dashboard/dashboard.html`
+        loginStatus.innerText = `Logged in as ${user.email}`;
     } else {
         // No user is signed in.
         console.log("User is not logged in");
 
-        // Redirect to the login page
-        window.location.href = `./pages/login/login.html`
+        loginStatus.innerText = `Not logged in`;
     }
 });

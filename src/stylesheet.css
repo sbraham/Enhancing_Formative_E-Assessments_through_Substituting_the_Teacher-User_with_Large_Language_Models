@@ -1,3 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+/* Program Wide Formating */
+
+:root {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    overflow: auto;
+}
+
+/* General Formating */
+
 .margin-top {
     margin-top: 20px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+/* Index Formating Stuff */
+
+.index-body {
+    overflow: hidden;
+    height: 100vh;
+}
+
+.main-container {
+    width: 100%;
+    height: calc(100vh - 56px);
 }
