@@ -4,7 +4,6 @@
 
 :root {
     font-family: 'Open Sans', sans-serif;
-    margin: 0;
     overflow: auto;
 }
 
@@ -18,6 +17,26 @@
     cursor: pointer;
 }
 
+.alert {
+    margin: 5px;
+}
+
+.cut-text-1 {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.cut-text-3 {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
 /* Index Formating Stuff */
 
 .index-body {
@@ -28,4 +47,32 @@
 .main-container {
     width: 100%;
     height: calc(100vh - 56px);
+}
+
+/* Dashboard */
+
+.row {
+    margin: 0;
+}
+
+.card-container {
+    padding: 5px;
+    height: 230px;
+}
+
+.card {
+    height: 100%;
+}
+
+.card-button {
+    margin: 5px;
+    width: calc(50% - 10px);
+}
+
+.new-card-button {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
