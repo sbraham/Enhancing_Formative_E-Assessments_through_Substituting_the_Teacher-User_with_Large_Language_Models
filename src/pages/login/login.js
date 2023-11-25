@@ -4,20 +4,20 @@ console.log('login.js loaded');
 import { loginUser } from "../../firebase/auth-helper.js";
 
 /* Fetching elements front HTML */
-const loginForm = document.getElementById('loginForm');
+const login_form = document.getElementById('login_form');
 
 /**
  * The event listener for the login form.
  * Runs when the form has been submitted.
  * @type {EventListener}
  */
-loginForm.addEventListener("submit", async (event) => {
+login_form.addEventListener("submit", async (event) => {
     console.log(`login-form submit`);
 
     event.preventDefault(); // Prevents the page from reloading when the form is submitted.
     
-    const email    = loginForm.email.value;
-    const password = loginForm.password.value;
+    const email    = login_form.email.value;
+    const password = login_form.password.value;
 
     console.debug(`Email`, email);
 

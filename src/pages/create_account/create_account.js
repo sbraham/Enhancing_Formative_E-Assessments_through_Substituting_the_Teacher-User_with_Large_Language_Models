@@ -7,21 +7,21 @@ import { createUser } from '../../firebase/auth-helper.js';
  * The sign up form element.
  * @type {HTMLElement}
  */
-const createAccountForm = document.getElementById('createAccountForm');
+const create_account_form = document.getElementById('create_account_form');
 
 /**
  * The event listener for the create account form.
  * Runs when the form has been submitted.
  * @type {EventListener}
  */
-createAccountForm.addEventListener("submit", async (event) => {
+create_account_form.addEventListener("submit", async (event) => {
     console.log(`signUpForm submit`);
 
     event.preventDefault(); // Prevents the page from reloading when the form is submitted.
 
-    const email = createAccountForm.email.value;
-    const password = createAccountForm.password.value;
-    const confirmPassword = createAccountForm.confirmPassword.value;
+    const email = create_account_form.email.value;
+    const password = create_account_form.password.value;
+    const confirmPassword = create_account_form.confirmPassword.value;
 
     console.log(`Email:`, email);
 

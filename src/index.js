@@ -5,9 +5,9 @@ import { logout } from "./firebase/auth-helper.js";
 
 /* Fetching elements front HTML */
 const main = document.getElementById('main');
-const dashboardButton = document.getElementById('dashboard');
-const accountButton = document.getElementById('account');
-const loginStatus = document.getElementById('loginStatus');
+const dashboard_button = document.getElementById('dashboard');
+const account_button = document.getElementById('account');
+const login_status = document.getElementById('login_status');
 
 /* Adding event listener to auth state change */
 import { auth } from '../../firebase/config.js';
@@ -18,24 +18,24 @@ onAuthStateChanged(auth, (user) => {
         // User is signed in.
         console.log("User is logged in:", user);
 
-        accountButton.innerText = `Log Out`;
-        loginStatus.innerText = `🟩: Logged in as ${user.email}`;
+        account_button.innerText = `Log Out`;
+        login_status.innerText = `🟩: Logged in as ${user.email}`;
     } else {
         // No user is signed in.
         console.log("User is not logged in");
 
-        accountButton.innerText = `Log In`;
-        loginStatus.innerText = `🟥: Not logged in`;
+        account_button.innerText = `Log In`;
+        login_status.innerText = `🟥: Not logged in`;
     }
 });
 
 /* Adding event listeners to buttons */
-dashboardButton.addEventListener("click", async () => {
+dashboard_button.addEventListener("click", async () => {
     console.log(`Dashboard button clicked`);
     main.src = "./pages/dashboard/dashboard.html";
 });
 
-accountButton.addEventListener("click", async () => {
+account_button.addEventListener("click", async () => {
     console.log(`Account button clicked`);
     console.log(`Loggin out...`);
     await logout();
