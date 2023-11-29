@@ -8,6 +8,7 @@ import { createUser } from '../../firebase/auth-helper.js';
  * @type {HTMLElement}
  */
 const create_account_form = document.getElementById('create_account_form');
+const login_link = document.getElementById('login_link');
 
 /**
  * The event listener for the create account form.
@@ -56,4 +57,10 @@ create_account_form.addEventListener("submit", async (event) => {
             alert(`ERROR: ${responce}`);
         }
     }
+});
+
+/* Adding event listener to handle the link within the iframe */
+login_link.addEventListener('click', function(event) {
+    console.log(`login_link clicked`);
+    window.location.href = "../login/login.html";
 });

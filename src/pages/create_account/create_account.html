@@ -27,32 +27,34 @@
 
 <body>
 	<div class="container">
-		<h1>Create Account</h1>
+		<h1 class="margin-top">
+			Create Account
+		</h1>
 
 		<form id="create_account_form">
-			<div class="form-group">
+			<div class="form-group margin-top">
 				<label for="email">Email address:</label>
 				<input type="email" class="form-control" name="email" 
 					required placeholder="Email" autocomplete="email">
 			</div>
-			<div class="form-group">
+			<div class="form-group margin-top">
 				<label for="password">Password:</label>
 				<input type="password" class="form-control" name="password" 
 					required placeholder="Password" autocomplete="current-password">
 			</div>
-			<div class="form-group">
+			<div class="form-group margin-top">
 				<label for="password">Confirm Password:</label>
 				<input type="password" class="form-control" name="confirmPassword"
 					required placeholder="Password" autocomplete="current-password"
 					onpaste="return false;" ondrop="return false;">
 			</div>
-			<button type="submit" class="btn btn-primary">Create Account</button>
+			<button type="submit" class="btn btn-primary margin-top">Create Account</button>
 		</form>
 	</div>
 	<div class="container margin-top">
-		<div class="well">
-			If you already have an account, you can go back to
-			<a href="../login/login.html" target="_blank">the login page</a>
+		<div class="alert alert-dark">
+			<p>If you already have an account, you can go back to the login page by following the link bellow.</p>
+			<button id="login_link" class="btn btn-dark margin-top-small">Log In Here</button>
 		</div>
 	</div>
 </body>
