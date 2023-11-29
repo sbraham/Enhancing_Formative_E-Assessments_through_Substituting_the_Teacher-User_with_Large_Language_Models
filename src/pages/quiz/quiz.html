@@ -27,67 +27,80 @@
 <body>
     <div class="container-fluid no-spacing">
         <div class="row">
+            <!-- Quiz Information Side Bar -->
             <div class="col-md-3 sidebar bg-secondary-subtle">
                 <div class="margin-top">
-                    <h3>Quiz Info.</h3>
-                    <div class="alert alert-warning" role="alert">
-                        Not yet implemented
-                    </div>
+                    <h3>Quiz Info</h3>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>Question</td>
+                            <td id="quiz_index_info">---</td>
+                        </tr>
+                        <tr>
+                            <td>Correct</td>
+                            <td id="correct_count_info">---</td>
+                        </tr>
+                        <tr>
+                            <td>Incorrect</td>
+                            <td id="wrong_count_info">---</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
+
+            <!-- Main Quiz View -->
             <div class="col-md-6">
                 <div class="card margin-top" style="height: auto;">
-                    <div class="card-header" id="question_number">
-                        <h1>Quiz Title</h1>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Question 1</h5>
-                        <p class="card-text">What is the capital of France?</p>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="question1" id="option1" value="option1">
-                            <label class="form-check-label" for="option1">
-                                Paris
-                            </label>
+                    <form id="quiz_form">
+                        <div class="card-header">
+                            <h1 id="quiz_title">Quiz Title</h1>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="question1" id="option2" value="option2">
-                            <label class="form-check-label" for="option2">
-                                London
-                            </label>
+                        <div class="card-body">
+                            <h5 class="card-title" id="question_index">Question 1</h5>
+                            <p class="card-text" style="margin-bottom: 5px;" id="question">What is the capital of France?</p>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="multichoice" id="option_0" value="0" required>
+                                <label class="form-check-label" id="option_0_label" for="option_0">
+                                    Paris
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="multichoice" id="option_1" value="1" required>
+                                <label class="form-check-label" id="option_1_label" for="option_1">
+                                    London
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="multichoice" id="option_2" value="2" required>
+                                <label class="form-check-label" id="option_2_label" for="option_2">
+                                    Rome
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="multichoice" id="option_3" value="3" required>
+                                <label class="form-check-label" id="option_3_label" for="option_3">
+                                    Berlin
+                                </label>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="question1" id="option3" value="option3">
-                            <label class="form-check-label" for="option3">
-                                Rome
-                            </label>
+                        <div class="card-footer d-flex justify-content-between">
+                            <div>
+                                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                                    data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                                    Menu
+                                </button>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-success">
+                                    Submit
+                                </button>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="question1" id="option4" value="option4">
-                            <label class="form-check-label" for="option4">
-                                Berlin
-                            </label>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between">
-                        <div>
-                            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                                Menu
-                            </button>
-                        </div>
-                        <div>
-                            <button class="btn btn-warning" type="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                                Previous Question
-                            </button>
-                            <button class="btn btn-success" type="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                                Submit
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
+
+            <!-- AI Assistant Side Bar -->
             <div class="col-md-3 sidebar bg-secondary-subtle">
                 <div class="margin-top">
                     <h3>AI Assistant</h3>
@@ -100,20 +113,28 @@
     </div>
 
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-        <div class="offcanvas-header">
+        <div class="offcanvas-header border-bottom">
             <h5 class="offcanvas-title" id="offcanvasExampleLabel">Quiz Menu</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <div class="alert alert-warning" role="alert">
-                Not yet implemented.
-                <br> 
-                <br> To Add:
-                <br> - Quiz Title and Description
-                <br> - Return to dashboard
-                <br> - Finish Quiz
-                <br> - Get Feedback
-            </div>
+            <h3 id="menu_quiz_title">Quiz Title</h3>
+            <p id="menu_quiz_description">Quiz Description</p>
+
+            <table class="table table-bordered">
+                <tr>
+                    <td>Question</td>
+                    <td id="offcanvas_quiz_index_info">---</td>
+                </tr>
+                <tr>
+                    <td>Correct</td>
+                    <td id="offcanvas_correct_count_info">---</td>
+                </tr>
+                <tr>
+                    <td>Incorrect</td>
+                    <td id="offcanvas_wrong_count_info">---</td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>
