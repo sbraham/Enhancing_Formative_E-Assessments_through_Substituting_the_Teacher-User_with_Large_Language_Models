@@ -175,7 +175,7 @@ export class Quiz {
         console.warn(`Quiz.endQuiz() is not implemented!`);
     }
 
-    getJSON() {
+    toString() {
         return JSON.stringify(this);
     }
 }

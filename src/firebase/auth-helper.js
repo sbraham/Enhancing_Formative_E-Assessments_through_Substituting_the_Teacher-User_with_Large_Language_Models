@@ -1,9 +1,7 @@
 console.log('firebase/auth-helper.js loaded');
 
 /* Importing Firebase features */
-import * as firebase from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js';
 import * as authenticator from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
-import * as functions from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-functions.js';
 
 import { auth } from "./config.js";
 
