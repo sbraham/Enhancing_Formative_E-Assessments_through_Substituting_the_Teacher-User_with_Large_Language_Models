@@ -148,4 +148,12 @@ export class Quiz {
             document.getElementById(`option_${i}`).checked = false;
         }
     }
+
+    endQuiz() {
+        console.log(`Quiz.endQuiz() is not implemented!`);
+    }
+
+    getJSON() {
+        return JSON.stringify(this);
+    }
 }

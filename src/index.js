@@ -1,7 +1,7 @@
 console.log(`index.js loaded`);
 
 /* Importing Firebase helper functions from setup file */
-import { logout } from "./firebase/auth-helper.js";
+import { logout, checkLoginOnFrame } from "./firebase/auth-helper.js";
 
 /* Fetching elements front HTML */
 const main = document.getElementById('main');
@@ -28,6 +28,8 @@ onAuthStateChanged(auth, (user) => {
         login_status.innerText = `🟥: Not logged in`;
     }
 });
+
+checkLoginOnFrame(main);
 
 /* Adding event listeners to buttons */
 dashboard_button.addEventListener("click", async () => {

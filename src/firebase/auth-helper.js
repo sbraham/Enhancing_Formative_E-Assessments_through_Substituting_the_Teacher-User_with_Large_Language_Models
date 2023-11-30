@@ -12,6 +12,27 @@ import { auth } from "./config.js";
  * @module auth-helper
  */
 
+/**
+ * Checks if the user is logged in or not.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the user is logged in, or false if the user is not logged in.
+ */
+export async function checkLoginOnFrame(iframe) {
+	authenticator.onAuthStateChanged(auth, (user) => {
+		if (user) {
+			// User is signed in.
+			console.log("User is logged in:", user);
+
+			// Redirect to the chat page
+			iframe.src = `../pages/dashboard/dashboard.html`
+		} else {
+			// No user is signed in.
+			console.log("User is not logged in");
+
+			// Redirect to the login page
+			iframe.src = `../pages/login/login.html`
+		}
+	});
+}
 
 /**
  * Creates a new user with the provided email and password.
