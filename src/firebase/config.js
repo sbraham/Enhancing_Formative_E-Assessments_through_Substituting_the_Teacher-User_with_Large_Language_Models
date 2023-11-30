@@ -3,6 +3,7 @@ console.log("firebase/config.js loaded");
 /* Importing Firebase SDK from the CDN (Content Delivery Network) */
 import * as firebase from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js';
 import * as authenticator from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
+import * as firestore from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
 /* Configuring Firebase SDK (Software Development Kit) */
 const firebaseConfig = {

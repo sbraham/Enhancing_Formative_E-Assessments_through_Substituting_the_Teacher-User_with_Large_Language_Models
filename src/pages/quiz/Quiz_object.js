@@ -142,18 +142,26 @@ export class Quiz {
     }
 
     showResult() {
-        console.log(`Quiz.showResult() is not implemented!`);
+        console.warn(`Quiz.showResult() is not implemented!`);
     }
 
     #disableQuizForm() {
-        for (let i = 0; i < this.current_question.options.length; i++) {
-            document.getElementById(`option_${i}`).disabled = true;
+        try {
+            for (let i = 0; i < this.current_question.options.length; i++) {
+                document.getElementById(`option_${i}`).disabled = true;
+            }
+        } catch (error) {
+            console.error(`Quiz.disableQuizForm() error: ${error}`);
         }
     }
 
     #enableQuizForm() {
-        for (let i = 0; i < this.current_question.options.length; i++) {
-            document.getElementById(`option_${i}`).disabled = false;
+        try {
+            for (let i = 0; i < this.current_question.options.length; i++) {
+                document.getElementById(`option_${i}`).disabled = false;
+            }
+        } catch (error) {
+            console.error(`Quiz.enableQuizForm() error: ${error}`);
         }
     }
 
@@ -164,7 +172,7 @@ export class Quiz {
     }
 
     endQuiz() {
-        console.log(`Quiz.endQuiz() is not implemented!`);
+        console.warn(`Quiz.endQuiz() is not implemented!`);
     }
 
     getJSON() {

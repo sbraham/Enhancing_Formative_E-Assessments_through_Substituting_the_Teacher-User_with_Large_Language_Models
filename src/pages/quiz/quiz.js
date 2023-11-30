@@ -13,17 +13,21 @@ quiz.startQuiz();
 let given_answer;
 let quiz_finished = false;
 quiz_form.addEventListener('submit', (event) => {
-    console.log(`quiz_form submitted`);
+    try {
+        console.log(`quiz_form submitted`);
 
-    event.preventDefault(); // Prevents the page from reloading when the form is submitted.
+        event.preventDefault(); // Prevents the page from reloading when the form is submitted.
 
-    const data = new FormData(quiz_form);
+        const data = new FormData(quiz_form);
 
-    for (const value of data) {
-        given_answer = Number(value[1]);
+        for (const value of data) {
+            given_answer = Number(value[1]);
+        }
+
+        console.log(`given_answer:`, given_answer);
+
+        quiz_finished = quiz.submitAnswer(given_answer);
+    } catch (error) {
+        alert(error);
     }
-
-    console.log(`given_answer:`, given_answer);
-
-    quiz_finished = quiz.submitAnswer(given_answer);
 });
