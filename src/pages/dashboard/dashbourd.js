@@ -1,5 +1,10 @@
 console.log('dashbourd.js loaded');
 
+/* Importing Firebase helper functions from setup file */
+import { checkLogin } from "../../firebase/auth-helper.js";
+
+checkLogin(`../login/login.html`);
+
 /* Function to create a new Quiz Card */
 export function createQuizCard(quiz_name, quiz_description, quiz_id) {}
 

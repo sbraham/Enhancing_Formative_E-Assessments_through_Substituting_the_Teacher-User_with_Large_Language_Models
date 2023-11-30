@@ -7,27 +7,6 @@ import { logout, checkLoginOnFrame } from "./firebase/auth-helper.js";
 const main = document.getElementById('main');
 const dashboard_button = document.getElementById('dashboard');
 const account_button = document.getElementById('account');
-const login_status = document.getElementById('login_status');
-
-/* Adding event listener to auth state change */
-import { auth } from '../../firebase/config.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // User is signed in.
-        console.log("User is logged in:", user);
-
-        account_button.innerText = `Log Out`;
-        login_status.innerText = `🟩: Logged in as ${user.email}`;
-    } else {
-        // No user is signed in.
-        console.log("User is not logged in");
-
-        account_button.innerText = `Log In`;
-        login_status.innerText = `🟥: Not logged in`;
-    }
-});
 
 checkLoginOnFrame(main);
 

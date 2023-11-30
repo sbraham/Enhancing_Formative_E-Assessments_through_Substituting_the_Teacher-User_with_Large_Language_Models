@@ -16,17 +16,47 @@ import { auth } from "./config.js";
  * Checks if the user is logged in or not.
  * @returns {Promise<boolean>} - A promise that resolves to true if the user is logged in, or false if the user is not logged in.
  */
-export async function checkLoginOnFrame(iframe) {
+export async function checkLogin(pathToLogin) {
 	authenticator.onAuthStateChanged(auth, (user) => {
 		if (user) {
 			// User is signed in.
 			console.log("User is logged in:", user);
+		} else {
+			// No user is signed in.
+			console.log("User is not logged in");
+
+			// Redirect to the login page
+			window.location.href = pathToLogin
+		}
+	});
+}
+
+/**
+ * Checks if the user is logged in or not.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the user is logged in, or false if the user is not logged in.
+ */
+export async function checkLoginOnFrame(iframe) {
+	const account_button = document.getElementById('account');
+	const login_status = document.getElementById('login_status');
+
+	authenticator.onAuthStateChanged(auth, (user) => {
+		iframe.src = `../loading.html`
+
+		if (user) {
+			// User is signed in.
+			console.log("User is logged in:", user);
+
+			account_button.innerText = `Log Out`;
+			login_status.innerText = `🟩: Logged in as ${user.email}`;
 
 			// Redirect to the chat page
 			iframe.src = `../pages/dashboard/dashboard.html`
 		} else {
 			// No user is signed in.
 			console.log("User is not logged in");
+
+			account_button.innerText = `Log In`;
+			login_status.innerText = `🟥: Not logged in`;
 
 			// Redirect to the login page
 			iframe.src = `../pages/login/login.html`

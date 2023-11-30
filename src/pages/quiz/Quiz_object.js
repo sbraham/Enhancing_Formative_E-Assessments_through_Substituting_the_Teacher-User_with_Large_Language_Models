@@ -123,10 +123,12 @@ export class Quiz {
         console.log(`this.given_answers:`, this.given_answers);
 
         this.showResult();
+        this.#disableQuizForm();
 
         setTimeout(() => {
             /* Reset quiz */
             this.#resetQuizForm()
+            this.#enableQuizForm();
 
             /* Got to next question OR end quiz */
             if (this.question_index === this.questions.length) {
@@ -141,6 +143,18 @@ export class Quiz {
 
     showResult() {
         console.log(`Quiz.showResult() is not implemented!`);
+    }
+
+    #disableQuizForm() {
+        for (let i = 0; i < this.current_question.options.length; i++) {
+            document.getElementById(`option_${i}`).disabled = true;
+        }
+    }
+
+    #enableQuizForm() {
+        for (let i = 0; i < this.current_question.options.length; i++) {
+            document.getElementById(`option_${i}`).disabled = false;
+        }
     }
 
     #resetQuizForm() {
