@@ -3,15 +3,15 @@ console.log('Loading: firebase/auth-helper.js');
 /* Importing Firebase features */
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
 
+import { auth } from './config.js';
+
 /**
  * Checks if the user is logged in or not.
  * @returns {Promise<boolean>} - A promise that resolves to true if the user is logged in, or false if the user is not logged in.
  */
 export async function checkLogin(pathToLogin) {
 	try {
-		console.debug(window.auth);
-
-		onAuthStateChanged(window.auth, (user) => {
+		onAuthStateChanged(auth, (user) => {
 			if (user) {
 				// User is signed in.
 				console.log("User is logged in:", user.uid);
@@ -40,7 +40,7 @@ export async function checkLoginOnFrame(iframe) {
 	const login_status = document.getElementById('login_status');
 
 	try {
-		onAuthStateChanged(window.auth, (user) => {
+		onAuthStateChanged(auth, (user) => {
 			iframe.src = `../loading.html`
 
 			if (user) {

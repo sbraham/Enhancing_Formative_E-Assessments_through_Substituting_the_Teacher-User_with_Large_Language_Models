@@ -3,6 +3,7 @@ console.log('Loading: firebase/database-helper.js');
 /* Importing Firebase features */
 import { addDoc, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
 
+import { auth, db } from './config.js';
 import { checkLogin } from './auth-helper.js';
 
 /**
@@ -16,14 +17,14 @@ import { checkLogin } from './auth-helper.js';
  */
 export async function addQuiz(quiz) {
     try {
-        const user = checkLoginOnFrame(iframe);
+        const user = checkLogin('../pages/login/login.html');
 
         console.log(`addQuiz(): Adding quiz to database:`, quiz.title);
         console.debug(`addQuiz(): User:`, user);
         console.debug(`addQuiz(): Quiz:`, quiz);
 
         // Add a new document with a generated id.
-        const docRef = await addDoc(collection(window.db, user), {
+        const docRef = await addDoc(collection(db, user), {
             quiz
         });
         console.log("Document written with ID: ", docRef.id);

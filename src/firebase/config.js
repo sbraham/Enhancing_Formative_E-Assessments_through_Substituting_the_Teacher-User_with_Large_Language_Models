@@ -17,11 +17,8 @@ const firebaseConfig = {
 };
 
 /* Initializing Firebase */
-window.app = initializeApp(firebaseConfig);
-console.debug("Firebase initialized:", window.app);
+export const app = initializeApp(firebaseConfig);
 
-window.auth = getAuth(window.app);
-console.debug("Firebase auth initialized:", window.auth);
+export const auth = getAuth(app);
 
-window.db = getFirestore(window.app);
-console.debug("Firebase firestore initialized:", window.db);
+export const db = getFirestore(app);
