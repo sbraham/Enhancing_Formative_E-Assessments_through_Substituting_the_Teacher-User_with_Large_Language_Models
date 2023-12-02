@@ -1,13 +1,5 @@
 // import { getElement } from '../src/getElement';
-import { Question } from '../quiz/Question_object.js';
-
-function removeItemOnce(arr, value) {
-    var index = arr.indexOf(value);
-    if (index > -1) {
-        arr.splice(index, 1);
-    }
-    return arr;
-}
+import { Question } from './Question.js';
 
 export class Quiz {
     generateQuizTest() {
@@ -22,7 +14,7 @@ export class Quiz {
         this.generateQuizTest();
     }
 
-    constructor(title, description, number_of_questions) {
+    constructor(title, description, number_of_questions, multichoice = true, endless = false) {
         this.id = 1;
 
         this.title = title;
@@ -39,8 +31,8 @@ export class Quiz {
         this.correct_count = 0;
         this.wrong_count = 0;
 
-        this.multichoice = true;
-        this.endless = false;
+        this.multichoice = endless;
+        this.endless = multichoice;
 
         this.generateQuiz();
     }

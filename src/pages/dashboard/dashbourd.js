@@ -1,7 +1,8 @@
-console.log('dashbourd.js loaded');
+console.log('Loading: dashbourd.js');
 
 /* Importing Firebase helper functions from setup file */
 import { checkLogin } from "../../firebase/auth-helper.js";
+import { addQuiz } from "../../firebase/database-helper.js";
 
 let index = 0;
 
@@ -47,6 +48,9 @@ function createQuizCard(quiz_title, quiz_description) {
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-danger delete_quiz_button">
+                                    <div class="cut-text-1">Delete Quiz</div>
+                                </button>
                                 <button type="button" class="btn btn-success card-button take_quiz_button">
                                     <div class="cut-text-1">Take Quiz</div>
                                 </button>
@@ -58,6 +62,17 @@ function createQuizCard(quiz_title, quiz_description) {
         </div>
     `;
     row.insertBefore(card_container, row.lastElementChild);
+
+    console.debug('Quiz card created: ', card_container);
+}
+
+function addNewQuiz(quiz_title, quiz_description, number_of_questions, question_type) {
+    const quiz = {
+        quiz_title: quiz_title,
+        quiz_description: quiz_description,
+        number_of_questions: number_of_questions,
+        question_type: question_type
+    };
 }
 
 function takeQuiz() {
@@ -71,12 +86,37 @@ document.querySelectorAll('.take_quiz_button').forEach(button => {
     button.addEventListener('click', takeQuiz);
 });
 
-document.getElementById('create_quiz_form')
+document.getElementById('create_quiz_form').addEventListener('submit', event => {
+    event.preventDefault(); // Prevents the default behaviour of the form
+
+    console.log('Creating quiz');
+
+    // Getting the values from the form
+    const quiz_title = document.getElementById('quiz_title').value;
+    const quiz_description = document.getElementById('quiz_description').value;
+    const number_of_questions = document.getElementById('number_of_questions').value;
+    const question_type = document.getElementById('questionType').value;
+
+    createQuizCard(quiz_title, quiz_description);
+
+
+    // Clearing the form
+    document.getElementById('quiz_title').value = '';
+    document.getElementById('quiz_description').value = '';
+    document.getElementById('number_of_questions').value = '';
+    document.getElementById('questionType').value = '';
+});
 
 /* Start of the script */
 
 checkLogin(`../login/login.html`);
 
-createQuizCard('Quiz 1', 'This is a quiz about something This is a quiz about something This is a quiz about somethingThis is a quiz about somethingThis is a quiz about somethingThis is a quiz about something This is a quiz about something');
-createQuizCard('Quiz 2', 'This is a quiz about something');
-createQuizCard('Quiz 3', 'This is a quiz about something');
+for (let i = 1; i < 6; i++) {
+    createQuizCard(`Quiz ${i}`, `This is the description of quiz ${i}`);
+}
+
+import { Quiz } from "../../classes/Quiz.js"
+
+const quiz = new Quiz("Test Quiz", "This is a test quiz", 10);
+
+addQuiz(quiz);

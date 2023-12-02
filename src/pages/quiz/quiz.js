@@ -1,4 +1,4 @@
-console.log('quiz.js loaded');
+console.log('Loading: quiz.js');
 
 /* Get Quiz object */
 import { Quiz } from './Quiz_object.js';

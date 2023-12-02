@@ -1,4 +1,4 @@
-console.log('login.js loaded');
+console.log('login.js');
 
 /* Importing Firebase helper functions from setup file */
 import { loginUser } from "../../firebase/auth-helper.js";

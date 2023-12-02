@@ -1,33 +1,35 @@
-console.log('firebase/auth-helper.js loaded');
+console.log('Loading: firebase/auth-helper.js');
 
 /* Importing Firebase features */
-import * as authenticator from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
-
-import { auth } from "./config.js";
-
-/**
- * Helper functions for Firebase authentication.
- * @module auth-helper
- */
+import * as authentication from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
 
 /**
  * Checks if the user is logged in or not.
  * @returns {Promise<boolean>} - A promise that resolves to true if the user is logged in, or false if the user is not logged in.
  */
 export async function checkLogin(pathToLogin) {
-	authenticator.onAuthStateChanged(auth, (user) => {
-		if (user) {
-			// User is signed in.
-			console.log("User is logged in:", user);
-		} else {
-			// No user is signed in.
-			console.log("User is not logged in");
+	try {
+		firebase.auth().onAuthStateChanged((user) => {
+			if (user) {
+				// User is signed in.
+				console.log("User is logged in:", user.uid);
+				return user.uid;
+			} else {
+				// No user is signed in.
+				console.log("User is not logged in");
 
-			// Redirect to the login page
-			window.location.href = pathToLogin
-		}
-	});
+				// Redirect to the login page
+				window.location.href = pathToLogin;
+				return null;
+			}
+		});
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
 }
+
+checkLogin("../pages/login/login.html");
 
 /**
  * Checks if the user is logged in or not.
@@ -37,29 +39,38 @@ export async function checkLoginOnFrame(iframe) {
 	const account_button = document.getElementById('account');
 	const login_status = document.getElementById('login_status');
 
-	authenticator.onAuthStateChanged(auth, (user) => {
-		iframe.src = `../loading.html`
+	try {
+		authentication.onAuthStateChanged(window.auth, (user) => {
+			iframe.src = `../loading.html`
 
-		if (user) {
-			// User is signed in.
-			console.log("User is logged in:", user);
+			if (user) {
+				// User is signed in.
+				console.log("User is logged in:", user.uid);
 
-			account_button.innerText = `Log Out`;
-			login_status.innerText = `🟩: Logged in as ${user.email}`;
+				account_button.innerText = `Log Out`;
+				login_status.innerText = `🟩: Logged in as ${user.email}`;
 
-			// Redirect to the chat page
-			iframe.src = `../pages/dashboard/dashboard.html`
-		} else {
-			// No user is signed in.
-			console.log("User is not logged in");
+				// Redirect to the chat page
+				iframe.src = `../pages/dashboard/dashboard.html`
 
-			account_button.innerText = `Log In`;
-			login_status.innerText = `🟥: Not logged in`;
+				return user.uid;
+			} else {
+				// No user is signed in.
+				console.log("User is not logged in");
 
-			// Redirect to the login page
-			iframe.src = `../pages/login/login.html`
-		}
-	});
+				account_button.innerText = `Log In`;
+				login_status.innerText = `🟥: Not logged in`;
+
+				// Redirect to the login page
+				iframe.src = `../pages/login/login.html`
+
+				return null;
+			}
+		});
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
 }
 
 /**
@@ -75,7 +86,7 @@ export async function createUser(email, password) {
 
 	try {
 		console.log(`auth-helper: createUserWithEmailAndPassword: awaiting response...`);
-		let userCredential = await authenticator.createUserWithEmailAndPassword(auth, email, password)
+		let userCredential = await authentication.createUserWithEmailAndPassword(window.auth, email, password)
 		console.log(`auth-helper: createUserWithEmailAndPassword: received`);
 		/** @type {userCredential} */
 
@@ -99,7 +110,7 @@ export async function loginUser(email, password) {
 
 	try {
 		console.log(`auth-helper: signInWithEmailAndPassword: awaiting response...`);
-		let userCredential = await authenticator.signInWithEmailAndPassword(auth, email, password);
+		let userCredential = await authentication.signInWithEmailAndPassword(window.auth, email, password);
 		console.log(`auth-helper: signInWithEmailAndPassword: received`);
 		/** @type {userCredential} */
 
@@ -119,7 +130,8 @@ export async function logout() {
 
 	try {
 		console.log(`auth-helper: signOut: awaiting response...`);
-		await authenticator.signOut(auth);
+
+		await authentication.signOut(auth);
 	}
 	catch (error) {
 		console.error(error);

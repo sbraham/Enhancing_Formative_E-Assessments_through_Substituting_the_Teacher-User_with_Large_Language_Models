@@ -1,4 +1,4 @@
-console.log(`index.js loaded`);
+console.log(`Loading: index.js`);
 
 /* Importing Firebase helper functions from setup file */
 import { logout, checkLoginOnFrame } from "./firebase/auth-helper.js";

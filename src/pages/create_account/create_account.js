@@ -1,4 +1,4 @@
-console.log('sign-up.js loaded');
+console.log('Loading: sign-up.js');
 
 /* Importing Firebase helper functions from setup file */
 import { createUser } from '../../firebase/auth-helper.js';
