@@ -1,5 +1,10 @@
 console.log("Loading: firebase/config.js");
 
+/* Importing Firebase SDK from the CDN (Content Delivery Network) */
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js';
+import { getAuth } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
 /* Configuring Firebase SDK (Software Development Kit) */
 const firebaseConfig = {
     apiKey: "AIzaSyDYs62LawEuFZ4zqox4rs3o_rD2fpRmeXc",
@@ -12,11 +17,11 @@ const firebaseConfig = {
 };
 
 /* Initializing Firebase */
-window.app = firebase.initializeApp(firebaseConfig);
+window.app = initializeApp(firebaseConfig);
 console.debug("Firebase initialized:", window.app);
 
-window.auth = firebase.auth(window.app);
+window.auth = getAuth(window.app);
 console.debug("Firebase auth initialized:", window.auth);
 
-window.db = firebase.firestore(window.app);
+window.db = getFirestore(window.app);
 console.debug("Firebase firestore initialized:", window.db);

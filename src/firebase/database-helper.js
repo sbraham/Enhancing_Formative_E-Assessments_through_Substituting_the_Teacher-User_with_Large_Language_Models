@@ -1,7 +1,6 @@
 console.log('Loading: firebase/database-helper.js');
 
 /* Importing Firebase features */
-import * as authentication from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
 import { addDoc, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
 
 import { checkLogin } from './auth-helper.js';
@@ -17,7 +16,7 @@ import { checkLogin } from './auth-helper.js';
  */
 export async function addQuiz(quiz) {
     try {
-        const user = checkLogin("../pages/login/login.html");
+        const user = checkLoginOnFrame(iframe);
 
         console.log(`addQuiz(): Adding quiz to database:`, quiz.title);
         console.debug(`addQuiz(): User:`, user);

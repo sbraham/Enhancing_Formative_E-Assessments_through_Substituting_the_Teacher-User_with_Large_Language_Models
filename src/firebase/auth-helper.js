@@ -1,7 +1,7 @@
 console.log('Loading: firebase/auth-helper.js');
 
 /* Importing Firebase features */
-import * as authentication from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
 
 /**
  * Checks if the user is logged in or not.
@@ -9,7 +9,9 @@ import * as authentication from 'https://www.gstatic.com/firebasejs/10.6.0/fireb
  */
 export async function checkLogin(pathToLogin) {
 	try {
-		firebase.auth().onAuthStateChanged((user) => {
+		console.debug(window.auth);
+
+		onAuthStateChanged(window.auth, (user) => {
 			if (user) {
 				// User is signed in.
 				console.log("User is logged in:", user.uid);
@@ -29,8 +31,6 @@ export async function checkLogin(pathToLogin) {
 	}
 }
 
-checkLogin("../pages/login/login.html");
-
 /**
  * Checks if the user is logged in or not.
  * @returns {Promise<boolean>} - A promise that resolves to true if the user is logged in, or false if the user is not logged in.
@@ -40,7 +40,7 @@ export async function checkLoginOnFrame(iframe) {
 	const login_status = document.getElementById('login_status');
 
 	try {
-		authentication.onAuthStateChanged(window.auth, (user) => {
+		onAuthStateChanged(window.auth, (user) => {
 			iframe.src = `../loading.html`
 
 			if (user) {
@@ -86,7 +86,7 @@ export async function createUser(email, password) {
 
 	try {
 		console.log(`auth-helper: createUserWithEmailAndPassword: awaiting response...`);
-		let userCredential = await authentication.createUserWithEmailAndPassword(window.auth, email, password)
+		let userCredential = await createUserWithEmailAndPassword(window.auth, email, password)
 		console.log(`auth-helper: createUserWithEmailAndPassword: received`);
 		/** @type {userCredential} */
 
@@ -110,7 +110,7 @@ export async function loginUser(email, password) {
 
 	try {
 		console.log(`auth-helper: signInWithEmailAndPassword: awaiting response...`);
-		let userCredential = await authentication.signInWithEmailAndPassword(window.auth, email, password);
+		let userCredential = await signInWithEmailAndPassword(window.auth, email, password);
 		console.log(`auth-helper: signInWithEmailAndPassword: received`);
 		/** @type {userCredential} */
 
@@ -131,7 +131,7 @@ export async function logout() {
 	try {
 		console.log(`auth-helper: signOut: awaiting response...`);
 
-		await authentication.signOut(auth);
+		await signOut(auth);
 	}
 	catch (error) {
 		console.error(error);
