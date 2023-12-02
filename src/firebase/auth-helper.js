@@ -5,29 +5,49 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.6.0/fi
 
 import { auth } from './config.js';
 
+export function getUserUid() {
+    console.log(`auth-helper: getUserUid`);
+
+    return new Promise((resolve, reject) => {
+        try {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("auth-helper: getUserUid: User is logged in:", user.uid);
+                    resolve(user.uid);
+                } else {
+                    // No user is signed in.
+                    console.warn("auth-helper: getUserUid: User is not logged in");
+                    resolve(null);
+                }
+            });
+        } catch (error) {
+            console.error(`auth-helper: getUserUid:`, error);
+            reject(error);
+        }
+    });
+}
+
 /**
  * Checks if the user is logged in or not.
  * @returns {Promise<boolean>} - A promise that resolves to true if the user is logged in, or false if the user is not logged in.
  */
 export async function checkLogin(pathToLogin) {
+	console.log(`auth-helper: checkLogin`);
+
 	try {
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
-				// User is signed in.
-				console.log("User is logged in:", user.uid);
-				return user.uid;
+				console.log("auth-helper: checkLogin: User is logged in:", user.uid);
 			} else {
 				// No user is signed in.
-				console.log("User is not logged in");
+				console.log("auth-helper: checkLogin: User is not logged in");
 
 				// Redirect to the login page
 				window.location.href = pathToLogin;
-				return null;
 			}
 		});
 	} catch (error) {
-		console.error(error);
-		return null;
+		console.error(`auth-helper: checkLogin:`, error);
 	}
 }
 
@@ -36,6 +56,9 @@ export async function checkLogin(pathToLogin) {
  * @returns {Promise<boolean>} - A promise that resolves to true if the user is logged in, or false if the user is not logged in.
  */
 export async function checkLoginOnFrame(iframe) {
+	console.log(`auth-helper: checkLoginOnFrame`);
+	console.debug(`auth-helper: iframe:`, iframe);
+
 	const account_button = document.getElementById('account');
 	const login_status = document.getElementById('login_status');
 
@@ -45,31 +68,26 @@ export async function checkLoginOnFrame(iframe) {
 
 			if (user) {
 				// User is signed in.
-				console.log("User is logged in:", user.uid);
+				console.log("auth-helper: checkLoginOnFrame: User is logged in:", user.uid);
 
 				account_button.innerText = `Log Out`;
 				login_status.innerText = `🟩: Logged in as ${user.email}`;
 
 				// Redirect to the chat page
 				iframe.src = `../pages/dashboard/dashboard.html`
-
-				return user.uid;
 			} else {
 				// No user is signed in.
-				console.log("User is not logged in");
+				console.log("auth-helper: checkLoginOnFrame: User is not logged in");
 
 				account_button.innerText = `Log In`;
 				login_status.innerText = `🟥: Not logged in`;
 
 				// Redirect to the login page
 				iframe.src = `../pages/login/login.html`
-
-				return null;
 			}
 		});
 	} catch (error) {
-		console.error(error);
-		return null;
+		console.error(`auth-helper: checkLoginOnFrame:`, error);
 	}
 }
 
@@ -81,7 +99,7 @@ export async function checkLoginOnFrame(iframe) {
  * @returns {Promise<string|Error>} - A promise that resolves to "successful-sign-up" if the user is created successfully, or an Error object if there is an error.
  */
 export async function createUser(email, password) {
-	console.log(`auth-helper: createUser called`);
+	console.log(`auth-helper: createUser`);
 	console.debug(`auth-helper: email:`, email);
 
 	try {
@@ -105,7 +123,7 @@ export async function createUser(email, password) {
  * @returns {Promise<string|Error>} - A promise that resolves to "successful-login" if the login is successful, or an Error object if there is an error.
  */
 export async function loginUser(email, password) {
-	console.log(`auth-helper: loginUser called`);
+	console.log(`auth-helper: loginUser`);
 	console.debug(`auth-helper: email:`, email);
 
 	try {
@@ -126,14 +144,14 @@ export async function loginUser(email, password) {
  * Signs out the current user.
  */
 export async function logout() {
-	console.log(`auth-helper: logout called`);
+	console.log(`auth-helper: logout`);
 
 	try {
-		console.log(`auth-helper: signOut: awaiting response...`);
-
+		console.log(`auth-helper: logout: awaiting response...`);
 		await signOut(auth);
+		console.log(`auth-helper: logout: received`);
 	}
 	catch (error) {
-		console.error(error);
+		console.error(`auth-helper: logout:`, error);
 	}
 }

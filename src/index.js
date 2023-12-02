@@ -8,7 +8,7 @@ const main = document.getElementById('main');
 const dashboard_button = document.getElementById('dashboard');
 const account_button = document.getElementById('account');
 
-checkLoginOnFrame(main);
+await checkLoginOnFrame(main);
 
 /* Adding event listeners to buttons */
 dashboard_button.addEventListener("click", async () => {

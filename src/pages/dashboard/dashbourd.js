@@ -8,6 +8,8 @@ let index = 0;
 
 /* Function to create a new Quiz Card */
 function createQuizCard(quiz_title, quiz_description) {
+    console.log('createQuizCard: Creating quiz card');
+
     index++;
 
     const row = document.getElementById('row_of_quizzes');
@@ -63,33 +65,11 @@ function createQuizCard(quiz_title, quiz_description) {
     `;
     row.insertBefore(card_container, row.lastElementChild);
 
-    console.debug('Quiz card created: ', card_container);
+    console.debug('createQuizCard: Quiz card created: ', card_container);
 }
 
-function addNewQuiz(quiz_title, quiz_description, number_of_questions, question_type) {
-    const quiz = {
-        quiz_title: quiz_title,
-        quiz_description: quiz_description,
-        number_of_questions: number_of_questions,
-        question_type: question_type
-    };
-}
-
-function takeQuiz() {
-    console.log('Redirecting to quiz');
-    window.location.href = '../quiz/quiz.html'; // Replace with the desired URL
-}
-
-/* Adding event listeners */
-document.querySelectorAll('.take_quiz_button').forEach(button => {
-    // console.log('Adding event listener to button', button);
-    button.addEventListener('click', takeQuiz);
-});
-
-document.getElementById('create_quiz_form').addEventListener('submit', event => {
-    event.preventDefault(); // Prevents the default behaviour of the form
-
-    console.log('Creating quiz');
+function addNewQuiz() {
+    console.log('addNewQuiz: Creating quiz');
 
     // Getting the values from the form
     const quiz_title = document.getElementById('quiz_title').value;
@@ -105,10 +85,34 @@ document.getElementById('create_quiz_form').addEventListener('submit', event => 
     document.getElementById('quiz_description').value = '';
     document.getElementById('number_of_questions').value = '';
     document.getElementById('questionType').value = '';
+
+    const quiz = {
+        quiz_title: quiz_title,
+        quiz_description: quiz_description,
+        number_of_questions: number_of_questions,
+        question_type: question_type
+    };
+}
+
+function takeQuiz() {
+    console.log('takeQuiz: Redirecting to quiz page');
+    
+    window.location.href = '../quiz/quiz.html'; // Replace with the desired URL
+}
+
+/* Adding event listeners */
+document.querySelectorAll('.take_quiz_button').forEach(button => {
+    // console.log('Adding event listener to button', button);
+    button.addEventListener('click', takeQuiz);
+});
+
+document.getElementById('create_quiz_form').addEventListener('submit', event => {
+    event.preventDefault(); // Prevents the default behaviour of the form
+    
+    addNewQuiz()
 });
 
 /* Start of the script */
-
 checkLogin(`../login/login.html`);
 
 for (let i = 1; i < 6; i++) {
