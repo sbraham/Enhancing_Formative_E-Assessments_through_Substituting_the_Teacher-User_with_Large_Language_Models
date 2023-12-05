@@ -20,7 +20,10 @@ export class Question {
     /**
      * Represents a question object.
      * @constructor
-     * @param {boolean} multichoice - Indicates whether the question is a multiple choice question.
+     * @param {string} question - The text of the question.
+     * @param {string} answer - The correct answer for the question.
+     * @param {string} question_type - The type of question.
+     * @param {string[]} options - The possible options for the question.
      */
     constructor(question = null, answer = null, question_type = 'multiple_choice', options = []) {
         /** The text of the question.

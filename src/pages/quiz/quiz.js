@@ -1,12 +1,18 @@
 console.log('Loading: quiz.js');
 
-/* Get Quiz object */
-import { Quiz } from './Quiz_object.js';
+import { getQuizById } from "../../firebase/database-helper.js";
+import { Quiz } from "../../classes/Quiz.js";
 
 /* Get DOM elements */
 const quiz_form = document.getElementById('quiz_form');
 
-const quiz = new Quiz("My Really Cool Quiz", "A cool quiz about beans", 12);
+const quiz_id = new URLSearchParams(window.location.search).get('quiz_id');
+
+console.debug(`quiz: quiz_id:`, quiz_id);
+console.debug(`quiz: get quiz from database`);
+
+const quiz_data = await getQuizById(quiz_id);
+const quiz = Quiz.fromObject(quiz_data.quiz);
 
 quiz.startQuiz();
 

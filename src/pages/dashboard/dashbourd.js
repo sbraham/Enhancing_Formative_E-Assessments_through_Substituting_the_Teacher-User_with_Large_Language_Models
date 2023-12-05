@@ -10,7 +10,7 @@ let index = 0;
 
 /* Function to create a new Quiz Card */
 function createQuizCard(quiz) {
-    console.log('createQuizCard: Creating quiz card:', quiz.title);
+    console.log('createQuizCard: Creating quiz card:', quiz.id);
 
     index++;
 
@@ -98,14 +98,14 @@ function addNewQuiz() {
 }
 
 function takeQuiz(quiz) {
-    const quizId = quiz.id;
+    const quiz_id = quiz.id;
 
-    console.log('takeQuiz: Redirecting to quiz page:', quizId);
+    console.log('takeQuiz: Redirecting to quiz page:', quiz_id);
 
-    // Construct the URL with the quizId as a query parameter
-    const url = `../quiz/quiz.html?quizId=${quizId}`;
+    // Construct the URL with the quiz_id as a query parameter
+    const url = `../quiz/quiz.html?quiz_id=${quiz_id}`;
 
-    window.location.href = url; // Redirect to the quiz page with the quizId
+    window.location.href = url; // Redirect to the quiz page with the quiz_id
 }
 
 document.getElementById('endless_checkbox').addEventListener('change', () => {
@@ -128,6 +128,18 @@ document.getElementById('create_quiz_form').addEventListener('submit', event => 
 /* Start of the script */
 await checkLogin(`../login/login.html`);
 
+// console.log('--------------------------------------------------');
+
+// /* make a bunch of random quizzes */
+// for (let i = 0; i < 2; i++) {
+//     const randomNumber = Math.floor(Math.random() * 100) + 1;
+//     const quiz = new Quiz(`Quiz ${randomNumber}`, `This is a quiz description`);
+
+//     await addQuizToDB(quiz);
+// }
+
+// console.log('--------------------------------------------------');
+
 const quizzes_data = await getUserQuizzes();
 const user_quizzes = [];
 
@@ -135,6 +147,6 @@ quizzes_data.forEach(quiz_data => {
     const quiz = Quiz.fromObject(quiz_data.quiz);
     user_quizzes.push(quiz); // Add quiz to user quizzes
 
-    console.debug(`dashbourd: Quiz:`, quiz.title);
+    console.debug(`dashbourd: Quiz:`, quiz.id);
     createQuizCard(quiz);
 });
