@@ -1,7 +1,7 @@
 console.log('Loading: firebase/auth-helper.js');
 
 /* Importing Firebase features */
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
 
 import { auth } from './config.js';
 
@@ -96,7 +96,7 @@ export async function createUser(email, password) {
 
 	try {
 		console.log(`auth-helper: createUserWithEmailAndPassword: awaiting response...`);
-		let userCredential = await createUserWithEmailAndPassword(window.auth, email, password)
+		let userCredential = await createUserWithEmailAndPassword(auth, email, password)
 		console.log(`auth-helper: createUserWithEmailAndPassword: received`);
 		/** @type {userCredential} */
 
@@ -120,7 +120,7 @@ export async function loginUser(email, password) {
 
 	try {
 		console.log(`auth-helper: signInWithEmailAndPassword: awaiting response...`);
-		let userCredential = await signInWithEmailAndPassword(window.auth, email, password);
+		let userCredential = await signInWithEmailAndPassword(auth, email, password);
 		console.log(`auth-helper: signInWithEmailAndPassword: received`);
 		/** @type {userCredential} */
 

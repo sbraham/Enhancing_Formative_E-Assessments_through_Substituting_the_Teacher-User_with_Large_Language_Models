@@ -16,7 +16,7 @@ const login_link = document.getElementById('login_link');
  * @type {EventListener}
  */
 create_account_form.addEventListener("submit", async (event) => {
-    console.log(`signUpForm submit`);
+    console.log(`create_account_form: create account form submit`);
 
     event.preventDefault(); // Prevents the page from reloading when the form is submitted.
 
@@ -24,10 +24,10 @@ create_account_form.addEventListener("submit", async (event) => {
     const password = create_account_form.password.value;
     const confirmPassword = create_account_form.confirmPassword.value;
 
-    console.log(`Email:`, email);
+    console.log(`create_account_form: Email:`, email);
 
     if (password !== confirmPassword) {
-        console.warn(`Passwords do not match.`);
+        console.warn(`create_account_form: Passwords do not match.`);
         alert(`Passwords do not match. Please take care when inputting your password.`);
         return;
     }
@@ -38,29 +38,29 @@ create_account_form.addEventListener("submit", async (event) => {
     /** @type {Promise<string>} */
 
     if (responce === 'successful-sign-up') {
-        console.log(`User successfully signed up.`);
+        console.log(`create_account_form: User successfully signed up.`);
         alert("You have successfully signed up. Click OK to continue to the chatbot.");
         window.location.href = "../dashboard/dashboard.html";
     }
     else {
         if (responce === 'auth/email-already-in-use') {
-            console.warn(`Email, ${email}, is already in use.`);
+            console.warn(`create_account_form: Email, ${email}, is already in use.`);
             alert(`Email, ${email}, is already in use. Log in or use a different email.`);
         } else if (responce === 'auth/invalid-email') {
-            console.warn(`Email, ${email}, is invalid.`);
+            console.warn(`create_account_form: Email, ${email}, is invalid.`);
             alert(`Email, ${email}, is invalid. Please enter a valid email.`);
         } else if (responce === 'auth/weak-password') {
-            console.warn(`Password is too weak.`);
+            console.warn(`create_account_form: Password is too weak.`);
             alert(`Password is too weak. Try a mix of letters, numbers and symbols.`);
         } else {
-            console.error(`ERROR:`, responce);
-            alert(`ERROR: ${responce}`);
+            console.error(`create_account_form: ERROR:`, responce);
+            alert(`ERROR: ${responce.message}`);
         }
     }
 });
 
 /* Adding event listener to handle the link within the iframe */
 login_link.addEventListener('click', function(event) {
-    console.log(`login_link clicked`);
+    console.log(`login_link: login link clicked`);
     window.location.href = "../login/login.html";
 });

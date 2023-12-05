@@ -1,15 +1,31 @@
 console.log('Loading: firebase/database-helper.js');
 
 /* Importing Firebase features */
-import { addDoc, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
+import { getDocs, query, where, addDoc, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
 
 import { auth, db } from './config.js';
 import { checkLogin } from './auth-helper.js';
 
-/**
- * Helper functions for Firebase authentication.
- * @module database-helper
- */
+
+export async function getUserQuizzes() {
+    console.log(`database-helper: getUserQuizzes`);
+
+    try {
+        const user = await checkLogin();
+
+        const querySnapshot = await getDocs(query(
+            collection(db, "cities"),
+            where("user", "==", user)
+        ));
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+        });
+
+    } catch (e) {
+        console.error(`database-helper: getUserQuizzes: Error adding document:`, e);
+    }
+}
 
 /**
  * Add a quiz to the database.
@@ -34,19 +50,5 @@ export async function addQuizToDB(quiz) {
         console.log(`database-helper: addQuiz: Document written with ID:`, docRef.id);
     } catch (error) {
         console.error(`database-helper: addQuiz: Error adding document:`, error);
-    }
-}
-
-export async function getUserQuizzes() {
-    console.log(`database-helper: getUserQuizzes`);
-
-    try {
-        const querySnapshot = await firestore.getDocs(
-            firestore.query(collection(window.db, "quiz"),
-                firestore.where("user", "==", auth.currentUser))
-        );
-        console.log(`database-helper: getUserQuizzes: Document written with ID:`, querySnapshot.data());
-    } catch (e) {
-        console.error(`database-helper: getUserQuizzes: Error adding document:`, e);
     }
 }

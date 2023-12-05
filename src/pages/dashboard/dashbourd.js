@@ -2,7 +2,7 @@ console.log('Loading: dashbourd.js');
 
 /* Importing Firebase helper functions from setup file */
 import { checkLogin } from "../../firebase/auth-helper.js";
-import { addQuizToDB } from "../../firebase/database-helper.js";
+import { getUserQuizzes, addQuizToDB } from "../../firebase/database-helper.js";
 
 import { Quiz } from "../../classes/Quiz.js";
 
@@ -125,10 +125,4 @@ document.getElementById('create_quiz_form').addEventListener('submit', event => 
 /* Start of the script */
 await checkLogin(`../login/login.html`);
 
-for (let i = 1; i < 6; i++) {
-    createQuizCard(`Quiz ${i}`, `This is the description of quiz ${i}`);
-}
-
-const quiz = new Quiz('Quiz 1', 'This is the description of quiz 1', 10, 'multiple_choice', false);
-
-addQuizToDB(quiz);
+getUserQuizzes();
