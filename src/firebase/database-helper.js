@@ -7,23 +7,33 @@ import { auth, db } from './config.js';
 import { checkLogin } from './auth-helper.js';
 
 
+/**
+ * Retrieves the quizzes associated with the logged-in user from the database.
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of quiz objects.
+ */
 export async function getUserQuizzes() {
     console.log(`database-helper: getUserQuizzes`);
 
     try {
         const user = await checkLogin();
+        let user_quizes = [];
 
+        // Get a list of all the user's quizzes
         const querySnapshot = await getDocs(query(
-            collection(db, "cities"),
-            where("user", "==", user)
+            collection(db, user)
         ));
+        
+        // For each quiz, add it to the list
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
+            console.debug(`database-helper: getUserQuizzes:`, doc.id, " => ", doc.data());
+            user_quizes.push(doc.data());
         });
 
+        return user_quizes;
     } catch (e) {
         console.error(`database-helper: getUserQuizzes: Error adding document:`, e);
+        return [];
     }
 }
 

@@ -125,4 +125,9 @@ document.getElementById('create_quiz_form').addEventListener('submit', event => 
 /* Start of the script */
 await checkLogin(`../login/login.html`);
 
-getUserQuizzes();
+const quizzes = await getUserQuizzes();
+
+quizzes.forEach(quiz => {
+    console.log(quiz);
+    createQuizCard(quiz.title, quiz.description);
+});
