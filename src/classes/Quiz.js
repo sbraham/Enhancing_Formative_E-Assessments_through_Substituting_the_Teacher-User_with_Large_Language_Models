@@ -1,6 +1,12 @@
 // import { getElement } from '../src/getElement';
 import { Question } from './Question.js';
 
+function uuidv4() {
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
 export class Quiz {
     generateQuizTest() {
         for (let i = 0; i < this.number_of_questions; i++) {
@@ -14,28 +20,31 @@ export class Quiz {
         this.generateQuizTest();
     }
 
-    constructor(title, description, number_of_questions, quiz_type = 'multiple_choice', endless = false) {
-        this.id = 1;
+    constructor(title, description, number_of_questions, quiz_type = 'multiple_choice', endless = false,
+        id = null, questions = [], running_questions = [], current_question = null, given_answers = [],) {
 
         this.title = title;
         this.description = description || null;
         this.number_of_questions = number_of_questions || 10;
 
-        this.questions = [];
-        this.running_questions = [];
-        this.current_question;
-        this.given_answers = [];
+        // quiz_type: multiple_choice, true_or_false, short_answer
+        this.quiz_type = quiz_type;
+        this.endless = endless;
 
         this.attempt = 0;
         this.question_index = 0;
         this.correct_count = 0;
         this.wrong_count = 0;
 
-        // quiz_type: multiple_choice, true_or_false, short_answer
-        this.quiz_type = quiz_type;
-        this.endless = endless;
-
-        this.generateQuiz();
+        if (id == null || questions == [] || running_questions == [] || current_question == null || given_answers == []) {
+            this.id = uuidv4();
+            this.questions = questions;
+            this.running_questions = running_questions;
+            this.current_question = current_question;
+            this.given_answers = given_answers;
+        } else {
+            this.generateQuiz();
+        }
     }
 
     startQuiz() {
@@ -105,7 +114,7 @@ export class Quiz {
             }
         }
 
-        console.log(`typeof(given_answer):`, typeof(given_answer));
+        console.log(`typeof(given_answer):`, typeof (given_answer));
 
         this.given_answers.push({
             "correct": correct,
@@ -170,5 +179,21 @@ export class Quiz {
 
     toString() {
         return JSON.stringify(this);
+    }
+
+    static fromObject(object) {
+        const quiz = new Quiz(
+            object.title,
+            object.description,
+            object.number_of_questions,
+            object.quiz_type,
+            object.endless,
+            object.id,
+            object.questions,
+            object.running_questions,
+            object.current_question,
+            object.given_answers
+        );
+        return quiz;
     }
 }

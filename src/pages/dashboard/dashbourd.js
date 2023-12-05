@@ -9,8 +9,8 @@ import { Quiz } from "../../classes/Quiz.js";
 let index = 0;
 
 /* Function to create a new Quiz Card */
-function createQuizCard(quiz_title, quiz_description) {
-    console.log('createQuizCard: Creating quiz card');
+function createQuizCard(quiz) {
+    console.log('createQuizCard: Creating quiz card:', quiz.title);
 
     index++;
 
@@ -20,11 +20,11 @@ function createQuizCard(quiz_title, quiz_description) {
     card_container.innerHTML = `
         <div class="card height-100">
             <div class="card-header">
-                <h4 class="cut-text-1">${quiz_title}</h4>
+                <h4 class="cut-text-1">${quiz.title}</h4>
             </div>
             <div class="card-body padding-10">
                 <p class="card-text cut-text-3">
-                    ${quiz_description}
+                    ${quiz.description}
                 </p>
             </div>
             <div class="card-footer">
@@ -33,7 +33,7 @@ function createQuizCard(quiz_title, quiz_description) {
                         data-bs-target="#details_modal_${index}">
                         <div class="cut-text-1">Details</div>
                     </button>
-                    <button type="button" class="btn btn-success card-button take_quiz_button">
+                    <button type="button" class="btn btn-success card-button" id="${index}">
                         <div class="cut-text-1">Take Quiz</div>
                     </button>
                 </div>
@@ -42,12 +42,12 @@ function createQuizCard(quiz_title, quiz_description) {
                     <div class="modal-dialog modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="details_modal_${index}_label">${quiz_title}</h1>
+                                <h1 class="modal-title fs-5" id="details_modal_${index}_label">${quiz.title}</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                ${quiz_description}
+                                ${quiz.description}
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary"
@@ -55,7 +55,7 @@ function createQuizCard(quiz_title, quiz_description) {
                                 <button type="button" class="btn btn-danger delete_quiz_button">
                                     <div class="cut-text-1">Delete Quiz</div>
                                 </button>
-                                <button type="button" class="btn btn-success card-button take_quiz_button">
+                                <button type="button" class="btn btn-success card-button" id="${index}_model">
                                     <div class="cut-text-1">Take Quiz</div>
                                 </button>
                             </div>
@@ -65,9 +65,12 @@ function createQuizCard(quiz_title, quiz_description) {
             </div>
         </div>
     `;
+
     row.insertBefore(card_container, row.lastElementChild);
 
-    console.debug('createQuizCard: Quiz card created: ', card_container);
+    document.getElementById(`${index}`).addEventListener('click', () => takeQuiz(quiz));
+
+    document.getElementById(`${index}_model`).addEventListener('click', () => takeQuiz(quiz));
 }
 
 function addNewQuiz() {
@@ -80,9 +83,9 @@ function addNewQuiz() {
     const endless_checkbox = document.getElementById('endless_checkbox').value;
     const question_type = document.getElementById('question_type').value;
 
-    createQuizCard(quiz_title, quiz_description);
-
     const quiz = new Quiz(quiz_title, quiz_description, number_of_questions, question_type, endless_checkbox);
+
+    createQuizCard(quiz);
 
     addQuizToDB(quiz);
 
@@ -94,16 +97,16 @@ function addNewQuiz() {
     document.getElementById('question_type').value = '';
 }
 
-function takeQuiz() {
-    console.log('takeQuiz: Redirecting to quiz page');
+function takeQuiz(quiz) {
+    const quizId = quiz.id;
 
-    window.location.href = '../quiz/quiz.html'; // Replace with the desired URL
+    console.log('takeQuiz: Redirecting to quiz page:', quizId);
+
+    // Construct the URL with the quizId as a query parameter
+    const url = `../quiz/quiz.html?quizId=${quizId}`;
+
+    window.location.href = url; // Redirect to the quiz page with the quizId
 }
-
-document.querySelectorAll('.take_quiz_button').forEach(button => {
-    // console.log('Adding event listener to button', button);
-    button.addEventListener('click', takeQuiz);
-});
 
 document.getElementById('endless_checkbox').addEventListener('change', () => {
     if (document.getElementById('endless_checkbox').checked) {
@@ -125,9 +128,13 @@ document.getElementById('create_quiz_form').addEventListener('submit', event => 
 /* Start of the script */
 await checkLogin(`../login/login.html`);
 
-const quizzes = await getUserQuizzes();
+const quizzes_data = await getUserQuizzes();
+const user_quizzes = [];
 
-quizzes.forEach(quiz => {
-    console.log(quiz);
-    createQuizCard(quiz.title, quiz.description);
+quizzes_data.forEach(quiz_data => {
+    const quiz = Quiz.fromObject(quiz_data.quiz);
+    user_quizzes.push(quiz); // Add quiz to user quizzes
+
+    console.debug(`dashbourd: Quiz:`, quiz.title);
+    createQuizCard(quiz);
 });

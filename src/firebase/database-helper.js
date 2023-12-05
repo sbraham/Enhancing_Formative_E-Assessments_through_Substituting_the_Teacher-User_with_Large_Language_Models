@@ -16,7 +16,7 @@ export async function getUserQuizzes() {
 
     try {
         const user = await checkLogin();
-        let user_quizes = [];
+        let quizzes_data = [];
 
         // Get a list of all the user's quizzes
         const querySnapshot = await getDocs(query(
@@ -27,12 +27,12 @@ export async function getUserQuizzes() {
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             console.debug(`database-helper: getUserQuizzes:`, doc.id, " => ", doc.data());
-            user_quizes.push(doc.data());
+            quizzes_data.push(doc.data());
         });
 
-        return user_quizes;
-    } catch (e) {
-        console.error(`database-helper: getUserQuizzes: Error adding document:`, e);
+        return quizzes_data;
+    } catch (error) {
+        console.error(`database-helper: getUserQuizzes: Error adding document:`, error);
         return [];
     }
 }
