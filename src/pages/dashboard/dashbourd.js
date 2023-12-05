@@ -4,6 +4,8 @@ console.log('Loading: dashbourd.js');
 import { checkLogin } from "../../firebase/auth-helper.js";
 import { addQuiz } from "../../firebase/database-helper.js";
 
+import { Quiz } from "../../classes/Quiz.js";
+
 let index = 0;
 
 /* Function to create a new Quiz Card */
@@ -75,40 +77,46 @@ function addNewQuiz() {
     const quiz_title = document.getElementById('quiz_title').value;
     const quiz_description = document.getElementById('quiz_description').value;
     const number_of_questions = document.getElementById('number_of_questions').value;
-    const question_type = document.getElementById('questionType').value;
+    const endless_checkbox = document.getElementById('endless_checkbox').value;
+    const question_type = document.getElementById('question_type').value;
 
     createQuizCard(quiz_title, quiz_description);
 
+    const quiz = new Quiz(quiz_title, quiz_description, number_of_questions, question_type);
 
     // Clearing the form
     document.getElementById('quiz_title').value = '';
     document.getElementById('quiz_description').value = '';
     document.getElementById('number_of_questions').value = '';
-    document.getElementById('questionType').value = '';
-
-    const quiz = {
-        quiz_title: quiz_title,
-        quiz_description: quiz_description,
-        number_of_questions: number_of_questions,
-        question_type: question_type
-    };
+    document.getElementById('endless_checkbox').value = '';
+    document.getElementById('question_type').value = '';
 }
 
 function takeQuiz() {
     console.log('takeQuiz: Redirecting to quiz page');
-    
+
     window.location.href = '../quiz/quiz.html'; // Replace with the desired URL
 }
 
-/* Adding event listeners */
 document.querySelectorAll('.take_quiz_button').forEach(button => {
     // console.log('Adding event listener to button', button);
     button.addEventListener('click', takeQuiz);
 });
 
+document.getElementById('endless_checkbox').addEventListener('change', () => {
+    if (document.getElementById('endless_checkbox').checked) {
+        document.getElementById('number_of_questions').disabled = true;
+        document.getElementById('number_of_questions').value = '';
+    } else {
+        document.getElementById('number_of_questions').disabled = false;
+        document.getElementById('number_of_questions').value = placeholder;
+    }
+});
+
+
 document.getElementById('create_quiz_form').addEventListener('submit', event => {
     event.preventDefault(); // Prevents the default behaviour of the form
-    
+
     addNewQuiz()
 });
 
@@ -118,9 +126,3 @@ checkLogin(`../login/login.html`);
 for (let i = 1; i < 6; i++) {
     createQuizCard(`Quiz ${i}`, `This is the description of quiz ${i}`);
 }
-
-import { Quiz } from "../../classes/Quiz.js"
-
-const quiz = new Quiz("Test Quiz", "This is a test quiz", 10);
-
-addQuiz(quiz);

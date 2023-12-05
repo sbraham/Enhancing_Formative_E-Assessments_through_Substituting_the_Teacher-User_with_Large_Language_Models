@@ -46,7 +46,8 @@
                         <form id="create_quiz_form">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="new_quiz_modal_label">Create New Quiz</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
 
                             <!-- Form for creating a new quiz -->
@@ -54,27 +55,44 @@
                                 <!-- Quiz Title -->
                                 <div class="mb-3">
                                     <label for="quiz_title" class="form-label">Title</label>
-                                    <input type="text" class="form-control" id="quiz_title" required placeholder="Enter quiz title">
+                                    <input type="text" class="form-control" id="quiz_title" required
+                                        placeholder="Enter quiz title">
                                 </div>
 
                                 <!-- Quiz Description -->
                                 <div class="mb-3">
                                     <label for="quiz_description" class="form-label">Description</label>
-                                    <textarea class="form-control" id="quiz_description" rows="3" placeholder="Enter quiz description"></textarea>
+                                    <textarea class="form-control" id="quiz_description" rows="3"
+                                        placeholder="Enter quiz description"></textarea>
                                 </div>
 
                                 <!-- Number of Questions -->
                                 <div class="mb-3">
                                     <label for="number_of_questions" class="form-label">Number of Questions</label>
-                                    <input type="number" class="form-control" id="number_of_questions" placeholder="Enter number of questions" min="0" max="20">
+                                    <div class="row align-items-center">
+                                        <div class="col-sm-9">
+                                            <input type="number" class="form-control" id="number_of_questions" required
+                                                placeholder="Enter number of questions" min="0" max="20">
+                                        </div>
+
+                                        <!-- Endless Checkbox -->
+                                        <div class="col-sm">
+                                            <input class="form-check-input" type="checkbox" value=""
+                                                id="endless_checkbox">
+                                        </div>
+                                        <div class="col-sm">
+                                            <label class="form-check-label" for="endless_checkbox">
+                                                Endless
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Question Type -->
                                 <div class="mb-3">
                                     <label for="question_type" class="form-label">Question Type</label>
-                                    <select class="form-select" id="questionType">
-                                        <option selected disabled>Select question type</option>
-                                        <option value="multiple_choice">Multiple Choice</option>
+                                    <select class="form-select" id="question_type" required>
+                                        <option value="multiple_choice" selected>Multiple Choice</option>
                                         <option value="true_or_false">True/False</option>
                                         <option value="short_answer">Short Answer</option>
                                     </select>
