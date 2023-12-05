@@ -5,50 +5,42 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.6.0/fi
 
 import { auth } from './config.js';
 
-export function getUserUid() {
-    console.log(`auth-helper: getUserUid`);
-
-    return new Promise((resolve, reject) => {
-        try {
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    console.log("auth-helper: getUserUid: User is logged in:", user.uid);
-                    resolve(user.uid);
-                } else {
-                    // No user is signed in.
-                    console.warn("auth-helper: getUserUid: User is not logged in");
-                    resolve(null);
-                }
-            });
-        } catch (error) {
-            console.error(`auth-helper: getUserUid:`, error);
-            reject(error);
-        }
-    });
-}
-
 /**
- * Checks if the user is logged in or not.
- * @returns {Promise<boolean>} - A promise that resolves to true if the user is logged in, or false if the user is not logged in.
+ * Checks if a user is logged in and returns their user ID.
+ * If the user is not logged in, it can redirect to a specified login page.
+ * @param {string} pathToLogin - The path to the login page (optional).
+ * @returns {Promise<string|null>} - A promise that resolves with the user ID if logged in, or null if not logged in.
  */
-export async function checkLogin(pathToLogin) {
-	console.log(`auth-helper: checkLogin`);
-
-	try {
-		onAuthStateChanged(auth, (user) => {
-			if (user) {
-				console.log("auth-helper: checkLogin: User is logged in:", user.uid);
-			} else {
-				// No user is signed in.
-				console.log("auth-helper: checkLogin: User is not logged in");
-
-				// Redirect to the login page
-				window.location.href = pathToLogin;
-			}
-		});
-	} catch (error) {
-		console.error(`auth-helper: checkLogin:`, error);
+export function checkLogin(pathToLogin = null) {
+	if (pathToLogin == null) {
+		console.log(`auth-helper: checkLogin`);
+	} else {
+		console.log(`auth-helper: checkLogin(${pathToLogin})`);
 	}
+
+	return new Promise((resolve, reject) => {
+		try {
+			onAuthStateChanged(auth, (user) => {
+				if (user) {
+					console.log("auth-helper: checkLogin: User is logged in:", user.uid);
+					resolve(user.uid);
+				} else {
+					// No user is signed in.
+					console.warn("auth-helper: checkLogin: User is not logged in");
+
+					if (pathToLogin != null) {
+						// Redirect to the login page
+						window.location.href = pathToLogin;
+					}
+
+					resolve(null);
+				}
+			});
+		} catch (error) {
+			console.error(`auth-helper: checkLogin:`, error);
+			reject(error);
+		}
+	});
 }
 
 /**

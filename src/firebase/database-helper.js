@@ -4,7 +4,7 @@ console.log('Loading: firebase/database-helper.js');
 import { addDoc, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
 
 import { auth, db } from './config.js';
-import { getUserUid } from './auth-helper.js';
+import { checkLogin } from './auth-helper.js';
 
 /**
  * Helper functions for Firebase authentication.
@@ -15,20 +15,21 @@ import { getUserUid } from './auth-helper.js';
  * Add a quiz to the database.
  * @param {JSON} quiz - The quiz to be added to the database.
  */
-export async function addQuiz(quiz) {
-    console.log(`database-helper: Adding a quiz to the database`);
-    console.debug(`database-helper: quiz:`, quiz);
+export async function addQuizToDB(quiz) {
+    console.log(`database-helper: addQuizToDB: Adding a quiz to the database`, quiz.title);
 
     try {
-        const user = await getUserUid();
+        const user = await checkLogin();
 
-        console.log(`database-helper: addQuiz: Adding quiz to database:`, quiz.title);
-        console.debug(`database-helper: addQuiz: User:`, user);
-        console.debug(`database-helper: addQuiz: Quiz:`, quiz);
+        console.debug(`database-helper: addQuizToDB: User:`, user);
+        console.debug(`database-helper: addQuizToDB: Quiz:`, quiz);
+
+        // Convert quiz to a plain JavaScript object
+        const plainQuiz = JSON.parse(JSON.stringify(quiz));
 
         // Add a new document with a generated id.
         const docRef = await addDoc(collection(db, user), {
-            quiz
+            quiz: plainQuiz
         });
         console.log(`database-helper: addQuiz: Document written with ID:`, docRef.id);
     } catch (error) {

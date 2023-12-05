@@ -14,7 +14,7 @@ export class Quiz {
         this.generateQuizTest();
     }
 
-    constructor(title, description, number_of_questions, multichoice = true, endless = false) {
+    constructor(title, description, number_of_questions, quiz_type = 'multiple_choice', endless = false) {
         this.id = 1;
 
         this.title = title;
@@ -31,8 +31,9 @@ export class Quiz {
         this.correct_count = 0;
         this.wrong_count = 0;
 
-        this.multichoice = endless;
-        this.endless = multichoice;
+        // quiz_type: multiple_choice, true_or_false, short_answer
+        this.quiz_type = quiz_type;
+        this.endless = endless;
 
         this.generateQuiz();
     }
