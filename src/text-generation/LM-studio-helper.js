@@ -30,7 +30,7 @@ console.log('Loading: LM-studio-helper.js');
  * @param {string} user_content - The content provided by the user.
  * @returns {Promise<string|null>} - A promise that resolves with the generated response or null if there was an error.
  */
-function generateResponse(user_content) {
+export function generateResponse(user_content) {
     console.log('LM-studio-helper.js: generateResponse');
 
     console.log('LM-studio-helper.js: generateResponse: $.ajax: awaiting...');
