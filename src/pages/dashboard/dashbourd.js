@@ -101,6 +101,7 @@ function takeQuiz(quiz) {
     const quiz_id = quiz.id;
 
     console.log('takeQuiz: Redirecting to quiz page:', quiz_id);
+    console.log('--------------------------------------------------');
 
     // Construct the URL with the quiz_id as a query parameter
     const url = `../quiz/quiz.html?quiz_id=${quiz_id}`;
@@ -126,27 +127,34 @@ document.getElementById('create_quiz_form').addEventListener('submit', event => 
 });
 
 /* Start of the script */
+console.log(`dashbourd: checking login`);
 await checkLogin(`../login/login.html`);
 
-// console.log('--------------------------------------------------');
+console.log('~~~');
 
-// /* make a bunch of random quizzes */
-// for (let i = 0; i < 2; i++) {
-//     const randomNumber = Math.floor(Math.random() * 100) + 1;
-//     const quiz = new Quiz(`Quiz ${randomNumber}`, `This is a quiz description`);
+const quizzes_data_test = await getUserQuizzes();
+if (quizzes_data_test.length == 0) {
 
-//     await addQuizToDB(quiz);
-// }
+    /* make a bunch of random quizzes */
+    for (let i = 0; i < 2; i++) {
+        const randomNumber = Math.floor(Math.random() * 100) + 1;
+        const quiz = new Quiz(`Quiz ${randomNumber}`, `This is a quiz description`);
 
-// console.log('--------------------------------------------------');
+        await addQuizToDB(quiz);
+    }
 
+}
+
+console.log('~~~');
+
+console.log(`dashbourd: fetching user quizzes`);
 const quizzes_data = await getUserQuizzes();
 const user_quizzes = [];
 
+console.log(`dashbourd: creating quiz cards`);
 quizzes_data.forEach(quiz_data => {
     const quiz = Quiz.fromObject(quiz_data.quiz);
     user_quizzes.push(quiz); // Add quiz to user quizzes
 
-    console.debug(`dashbourd: Quiz:`, quiz.id);
     createQuizCard(quiz);
 });

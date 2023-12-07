@@ -11,8 +11,11 @@ const quiz_id = new URLSearchParams(window.location.search).get('quiz_id');
 console.debug(`quiz: quiz_id:`, quiz_id);
 console.debug(`quiz: get quiz from database`);
 
+console.debug(`quiz: getQuizById: awaiting...`);
 const quiz_data = await getQuizById(quiz_id);
 const quiz = Quiz.fromObject(quiz_data.quiz);
+console.debug(`quiz: getQuizById: returned`);
+console.debug(`quiz: getQuizById: quiz:`, quiz);
 
 quiz.startQuiz();
 

@@ -15,12 +15,12 @@ const create_account_link = document.getElementById('create_account_link');
 login_form.addEventListener("submit", async (event) => {
     console.log(`login_form: login form submit`);
 
-    event.preventDefault(); // Prevents the page from reloading when the form is submitted.
+    event.preventDefault(); /* Prevents the default behaviour of the form */
     
     const email    = login_form.email.value;
     const password = login_form.password.value;
 
-    console.debug(`login_form: Email`, email);
+    // console.debug(`login_form: Email`, email);
 
     console.log(`login_form: loginUser: awaiting response...`);
     let responce = await loginUser(email, password);
@@ -31,6 +31,7 @@ login_form.addEventListener("submit", async (event) => {
         console.log(`login_form: User successfully logged in.`);
 
         alert("You have successfully logged in.\nClick OK to continue to the chatbot.");
+        console.log('--------------------------------------------------');
         window.location.href = "../dashboard/dashboard.html";
     } else {
         if (responce.code === 'auth/invalid-login-credentials' || responce.code === 'auth/user-not-found') {
@@ -53,5 +54,6 @@ login_form.addEventListener("submit", async (event) => {
 /* Adding event listener to handle the link within the iframe */
 create_account_link.addEventListener('click', function(event) {
     console.log(`create_account_link: create account link clicked`);
+    console.log('--------------------------------------------------');
     window.location.href = "../create_account/create_account.html";
 });

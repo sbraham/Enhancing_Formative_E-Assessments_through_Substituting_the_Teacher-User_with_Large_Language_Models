@@ -39,7 +39,9 @@ create_account_form.addEventListener("submit", async (event) => {
 
     if (responce === 'successful-sign-up') {
         console.log(`create_account_form: User successfully signed up.`);
+        
         alert("You have successfully signed up. Click OK to continue to the chatbot.");
+        console.log('--------------------------------------------------');
         window.location.href = "../dashboard/dashboard.html";
     }
     else {
@@ -62,5 +64,6 @@ create_account_form.addEventListener("submit", async (event) => {
 /* Adding event listener to handle the link within the iframe */
 login_link.addEventListener('click', function(event) {
     console.log(`login_link: login link clicked`);
+    console.log('--------------------------------------------------');
     window.location.href = "../login/login.html";
 });

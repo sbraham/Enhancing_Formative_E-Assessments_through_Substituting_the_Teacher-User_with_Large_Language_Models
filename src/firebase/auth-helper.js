@@ -29,7 +29,10 @@ export function checkLogin(pathToLogin = null) {
 					console.warn("auth-helper: checkLogin: User is not logged in");
 
 					if (pathToLogin != null) {
-						// Redirect to the login page
+						console.log(`auth-helper: checkLogin: Redirecting to login page: ${pathToLogin}`);
+						console.log('--------------------------------------------------');
+
+						/* Redirect to the login page */
 						window.location.href = pathToLogin;
 					}
 
@@ -44,12 +47,13 @@ export function checkLogin(pathToLogin = null) {
 }
 
 /**
- * Checks if the user is logged in or not.
- * @returns {Promise<boolean>} - A promise that resolves to true if the user is logged in, or false if the user is not logged in.
+ * Checks the login status on a given iframe and updates the UI accordingly.
+ * @param {HTMLIFrameElement} iframe - The iframe element to check the login status on.
+ * @returns {Promise<void>} - A promise that resolves once the login status has been checked and the UI has been updated.
  */
 export async function checkLoginOnFrame(iframe) {
 	console.log(`auth-helper: checkLoginOnFrame`);
-	console.debug(`auth-helper: iframe:`, iframe);
+	// console.debug(`auth-helper: iframe:`, iframe);
 
 	const account_button = document.getElementById('account');
 	const login_status = document.getElementById('login_status');
@@ -59,13 +63,13 @@ export async function checkLoginOnFrame(iframe) {
 			iframe.src = `../loading.html`
 
 			if (user) {
-				// User is signed in.
+				/* User is signed in. */
 				console.log("auth-helper: checkLoginOnFrame: User is logged in:", user.uid);
 
 				account_button.innerText = `Log Out`;
 				login_status.innerText = `🟩: Logged in as ${user.email}`;
 
-				// Redirect to the chat page
+				/* Redirect to the chat page */
 				iframe.src = `../pages/dashboard/dashboard.html`
 			} else {
 				// No user is signed in.
@@ -85,14 +89,13 @@ export async function checkLoginOnFrame(iframe) {
 
 /**
  * Creates a new user with the provided email and password.
- * 
  * @param {string} email - The email of the user.
  * @param {string} password - The password of the user.
  * @returns {Promise<string|Error>} - A promise that resolves to "successful-sign-up" if the user is created successfully, or an Error object if there is an error.
  */
 export async function createUser(email, password) {
 	console.log(`auth-helper: createUser`);
-	console.debug(`auth-helper: email:`, email);
+	// console.debug(`auth-helper: email:`, email);
 
 	try {
 		console.log(`auth-helper: createUserWithEmailAndPassword: awaiting response...`);
@@ -116,7 +119,7 @@ export async function createUser(email, password) {
  */
 export async function loginUser(email, password) {
 	console.log(`auth-helper: loginUser`);
-	console.debug(`auth-helper: email:`, email);
+	// console.debug(`auth-helper: email:`, email);
 
 	try {
 		console.log(`auth-helper: signInWithEmailAndPassword: awaiting response...`);
@@ -133,7 +136,10 @@ export async function loginUser(email, password) {
 }
 
 /**
- * Signs out the current user.
+ * Logs out the user.
+ * @async
+ * @function logout
+ * @returns {Promise<void>} A promise that resolves when the user is logged out.
  */
 export async function logout() {
 	console.log(`auth-helper: logout`);
