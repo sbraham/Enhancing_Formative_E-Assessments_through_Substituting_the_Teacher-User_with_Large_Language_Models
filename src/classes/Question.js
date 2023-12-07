@@ -6,7 +6,7 @@ export class Question {
         this.question = `What is the capital of the United States? Test:[${Math.random().toString().slice(2, 8)}]`;
         this.answer = `Washington D.C.`;
 
-        if (this.multichoice) {
+        if (this.question_type == 'multiple_choice') {
             this.options = [this.answer, `New York`, `Los Angeles`, `Chicago`];
         }
     }
@@ -25,7 +25,7 @@ export class Question {
      * @param {string} question_type - The type of question.
      * @param {string[]} options - The possible options for the question.
      */
-    constructor(question = null, answer = null, question_type = 'multiple_choice', options = []) {
+    constructor(question = '', answer = '', question_type = 'multiple_choice', options = []) {
         /** The text of the question.
          * @type {string} */
         this.question = question;
@@ -38,13 +38,9 @@ export class Question {
          * @type {string} */
         this.question_type = question_type;
 
-        if (this.question_type == 'multiple_choice') {
-            /** The possible options for the question.
-             * @type {string[]} */
-            this.options = options;
-        }
+        this.options = options;
 
-        if (this.question = null || this.answer == null) {
+        if (this.question.length == 0 || this.answer.length == 0) {
             this.generateQuesion();
         }
     }

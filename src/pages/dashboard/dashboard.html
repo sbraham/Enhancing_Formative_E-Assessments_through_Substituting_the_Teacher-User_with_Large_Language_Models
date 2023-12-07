@@ -33,84 +33,18 @@
     <!-- A three card wide row of cards, each on representing a quiz -->
     <!-- The last card is used by the user to create a new quiz      -->
     <div class="row" id="row_of_quizzes">
-        <div class="card-container col-sm-4">
-            <button class="btn btn-secondary new-card-button" data-bs-toggle="modal" data-bs-target="#new_quiz_modal">
-                <p style="font-size: 64px;">+</p>
-            </button>
+        <!-- Elements are added here in run time -->
+        <!-- See dashboard.js -->
 
-            <!-- Modal -->
-            <div class="modal fade" id="new_quiz_modal" tabindex="-1" aria-labelledby="new_quiz_modal_label"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable">
-                    <div class="modal-content">
-                        <form id="create_quiz_form">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="new_quiz_modal_label">Create New Quiz</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-
-                            <!-- Form for creating a new quiz -->
-                            <div class="modal-body">
-                                <!-- Quiz Title -->
-                                <div class="mb-3">
-                                    <label for="quiz_title" class="form-label">Title</label>
-                                    <input type="text" class="form-control" id="quiz_title" required
-                                        placeholder="Enter quiz title">
-                                </div>
-
-                                <!-- Quiz Description -->
-                                <div class="mb-3">
-                                    <label for="quiz_description" class="form-label">Description</label>
-                                    <textarea class="form-control" id="quiz_description" rows="3"
-                                        placeholder="Enter quiz description"></textarea>
-                                </div>
-
-                                <!-- Number of Questions -->
-                                <div class="mb-3">
-                                    <label for="number_of_questions" class="form-label">Number of Questions</label>
-                                    <div class="row align-items-center">
-                                        <div class="col-sm-9">
-                                            <input type="number" class="form-control" id="number_of_questions" required
-                                                placeholder="Enter number of questions" min="0" max="20">
-                                        </div>
-
-                                        <!-- Endless Checkbox -->
-                                        <div class="col-sm">
-                                            <input class="form-check-input" type="checkbox" value=""
-                                                id="endless_checkbox">
-                                        </div>
-                                        <div class="col-sm">
-                                            <label class="form-check-label" for="endless_checkbox">
-                                                Endless
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Question Type -->
-                                <div class="mb-3">
-                                    <label for="question_type" class="form-label">Question Type</label>
-                                    <select class="form-select" id="question_type" required>
-                                        <option value="multiple_choice" selected>Multiple Choice</option>
-                                        <option value="true_or_false">True/False</option>
-                                        <option value="short_answer">Short Answer</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <!-- Button to close the modal -->
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-                                <!-- Another button to take the quiz -->
-                                <button id="createQuizButton" type="submit" class="btn btn-success card-button">
-                                    <div class="cut-text-1">Create Quiz</div>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+        <!-- Loading spinner -->
+        <div id="loading_spinner">
+            <div class="d-flex justify-content-center align-items-center" style="height: 50vh;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
+            </div>
+            <div class="text-center">
+                <h1>Loading page...</h1>
             </div>
         </div>
     </div>

@@ -49,6 +49,8 @@ export class Quiz {
     }
 
     startQuiz() {
+        console.log(`Quiz: startQuiz()`);
+
         /* Increment attempts */
         this.attempt++;
 
@@ -66,6 +68,8 @@ export class Quiz {
     }
 
     #displayQuiz() {
+        console.log(`Quiz: displayQuiz()`);
+
         try {
             document.getElementById(`quiz_title`).innerHTML = this.title;
 
@@ -77,11 +81,15 @@ export class Quiz {
     }
 
     #getNextQuestion() {
+        console.log(`Quiz: getNextQuestion()`);
+
         this._current_question = this.questions[this._question_index];
         this._question_index++;
     }
 
     #displayQuestion() {
+        console.log(`Quiz: displayQuestion()`);
+
         try {
             document.getElementById(`question_index`).innerHTML = `Question ${this._question_index}`;
 
@@ -103,10 +111,32 @@ export class Quiz {
         }
     }
 
+    #addWheel() {
+        const submitButton = document.querySelector('#submit_button');
+        const loadingWheel = document.createElement('div');
+        loadingWheel.classList.add('spinner-border', 'spinner-border-sm', 'text-primary', 'mx-2');
+        loadingWheel.setAttribute('id', 'loading_wheel');
+        loadingWheel.setAttribute('role', 'status');
+        loadingWheel.innerHTML = '<span class="visually-hidden">Loading...</span>';
+
+        submitButton.insertAdjacentElement('beforebegin', loadingWheel);
+    }
+
+    #removeWheel() {
+        const loadingWheel = document.querySelector('#loading_wheel');
+        if (loadingWheel) {
+            loadingWheel.remove();
+        }
+    }
+
     submitAnswer(given_answer) {
+        console.log(`Quiz: submitAnswer(${given_answer})`);
+
+        this.#addWheel();
+
         let correct = false;
 
-        if (this.multichoice) {
+        if (this._current_question.question_type == 'multiple_choice') {
             if (this._current_question.options[given_answer] == this._current_question.answer) {
                 correct = true;
                 this._correct_count++;
@@ -125,13 +155,14 @@ export class Quiz {
 
         console.log(`this.given_answers:`, this._given_answers);
 
-        this.showResult();
+        this.showResult(given_answer, correct);
         this.#disableQuizForm();
 
         setTimeout(() => {
             /* Reset quiz */
-            this.#resetQuizForm()
+            this.#resetQuizForm();
             this.#enableQuizForm();
+            this.#removeWheel();
 
             /* Got to next question OR end quiz */
             if (this._question_index === this.questions.length) {
@@ -141,14 +172,38 @@ export class Quiz {
                 this.#displayQuestion();
                 return false;
             }
-        }, 1000);
+        }, 1500);
     }
 
-    showResult() {
-        console.warn(`Quiz.showResult() is not implemented!`);
+    showResult(given_answer, correct) {
+        console.log(`Quiz: showResult(${correct})`);
+
+        if (correct) {
+            /* If the answer is correct */
+            for (let i = 0; i < this._current_question.options.length; i++) {
+                if (this._current_question.options[i] == this._current_question.answer) {
+                    /* Highlight it with green */
+                    document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-success">${this._current_question.options[i]}</span>`;
+                }
+            }
+        } else {  
+            /* If the answer is wrong */      
+            for (let i = 0; i < this._current_question.options.length; i++) {
+                if (this._current_question.options[i] == this._current_question.answer) {
+                    /* Highlight the correct answer with green */
+                    document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-success">${this._current_question.options[i]}</span>`;
+                }
+                if (this._current_question.options[i] == this._current_question.options[given_answer]) {
+                    /* Highlight the given answer with red */
+                    document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-danger">${this._current_question.options[i]}</span>`;
+                }
+            }
+        }
     }
 
     #disableQuizForm() {
+        console.log(`Quiz: disableQuizForm()`);
+
         try {
             for (let i = 0; i < this._current_question.options.length; i++) {
                 document.getElementById(`option_${i}`).disabled = true;
@@ -159,6 +214,8 @@ export class Quiz {
     }
 
     #enableQuizForm() {
+        console.log(`Quiz: enableQuizForm()`);
+
         try {
             for (let i = 0; i < this._current_question.options.length; i++) {
                 document.getElementById(`option_${i}`).disabled = false;
@@ -169,12 +226,16 @@ export class Quiz {
     }
 
     #resetQuizForm() {
+        console.log(`Quiz: resetQuizForm()`);
+
         for (let i = 0; i < this._current_question.options.length; i++) {
             document.getElementById(`option_${i}`).checked = false;
         }
     }
 
     endQuiz() {
+        console.log(`Quiz: endQuiz()`);
+
         console.warn(`Quiz.endQuiz() is not implemented!`);
     }
 

@@ -34,15 +34,15 @@
                     <table class="table table-bordered">
                         <tr>
                             <td>Question</td>
-                            <td id="quiz_index_info">---</td>
+                            <td id="quiz_index_info" class="w-50"></td>
                         </tr>
                         <tr>
                             <td>Correct</td>
-                            <td id="correct_count_info">---</td>
+                            <td id="correct_count_info" class="w-50"></td>
                         </tr>
                         <tr>
                             <td>Incorrect</td>
-                            <td id="wrong_count_info">---</td>
+                            <td id="wrong_count_info" class="w-50"></td>
                         </tr>
                     </table>
                 </div>
@@ -53,33 +53,53 @@
                 <div class="card margin-top" style="height: auto;">
                     <form id="quiz_form">
                         <div class="card-header">
-                            <h1 id="quiz_title">Quiz Title</h1>
+                            <h1 id="quiz_title">
+                                <p class="placeholder-glow">
+                                    <span class="placeholder col-4"></span>
+                                </p>
+                            </h1>
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title" id="question_index">Question 1</h5>
-                            <p class="card-text" style="margin-bottom: 5px;" id="question">question_text</p>
+                            <h5 class="card-title" id="question_index">
+                                <p class="placeholder-glow">
+                                    <span class="placeholder col-10"></span>
+                                </p>
+                            </h5>
+                            <div class="card-text" style="margin-bottom: 5px;" id="question">
+                                <p class="placeholder-glow">
+                                    <span class="placeholder col-8"></span>
+                                </p>
+                            </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="multichoice" id="option_0" value="0" required>
-                                <label class="form-check-label" id="option_0_label" for="option_0">
-                                    option_0
+                                <label class="form-check-label w-100" id="option_0_label" for="option_0">
+                                    <p class="placeholder-glow">
+                                        <span class="placeholder col-7"></span>
+                                    </p>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="multichoice" id="option_1" value="1" required>
-                                <label class="form-check-label" id="option_1_label" for="option_1">
-                                    option_1
+                                <label class="form-check-label w-100" id="option_1_label" for="option_1">
+                                    <p class="placeholder-glow">
+                                        <span class="placeholder col-8"></span>
+                                    </p>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="multichoice" id="option_2" value="2" required>
-                                <label class="form-check-label" id="option_2_label" for="option_2">
-                                    option_2
+                                <label class="form-check-label w-100" id="option_2_label" for="option_2">
+                                    <p class="placeholder-glow">
+                                        <span class="placeholder col-5"></span>
+                                    </p>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="multichoice" id="option_3" value="3" required>
-                                <label class="form-check-label" id="option_3_label" for="option_3">
-                                    option_3
+                                <label class="form-check-label w-100" id="option_3_label" for="option_3">
+                                    <p class="placeholder-glow">
+                                        <span class="placeholder col-10"></span>
+                                    </p>
                                 </label>
                             </div>
                         </div>
@@ -91,7 +111,7 @@
                                 </button>
                             </div>
                             <div>
-                                <button type="submit" class="btn btn-success">
+                                <button type="submit" class="btn btn-success" id="submit_button">
                                     Submit
                                 </button>
                             </div>
