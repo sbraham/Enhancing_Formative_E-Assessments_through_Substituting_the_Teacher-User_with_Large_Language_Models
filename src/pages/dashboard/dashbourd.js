@@ -261,3 +261,5 @@ const loading_spinner = document.getElementById("loading_spinner");
 if (loading_spinner) {
     loading_spinner.remove();
 }
+
+import * as LLM from '../../text-generation/LM-studio-helper.js';
