@@ -2,20 +2,14 @@
 import { Question } from './Question.js';
 
 export class Quiz {
-    generateQuestionsTest() {
+    generateQuestions() {
         for (let i = 0; i < this.number_of_questions; i++) {
-            this.questions.push(new Question());
+            this.questions.push(new Question(this, this.question_type));
         }
     }
 
-    generateQuestions() {
-        console.warn(`Quiz.generateQuestions() is not implemented!`);
-
-        this.generateQuestionsTest();
-    }
-
-    constructor(title, description = null, number_of_questions = 10, 
-        quiz_type = 'multiple_choice', endless = false, questions = []) 
+    constructor(title, description = null, number_of_questions, quiz_type, 
+        endless = false, questions = []) 
     {
         this.id = null;
         this.attempt = 0;

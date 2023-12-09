@@ -1,3 +1,5 @@
+import { callLMStudio } from "../text-generation/LM-studio-helper";
+
 /**
  * Represents a question in a quiz.
  */
@@ -15,6 +17,18 @@ export class Question {
         console.warn(`Question.generateQuesion() is not implemented!`);
 
         this.generateQuesionTest();
+
+        const quiz_context = `${this.quiz.title} (${this.quiz.description})`;
+
+        if (this.question_type == 'true_or_false') {
+            this.options = ['True', 'False'];
+
+            this.question = `True or False: ...`;
+        }
+
+        if (this.question_type == 'multiple_choice') {
+            this.question = 
+        }
     }    
 
     /**
@@ -25,7 +39,7 @@ export class Question {
      * @param {string} question_type - The type of question.
      * @param {string[]} options - The possible options for the question.
      */
-    constructor(question = '', answer = '', question_type = 'multiple_choice', options = []) {
+    constructor(quiz, question_type, question = '', answer = '', options = []) {
         /** The text of the question.
          * @type {string} */
         this.question = question;
@@ -35,9 +49,12 @@ export class Question {
         this.answer = answer;
 
         /** The type of question.
+         * quiz_type: multiple_choice, true_or_false, short_answer
          * @type {string} */
         this.question_type = question_type;
 
+        /** The possible options for the question.
+         * @type {string[]} */
         this.options = options;
 
         if (this.question.length == 0 || this.answer.length == 0) {

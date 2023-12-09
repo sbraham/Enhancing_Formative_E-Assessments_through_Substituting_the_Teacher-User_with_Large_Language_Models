@@ -1,6 +1,6 @@
-import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
-
 console.log('Loading: LM-studio-helper.js');
+
+import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
 
 /* Example Response:
     "id": "chatcmpl-mdowwzprhxwl1kij74teg",
@@ -30,7 +30,7 @@ console.log('Loading: LM-studio-helper.js');
  * @param {string} user_content - The content provided by the user.
  * @returns {Promise<string|null>} - A promise that resolves with the generated response or null if there was an error.
  */
-export function generateResponse(user_content) {
+export async function callLMStudio(system_content, user_content) {
     console.log('LM-studio-helper.js: generateResponse');
 
     console.log('LM-studio-helper.js: generateResponse: $.ajax: awaiting...');
@@ -42,7 +42,7 @@ export function generateResponse(user_content) {
             contentType: 'application/json',
             data: JSON.stringify({
                 messages: [
-                    { role: 'system', content: 'Always answer in rhymes.' },
+                    { role: 'system', content: system_content},
                     { role: 'user', content: user_content }
                 ],
                 temperature: 0.7,
@@ -61,4 +61,87 @@ export function generateResponse(user_content) {
             }
         });
     });
+}
+
+export async function generateQuestion(context) {
+    console.log(`LM-studio-helper.js: generateQuestion`);
+
+    const system_content = `Generate a question relating to the following context`;
+    const user_content = `context: ${context}`;
+
+    const response = await callLMStudio(system_content, user_content);
+    console.log(response);
+}
+
+export async function generateStatement(true_or_false, context) {
+    console.log(`LM-studio-helper.js: generateStatement`);
+
+    const system_content = `Generate a ${true_or_false} question relating to the following topic`;
+    const user_content = `context: ${context}`;
+
+    const response = await callLMStudio(system_content, user_content);
+    console.log(response);
+}
+
+export async function generateAnswer(question) {
+    console.log(`LM-studio-helper.js: generateAnswer`);
+
+    const system_content = `Generate the true answer to the following question`;
+    const user_content = `question: ${context}`;
+
+    const response = await callLMStudio(system_content, user_content);
+    console.log(response);
+}
+
+export async function generateDistractors(question, context) {
+    console.log(`LM-studio-helper.js: generateDistractors`);
+
+    const system_content = `Generate a false answer to the following question, take into account the given context`;
+    const user_content = `question: ${question}, context: ${context}`;
+
+    const response = await callLMStudio(system_content, user_content);
+    console.log(response);
+}
+
+/* quiz_type: multiple_choice, true_or_false, short_answer */
+const quiz_context = `GCSE AQA History Norman England 1066-1100 (The Norman Rule in England)`;
+
+export async function SWQG(question_type, context, number_of_options = 4) {
+    console.log(`LM-studio-helper.js: SWQG`);
+
+    let question, answer, options;
+    
+    /* Step 1: Generate a question/statement */
+    if(question_type == 'multiple_choice' || question_type == 'short_answer') {
+        /* Step 1: Generate a question */
+        question = await generateQuestion(context);
+    } else {
+        /* Step 1: Generate a statement */
+        const true_or_false = Math.random() < 0.5 ? 'true' : 'false';
+
+        question = await generateStatement(true_or_false, context);
+    }
+
+    /* Step 2: Generate the answer */
+    if(question_type == 'multiple_choice' || question_type == 'short_answer') {
+        answer = await generateAnswer(question);
+    } else {
+        answer = true_or_false;
+    }
+
+    if(question_type == 'multiple_choice') {
+        /* Step 3: Generate the distractors */
+        options.push(answer)
+
+        for(let i = 0; i < number_of_options - 1; i++) {
+            const distractor = await generateDistractors(question, context);
+            options.push(distractor);
+        }
+    } else if(question_type == 'true_or_false') {
+        options = ['true', 'false'];
+    } else {
+        options = [];
+    }
+
+    return question, answer, options;
 }
