@@ -31,10 +31,10 @@ import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
  * @returns {Promise<string|null>} - A promise that resolves with the generated response or null if there was an error.
  */
 export async function callLMStudio(system_content, user_content) {
-    console.log('LM-studio-helper.js: generateResponse');
+    //console.log('LM-studio-helper.js: generateResponse');
 
     console.log('LM-studio-helper.js: generateResponse: $.ajax: awaiting...');
-    return new Promise((resolve, reject) => {
+    const response = await new Promise((resolve, reject) => {
         $.ajax({
             url: 'http://localhost:1234/v1/chat/completions',
             type: 'POST',
@@ -61,10 +61,12 @@ export async function callLMStudio(system_content, user_content) {
             }
         });
     });
+
+    return response;
 }
 
 export async function generateQuestion(context, existing_questions = []) {
-    console.log(`LM-studio-helper.js: generateQuestion`);
+    //console.log(`LM-studio-helper.js: generateQuestion`);
 
     const system_content = `Generate a question relating to the following context.`;
 
@@ -79,7 +81,7 @@ export async function generateQuestion(context, existing_questions = []) {
 }
 
 export async function generateStatement(true_or_false, context, existing_questions = []) {
-    console.log(`LM-studio-helper.js: generateStatement`);
+    //console.log(`LM-studio-helper.js: generateStatement`);
 
     const system_content = `Generate a ${true_or_false} statement relating to the following topic.`;
 
@@ -94,7 +96,7 @@ export async function generateStatement(true_or_false, context, existing_questio
 }
 
 export async function generateAnswer(question) {
-    console.log(`LM-studio-helper.js: generateAnswer`);
+    //console.log(`LM-studio-helper.js: generateAnswer`);
 
     const system_content = `Generate the answer to the following question. The answer must be true.`;
     const user_content = `question: ${context}`;
@@ -104,7 +106,7 @@ export async function generateAnswer(question) {
 }
 
 export async function generateDistractors(question, context) {
-    console.log(`LM-studio-helper.js: generateDistractors`);
+    //console.log(`LM-studio-helper.js: generateDistractors`);
 
     const system_content = `Generate a false answer to the following question, take into account the given context`;
     const user_content = `question: ${question}, context: ${context}`;
@@ -123,12 +125,15 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
 
     if (quiz_type == 'multiple_choice') {
         /* Step 1: Generate a question */
+        console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 1: Generate a question');
         question = await generateQuestion(context, existing_questions);
 
         /* Step 2: Generate the answer */
+        console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 2: Generate the answer');
         answer = await generateAnswer(question);
 
         /* Step 3: Generate the distractors */
+        console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 3: Generate the distractors');
         options.push(answer)
 
         for(let i = 0; i < number_of_options - 1; i++) {
@@ -139,6 +144,7 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
 
     if (quiz_type == 'true_or_false') {
         /* Step 1: Generate a statement */
+        console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 1: Generate a statement');
         const true_or_false = Math.random() < 0.5 ? 'true' : 'false';
 
         question = await generateStatement(true_or_false, context, existing_questions);
@@ -152,9 +158,11 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
 
     if (quiz_type == 'short_answer') {
         /* Step 1: Generate a question */
+        console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 1: Generate a question');
         question = await generateQuestion(context, existing_questions);
 
         /* Step 2: Generate the answer */
+        console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 2: Generate the answer');
         answer = await generateAnswer(question);
 
         /* Step 3: Generate the distractors */

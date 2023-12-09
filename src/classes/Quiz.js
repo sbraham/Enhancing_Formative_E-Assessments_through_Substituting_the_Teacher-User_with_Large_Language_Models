@@ -13,10 +13,10 @@ export class Quiz {
 
         // this.questions = [];
 
-        console.log(`Quiz (${this.id}): generateQuestions`);
+        console.log(`Quiz: generateQuestions`);
 
         if (!generate) {
-            console.warn(`Quiz (${this.id}): generateQuestions: generate is false, skipping...`);
+            console.warn(`Quiz: generateQuestions: generate is false, skipping...`);
 
             const placeholder_question = {
                 question: 'What is the capital of the United States?', 
@@ -29,20 +29,20 @@ export class Quiz {
             }
         }
 
-        const quiz_context = `${this.quiz.title} (${this.quiz.description})`;
+        const quiz_context = `${this.title} (${this.description})`;
 
         for (let i = 0; i < this.number_of_questions; i++) {
-            console.debug(`Quiz (${this.id}): generateQuestions: Question ${i}: generating...`);
+            console.debug(`Quiz: generateQuestions: Question ${i}: generating...`);
             this.questions.push(await StepwiseQuestionGeneration(this.quiz_type, quiz_context, 4, this.questions));
-            console.debug(`Quiz (${this.id}): generateQuestions: Question ${i}: ${this.questions[i]}`);
+            console.debug(`Quiz: generateQuestions: Question ${i}: `, this.questions[i]);
         }
     }
 
     constructor(title, description = null, number_of_questions, quiz_type, 
-        endless = false, questions = []) 
+        id = null, endless = false, questions = [], attempts = 0) 
     {
-        this.id = null;
-        this.attempt = 0;
+        this.id = id;
+        this.attempts = attempts;
         
         this.title = title;
         this.description = description;
@@ -69,14 +69,14 @@ export class Quiz {
         this._correct_count = 0;
         this._wrong_count = 0;
 
-        // console.log(`Quiz (${this.id}):Constructor:`, this);
+        // console.log(`Quiz:Constructor:`, this);
     }
 
     startQuiz() {
-        console.log(`Quiz (${this.id}):startQuiz()`);
+        console.log(`Quiz:startQuiz()`);
 
         /* Increment attempts */
-        this.attempt++;
+        this.attempts++;
 
         /* Reset question values */
         this._question_index = 0;
@@ -92,7 +92,7 @@ export class Quiz {
     }
 
     #displayQuiz() {
-        console.log(`Quiz (${this.id}):displayQuiz()`);
+        console.log(`Quiz:displayQuiz()`);
 
         try {
             document.getElementById(`quiz_title`).innerHTML = this.title;
@@ -105,14 +105,14 @@ export class Quiz {
     }
 
     #getNextQuestion() {
-        console.log(`Quiz (${this.id}):getNextQuestion()`);
+        console.log(`Quiz:getNextQuestion()`);
 
         this._current_question = this.questions[this._question_index];
         this._question_index++;
     }
 
     #displayQuestion() {
-        console.log(`Quiz (${this.id}):displayQuestion()`);
+        console.log(`Quiz:displayQuestion()`);
 
         try {
             document.getElementById(`question_index`).innerHTML = `Question ${this._question_index}`;
@@ -154,7 +154,7 @@ export class Quiz {
     }
 
     submitAnswer(given_answer) {
-        console.log(`Quiz (${this.id}):submitAnswer(${given_answer})`);
+        console.log(`Quiz:submitAnswer(${given_answer})`);
 
         this.#addWheel();
 
@@ -200,7 +200,7 @@ export class Quiz {
     }
 
     showResult(given_answer, correct) {
-        console.log(`Quiz (${this.id}):showResult(${correct})`);
+        console.log(`Quiz:showResult(${correct})`);
 
         if (correct) {
             /* If the answer is correct */
@@ -226,7 +226,7 @@ export class Quiz {
     }
 
     #disableQuizForm() {
-        console.log(`Quiz (${this.id}):disableQuizForm()`);
+        console.log(`Quiz:disableQuizForm()`);
 
         try {
             for (let i = 0; i < this._current_question.options.length; i++) {
@@ -238,7 +238,7 @@ export class Quiz {
     }
 
     #enableQuizForm() {
-        console.log(`Quiz (${this.id}):enableQuizForm()`);
+        console.log(`Quiz:enableQuizForm()`);
 
         try {
             for (let i = 0; i < this._current_question.options.length; i++) {
@@ -250,7 +250,7 @@ export class Quiz {
     }
 
     #resetQuizForm() {
-        console.log(`Quiz (${this.id}):resetQuizForm()`);
+        console.log(`Quiz:resetQuizForm()`);
 
         for (let i = 0; i < this._current_question.options.length; i++) {
             document.getElementById(`option_${i}`).checked = false;
@@ -258,7 +258,7 @@ export class Quiz {
     }
 
     endQuiz() {
-        console.log(`Quiz (${this.id}):endQuiz()`);
+        console.log(`Quiz:endQuiz()`);
 
         console.warn(`Quiz.endQuiz() is not implemented!`);
     }
@@ -273,11 +273,11 @@ export class Quiz {
             object.description,
             object.number_of_questions,
             object.quiz_type,
+            object.id,
             object.endless,
-            object.questions
+            object.questions,
+            object.attempts
         );
-        quiz.id = object.id;
-        quiz.attempt = object.attempt;
         return quiz;
     }
 }

@@ -225,22 +225,22 @@ function takeQuiz(quiz) {
 console.log(`dashbourd: checking login`);
 await checkLogin(`../login/login.html`);
 
-// console.log('~~~');
+const quizzes_data_test = await getUserQuizzes();
 
-// const quizzes_data_test = await getUserQuizzes();
-// if (quizzes_data_test.length == 0) {
+if (quizzes_data_test.length == 0) {
 
-//     /* make a bunch of random quizzes */
-//     for (let i = 0; i < 2; i++) {
-//         const randomNumber = Math.floor(Math.random() * 100) + 1;
-//         const quiz = new Quiz(`Quiz ${randomNumber}`, `This is a quiz description`);
+    console.log('~~~');
 
-//         await addQuizToDB(quiz);
-//     }
+    /* make a bunch of random quizzes */
+    for (let i = 0; i < 2; i++) {
+        const randomNumber = Math.floor(Math.random() * 100) + 1;
+        const quiz = new Quiz(`Quiz ${randomNumber}`, `This is a quiz description`, 5, 'multiple_choice');
 
-// }
+        // await addQuizToDB(quiz);
+    }
 
-// console.log('~~~');
+    console.log('~~~');
+}
 
 console.log(`dashbourd: fetching user quizzes`);
 const quizzes_data = await getUserQuizzes();
@@ -261,5 +261,3 @@ const loading_spinner = document.getElementById("loading_spinner");
 if (loading_spinner) {
     loading_spinner.remove();
 }
-
-import * as LLM from '../../text-generation/LM-studio-helper.js';
