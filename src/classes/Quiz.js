@@ -9,7 +9,11 @@ export class Quiz {
          *     answer: 'Washington D.C.', 
          *     options: [answer, 'New York', 'Los Angeles', 'Chicago']
          * };
-         */
+        */
+
+        // this.questions = [];
+
+        console.log(`Quiz (${this.id}): generateQuestions`);
 
         if (!generate) {
             console.warn(`Quiz (${this.id}): generateQuestions: generate is false, skipping...`);
@@ -24,10 +28,6 @@ export class Quiz {
                 this.questions.push(placeholder_question);
             }
         }
-
-        console.log(`Quiz (${this.id}): generateQuestions`);
-
-        // this.questions = [];
 
         const quiz_context = `${this.quiz.title} (${this.quiz.description})`;
 
