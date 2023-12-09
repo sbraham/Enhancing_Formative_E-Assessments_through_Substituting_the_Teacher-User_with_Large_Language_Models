@@ -63,20 +63,30 @@ export async function callLMStudio(system_content, user_content) {
     });
 }
 
-export async function generateQuestion(context) {
+export async function generateQuestion(context, existing_questions = []) {
     console.log(`LM-studio-helper.js: generateQuestion`);
 
-    const system_content = `Generate a question relating to the following context`;
+    const system_content = `Generate a question relating to the following context.`;
+
+    if (existing_questions.length > 0) {
+        const system_content = system_content + ` The question must be different to the following questions: ${existing_questions}`;
+    }
+
     const user_content = `context: ${context}`;
 
     const response = await callLMStudio(system_content, user_content);
     console.log(response);
 }
 
-export async function generateStatement(true_or_false, context) {
+export async function generateStatement(true_or_false, context, existing_questions = []) {
     console.log(`LM-studio-helper.js: generateStatement`);
 
-    const system_content = `Generate a ${true_or_false} question relating to the following topic`;
+    const system_content = `Generate a ${true_or_false} statement relating to the following topic.`;
+
+    if (existing_questions.length > 0) {
+        const system_content = system_content + ` The statement must be different to the following questions: ${existing_questions}`;
+    }
+
     const user_content = `context: ${context}`;
 
     const response = await callLMStudio(system_content, user_content);
@@ -86,7 +96,7 @@ export async function generateStatement(true_or_false, context) {
 export async function generateAnswer(question) {
     console.log(`LM-studio-helper.js: generateAnswer`);
 
-    const system_content = `Generate the true answer to the following question`;
+    const system_content = `Generate the answer to the following question. The answer must be true.`;
     const user_content = `question: ${context}`;
 
     const response = await callLMStudio(system_content, user_content);
@@ -106,30 +116,18 @@ export async function generateDistractors(question, context) {
 /* quiz_type: multiple_choice, true_or_false, short_answer */
 const quiz_context = `GCSE AQA History Norman England 1066-1100 (The Norman Rule in England)`;
 
-export async function SWQG(question_type, context, number_of_options = 4) {
-    console.log(`LM-studio-helper.js: SWQG`);
+export async function StepwiseQuestionGeneration(quiz_type, context, number_of_options = 4, existing_questions = []) {
+    console.log(`LM-studio-helper.js: StepwiseQuestionGeneration(${quiz_type})`);
 
     let question, answer, options;
-    
-    /* Step 1: Generate a question/statement */
-    if(question_type == 'multiple_choice' || question_type == 'short_answer') {
+
+    if (quiz_type == 'multiple_choice') {
         /* Step 1: Generate a question */
-        question = await generateQuestion(context);
-    } else {
-        /* Step 1: Generate a statement */
-        const true_or_false = Math.random() < 0.5 ? 'true' : 'false';
+        question = await generateQuestion(context, existing_questions);
 
-        question = await generateStatement(true_or_false, context);
-    }
-
-    /* Step 2: Generate the answer */
-    if(question_type == 'multiple_choice' || question_type == 'short_answer') {
+        /* Step 2: Generate the answer */
         answer = await generateAnswer(question);
-    } else {
-        answer = true_or_false;
-    }
 
-    if(question_type == 'multiple_choice') {
         /* Step 3: Generate the distractors */
         options.push(answer)
 
@@ -137,11 +135,31 @@ export async function SWQG(question_type, context, number_of_options = 4) {
             const distractor = await generateDistractors(question, context);
             options.push(distractor);
         }
-    } else if(question_type == 'true_or_false') {
+    }
+
+    if (quiz_type == 'true_or_false') {
+        /* Step 1: Generate a statement */
+        const true_or_false = Math.random() < 0.5 ? 'true' : 'false';
+
+        question = await generateStatement(true_or_false, context, existing_questions);
+
+        /* Step 2: Generate the answer */
+        answer = true_or_false;
+
+        /* Step 3: Generate the distractors */
         options = ['true', 'false'];
-    } else {
+    }
+
+    if (quiz_type == 'short_answer') {
+        /* Step 1: Generate a question */
+        question = await generateQuestion(context, existing_questions);
+
+        /* Step 2: Generate the answer */
+        answer = await generateAnswer(question);
+
+        /* Step 3: Generate the distractors */
         options = [];
     }
 
-    return question, answer, options;
+    return {question: question, answer: answer, options: options};
 }
