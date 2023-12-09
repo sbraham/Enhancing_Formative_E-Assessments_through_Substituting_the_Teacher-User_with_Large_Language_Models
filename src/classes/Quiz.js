@@ -2,7 +2,7 @@
 import { StepwiseQuestionGeneration } from '../text-generation/LM-studio-helper.js';
 
 export class Quiz {
-    async generateQuestions() {
+    async generateQuestions(generate = true) {
         /**
          * Question = {
          *     question: 'What is the capital of the United States?', 
@@ -10,6 +10,20 @@ export class Quiz {
          *     options: [answer, 'New York', 'Los Angeles', 'Chicago']
          * };
          */
+
+        if (!generate) {
+            console.warn(`Quiz (${this.id}): generateQuestions: generate is false, skipping...`);
+
+            const placeholder_question = {
+                question: 'What is the capital of the United States?', 
+                answer: 'Washington D.C.', 
+                options: [answer, 'New York', 'Los Angeles', 'Chicago']
+            };
+
+            for (let i = 0; i < this.number_of_questions; i++) {
+                this.questions.push(placeholder_question);
+            }
+        }
 
         console.log(`Quiz (${this.id}): generateQuestions`);
 
