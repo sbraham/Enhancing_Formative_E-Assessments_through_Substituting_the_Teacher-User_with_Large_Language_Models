@@ -30,98 +30,153 @@ import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
  * @param {string} user_content - The content provided by the user.
  * @returns {Promise<string|null>} - A promise that resolves with the generated response or null if there was an error.
  */
-export async function callLMStudio(system_content, user_content) {
+export async function callLMStudio(system_content, user_content, max_tokens = -1) {
     //console.log('LM-studio-helper.js: generateResponse');
 
     console.log('LM-studio-helper.js: generateResponse: $.ajax: awaiting...');
-    const response = await new Promise((resolve, reject) => {
-        $.ajax({
-            url: 'http://localhost:1234/v1/chat/completions',
-            type: 'POST',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                messages: [
-                    { role: 'system', content: system_content},
-                    { role: 'user', content: user_content }
-                ],
-                temperature: 0.7,
-                max_tokens: -1,
-                stream: false
-            }),
-            success: function(response) {
-                console.log('LM-studio-helper.js: generateResponse: $.ajax: returned successfully');
-                console.debug('LM-studio-helper.js: generateResponse:', response);
-                resolve(response.choices[0].message.content);
-            },
-            error: function(error) {
-                console.log('LM-studio-helper.js: generateResponse: $.ajax: returned eroneously');
-                console.error('LM-studio-helper.js: ERROR:', error);
-                reject(null);
-            }
+    try {
+        let response = await new Promise((resolve, reject) => {
+            $.ajax({
+                url: 'http://localhost:1234/v1/chat/completions',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    messages: [
+                        { role: 'system', content: system_content},
+                        { role: 'user', content: user_content }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: max_tokens,
+                    stream: false
+                }),
+                success: function(response) {
+                    console.log('LM-studio-helper.js: generateResponse: $.ajax: returned successfully');
+                    console.debug('LM-studio-helper.js: generateResponse:', response);
+                    resolve(response.choices[0].message.content);
+                },
+                error: function(error) {
+                    console.log('LM-studio-helper.js: generateResponse: $.ajax: returned erroneously');
+                    console.error('LM-studio-helper.js: ERROR:', error);
+                    reject('');
+                }
+            });
         });
-    });
 
-    return response;
+        return response;
+    } catch (error) {
+        console.error('LM-studio-helper.js: ERROR:', error);
+        return '';
+    }
 }
 
+/**
+ * Generates a question based on the given context.
+ * 
+ * @param {string} context - The context for generating the question.
+ * @param {Array<string>} existing_questions - An optional array of existing questions to avoid generating duplicates.
+ * @returns {Promise<string>} - A promise that resolves to the generated question.
+ */
 export async function generateQuestion(context, existing_questions = []) {
     //console.log(`LM-studio-helper.js: generateQuestion`);
 
-    const system_content = `Generate a question relating to the following context.`;
+    let system_content = `Generate a question relating to the following context.`;
 
     if (existing_questions.length > 0) {
-        const system_content = system_content + ` The question must be different to the following questions: ${existing_questions}`;
+        system_content += ` The question must be different from the following questions: ${existing_questions}`;
     }
 
-    const user_content = `context: ${context}`;
+    let user_content = `context: ${context}`;
 
-    const response = await callLMStudio(system_content, user_content);
-    console.log(response);
+    try {
+        let response = await callLMStudio(system_content, user_content, 100);
+        return response;
+    } catch (error) {
+        console.error('LM-studio-helper.js: ERROR:', error);
+        return '';
+    }
 }
 
+/**
+ * Generates a statement based on the given parameters.
+ * 
+ * @param {boolean} true_or_false - Indicates whether the statement should be true or false.
+ * @param {string} context - The context for generating the statement.
+ * @param {Array<string>} existing_questions - An optional array of existing questions to avoid generating similar statements.
+ * @returns {Promise<string>} - A promise that resolves to the generated statement.
+ */
 export async function generateStatement(true_or_false, context, existing_questions = []) {
     //console.log(`LM-studio-helper.js: generateStatement`);
 
-    const system_content = `Generate a ${true_or_false} statement relating to the following topic.`;
+    let system_content = `Generate a ${true_or_false} statement relating to the following topic.`;
 
     if (existing_questions.length > 0) {
-        const system_content = system_content + ` The statement must be different to the following questions: ${existing_questions}`;
+        system_content += ` The statement must be different to the following questions: ${existing_questions}`;
     }
 
-    const user_content = `context: ${context}`;
+    let user_content = `context: ${context}`;
 
-    const response = await callLMStudio(system_content, user_content);
-    console.log(response);
+    try {
+        let response = await callLMStudio(system_content, user_content, 100);
+        return response;
+    } catch (error) {
+        console.error('LM-studio-helper.js: ERROR:', error);
+        return '';
+    }
 }
 
+/**
+ * Generates an answer to the given question using LM Studio.
+ * 
+ * @param {string} question - The question to generate an answer for.
+ * @returns {Promise<string>} - The generated answer.
+ */
 export async function generateAnswer(question) {
     //console.log(`LM-studio-helper.js: generateAnswer`);
 
-    const system_content = `Generate the answer to the following question. The answer must be true.`;
-    const user_content = `question: ${context}`;
+    let system_content = `Generate the answer to the following question. The answer must be true.`;
+    let user_content = `question: ${question}`;
 
-    const response = await callLMStudio(system_content, user_content);
-    console.log(response);
+    try {
+        let response = await callLMStudio(system_content, user_content, 100);
+        return response;
+    } catch (error) {
+        console.error('LM-studio-helper.js: ERROR:', error);
+        return '';
+    }
 }
 
+/**
+ * Generates distractors for a given question and context.
+ * @param {string} question - The question for which distractors need to be generated.
+ * @param {string} context - The context in which the question is asked.
+ * @returns {Promise<string>} - A promise that resolves to the generated distractors.
+ */
 export async function generateDistractors(question, context) {
     //console.log(`LM-studio-helper.js: generateDistractors`);
 
-    const system_content = `Generate a false answer to the following question, take into account the given context`;
-    const user_content = `question: ${question}, context: ${context}`;
+    let system_content = `Generate a false answer to the following question, take into account the given context`;
+    let user_content = `question: ${question}, context: ${context}`;
 
-    const response = await callLMStudio(system_content, user_content);
-    console.log(response);
+    try {
+        let response = await callLMStudio(system_content, user_content, 100);
+        return response;
+    } catch (error) {
+        console.error('LM-studio-helper.js: ERROR:', error);
+        return '';
+    }
 }
 
 /* quiz_type: multiple_choice, true_or_false, short_answer */
-const quiz_context = `GCSE AQA History Norman England 1066-1100 (The Norman Rule in England)`;
 
 export async function StepwiseQuestionGeneration(quiz_type, context, number_of_options = 4, existing_questions = []) {
     console.log(`LM-studio-helper.js: StepwiseQuestionGeneration(${quiz_type})`);
 
-    let question, answer, options;
+    // Start the timer
+    const startTime = performance.now();
+
+    let question, answer = ''; 
+    let options = [];
 
     if (quiz_type == 'multiple_choice') {
         /* Step 1: Generate a question */
@@ -137,7 +192,7 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
         options.push(answer)
 
         for(let i = 0; i < number_of_options - 1; i++) {
-            const distractor = await generateDistractors(question, context);
+            let distractor = await generateDistractors(question, context);
             options.push(distractor);
         }
     }
@@ -145,7 +200,7 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
     if (quiz_type == 'true_or_false') {
         /* Step 1: Generate a statement */
         console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 1: Generate a statement');
-        const true_or_false = Math.random() < 0.5 ? 'true' : 'false';
+        let true_or_false = Math.random() < 0.5 ? 'true' : 'false';
 
         question = await generateStatement(true_or_false, context, existing_questions);
 
@@ -168,6 +223,11 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
         /* Step 3: Generate the distractors */
         options = [];
     }
+
+    // Calculate the execution time
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    console.debug(`LM-studio-helper.js: StepwiseQuestionGeneration: Execution time: ${executionTime} milliseconds`);
 
     return {question: question, answer: answer, options: options};
 }

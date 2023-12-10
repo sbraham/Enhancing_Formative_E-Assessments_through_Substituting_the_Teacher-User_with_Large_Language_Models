@@ -31,10 +31,14 @@ export class Quiz {
 
         const quiz_context = `${this.title} (${this.description})`;
 
+        console.debug(`Quiz: generateQuestions: quiz_context: ${quiz_context}`);
+
         for (let i = 0; i < this.number_of_questions; i++) {
             console.debug(`Quiz: generateQuestions: Question ${i}: generating...`);
-            this.questions.push(await StepwiseQuestionGeneration(this.quiz_type, quiz_context, 4, this.questions));
-            console.debug(`Quiz: generateQuestions: Question ${i}: `, this.questions[i]);
+            let question = await StepwiseQuestionGeneration(this.quiz_type, quiz_context, 4, this.questions);
+            console.debug(`Quiz: generateQuestions: Question ${i}: `, question);
+
+            this.questions.push(question);
         }
     }
 
@@ -53,12 +57,6 @@ export class Quiz {
         this.endless = endless;
 
         this.questions = questions;
-
-        if (questions.length == 0) {
-            this.generateQuestions();
-        } else {
-            this.number_of_questions = questions.length;
-        }
 
         // Varaiables for running the quiz
         this._running_questions = [];

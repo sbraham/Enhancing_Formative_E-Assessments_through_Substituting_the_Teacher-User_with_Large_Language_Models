@@ -233,8 +233,8 @@ if (quizzes_data_test.length == 0) {
 
     /* make a bunch of random quizzes */
     for (let i = 0; i < 2; i++) {
-        const randomNumber = Math.floor(Math.random() * 100) + 1;
-        const quiz = new Quiz(`Quiz ${randomNumber}`, `This is a quiz description`, 5, 'multiple_choice');
+        const quiz = new Quiz(`GCSE AQA History Norman England 1066-1100`, `The Norman Rule in England`, 5, 'multiple_choice');
+        await quiz.generateQuestions();
 
         // await addQuizToDB(quiz);
     }
