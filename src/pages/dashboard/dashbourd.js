@@ -233,13 +233,13 @@ if (quizzes_data_test.length == 0) {
 
     console.log('~~~');
 
-    /* make a bunch of random quizzes */
-    for (let i = 0; i < 2; i++) {
-        const quiz = new Quiz(`GCSE AQA History Norman England 1066-1100`, `The Norman Rule in England`, 5, 'multiple_choice');
-        await quiz.generateQuestions();
+    const quiz1 = new Quiz(`GCSE AQA History Norman England 1066-1100`, `The Norman Rule in England`, 5, 'short_answer');
+    await quiz1.generateQuestions();
 
-        // await addQuizToDB(quiz);
-    }
+    const quiz2 = new Quiz(`Tayler Swift`, `Lyrics`, 5, 'short_answer');
+    await quiz2.generateQuestions();
+
+    // await addQuizToDB(quiz);
 
     console.log('~~~');
 }

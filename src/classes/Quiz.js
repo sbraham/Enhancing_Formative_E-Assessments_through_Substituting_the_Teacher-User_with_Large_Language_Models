@@ -34,7 +34,10 @@ export class Quiz {
         for (let i = 0; i < this.number_of_questions; i++) {
             console.log(`Quiz: generateQuestions: Question ${i}: generating...`);
             let question = await StepwiseQuestionGeneration(this.quiz_type, quiz_context, 4, this.questions);
-            console.log(`Quiz: generateQuestions: Question ${i}: `, question);
+            console.log(`Quiz: generateQuestions: Question ${i}:`);
+            console.log(`question:`, question.question);
+            console.log(`answer:`, question.answer);
+            console.log(`options:`, question.options);
 
             this.questions.push(question);
         }
