@@ -46,19 +46,19 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
                 contentType: 'application/json',
                 data: JSON.stringify({
                     messages: [
-                        { role: 'system', content: system_content},
+                        { role: 'system', content: system_content },
                         { role: 'user', content: user_content }
                     ],
                     temperature: creativity,
                     max_tokens: max_tokens,
                     stream: false
                 }),
-                success: function(response) {
+                success: function (response) {
                     console.log('LM-studio-helper.js: generateResponse: $.ajax: returned successfully');
                     console.debug('LM-studio-helper.js: generateResponse:', response);
                     resolve(response.choices[0].message.content);
                 },
-                error: function(error) {
+                error: function (error) {
                     console.log('LM-studio-helper.js: generateResponse: $.ajax: returned erroneously');
                     console.error('LM-studio-helper.js: ERROR:', error);
                     reject('');
@@ -209,11 +209,11 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
     // Start the timer
     const start_time = performance.now();
 
-    let question, answer = ''; 
+    let question, answer = '';
     let options = [];
 
     if (quiz_type == 'multiple_choice') {
-        
+
         console.error(`LM-studio-helper.js: StepwiseQuestionGeneration: multiple_choice is not yet implemented`);
         return '';
 
@@ -229,7 +229,7 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
         console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 3: Generate the distractors');
         options.push(answer)
 
-        for(let i = 0; i < number_of_options - 1; i++) {
+        for (let i = 0; i < number_of_options - 1; i++) {
             let distractor = await generateDistractors(question, context, options);
             options.push(distractor);
         }
@@ -274,5 +274,5 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
     const milliseconds = Math.floor((execution_time % 1000));
     console.log(`LM-studio-helper.js: StepwiseQuestionGeneration: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
 
-    return {question: question, answer: answer, options: options};
+    return { question: question, answer: answer, options: options };
 }
