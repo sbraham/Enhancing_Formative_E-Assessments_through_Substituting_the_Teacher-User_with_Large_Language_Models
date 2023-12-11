@@ -80,13 +80,13 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
 export async function generateQuestion(context, existing_questions = []) {
     //console.log(`LM-studio-helper.js: generateQuestion`);
 
-    let system_content = `Generate a question relating to the following context.`;
+    let system_content = `Generate a short quiz question relating to the following context. The question must have one simple answer. Only write the question, do not state the answer.`;
 
     if (existing_questions.length > 0) {
         system_content += ` The question must be different from the following questions: ${existing_questions}`;
     }
 
-    let user_content = `context: ${context}`;
+    let user_content = `context: ${context}.`;
 
     try {
         let response = await callLMStudio(system_content, user_content, 100);
@@ -108,7 +108,10 @@ export async function generateQuestion(context, existing_questions = []) {
 export async function generateStatement(true_or_false, context, existing_questions = []) {
     //console.log(`LM-studio-helper.js: generateStatement`);
 
-    let system_content = `Generate a ${true_or_false} statement relating to the following topic.`;
+    console.error(`LM-studio-helper.js: generateStatement: Statement generation is not yet implemented.`);
+    return '';
+
+    let system_content = `Generate a short ${true_or_false} statement relating to the following topic.`;
 
     if (existing_questions.length > 0) {
         system_content += ` The statement must be different to the following questions: ${existing_questions}`;
@@ -134,7 +137,7 @@ export async function generateStatement(true_or_false, context, existing_questio
 export async function generateAnswer(question) {
     //console.log(`LM-studio-helper.js: generateAnswer`);
 
-    let system_content = `Generate the answer to the following question. The answer must be true.`;
+    let system_content = `Generate the answer to the following question. The answer must be true. Only write the answer in the manner "Answer: <answer>"`;
     let user_content = `question: ${question}`;
 
     try {
@@ -155,7 +158,7 @@ export async function generateAnswer(question) {
 export async function generateDistractors(question, context) {
     //console.log(`LM-studio-helper.js: generateDistractors`);
 
-    let system_content = `Generate a false answer to the following question, take into account the given context`;
+    let system_content = `Generate a false answer to the following question, take into account the given context. Only write the answer in the manner "Answer: <answer>"`;
     let user_content = `question: ${question}, context: ${context}`;
 
     try {
@@ -170,10 +173,10 @@ export async function generateDistractors(question, context) {
 /* quiz_type: multiple_choice, true_or_false, short_answer */
 
 export async function StepwiseQuestionGeneration(quiz_type, context, number_of_options = 4, existing_questions = []) {
-    console.log(`LM-studio-helper.js: StepwiseQuestionGeneration(${quiz_type})`);
+    console.debug(`LM-studio-helper.js: StepwiseQuestionGeneration(${quiz_type})`);
 
     // Start the timer
-    const startTime = performance.now();
+    const start_time = performance.now();
 
     let question, answer = ''; 
     let options = [];
@@ -225,9 +228,12 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
     }
 
     // Calculate the execution time
-    const endTime = performance.now();
-    const executionTime = endTime - startTime;
-    console.debug(`LM-studio-helper.js: StepwiseQuestionGeneration: Execution time: ${executionTime} milliseconds`);
+    const end_time = performance.now();
+    const execution_time = end_time - start_time;
+    const minutes = Math.floor(execution_time / 60000);
+    const seconds = Math.floor((execution_time % 60000) / 1000);
+    const milliseconds = Math.floor((execution_time % 1000));
+    console.log(`LM-studio-helper.js: StepwiseQuestionGeneration: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
 
     return {question: question, answer: answer, options: options};
 }

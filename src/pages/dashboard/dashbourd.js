@@ -227,6 +227,8 @@ await checkLogin(`../login/login.html`);
 
 const quizzes_data_test = await getUserQuizzes();
 
+console.log(`dashbourd: quizzes_data_test:`, quizzes_data_test);
+
 if (quizzes_data_test.length == 0) {
 
     console.log('~~~');

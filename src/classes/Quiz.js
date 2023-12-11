@@ -16,7 +16,7 @@ export class Quiz {
         console.log(`Quiz: generateQuestions`);
 
         if (!generate) {
-            console.warn(`Quiz: generateQuestions: generate is false, skipping...`);
+            console.warn(`Quiz: generateQuestions: using placeholder questions`);
 
             const placeholder_question = {
                 question: 'What is the capital of the United States?', 
@@ -31,12 +31,10 @@ export class Quiz {
 
         const quiz_context = `${this.title} (${this.description})`;
 
-        console.debug(`Quiz: generateQuestions: quiz_context: ${quiz_context}`);
-
         for (let i = 0; i < this.number_of_questions; i++) {
-            console.debug(`Quiz: generateQuestions: Question ${i}: generating...`);
+            console.log(`Quiz: generateQuestions: Question ${i}: generating...`);
             let question = await StepwiseQuestionGeneration(this.quiz_type, quiz_context, 4, this.questions);
-            console.debug(`Quiz: generateQuestions: Question ${i}: `, question);
+            console.log(`Quiz: generateQuestions: Question ${i}: `, question);
 
             this.questions.push(question);
         }

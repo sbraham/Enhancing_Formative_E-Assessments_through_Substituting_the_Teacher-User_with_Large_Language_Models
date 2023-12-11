@@ -18,6 +18,8 @@ export async function getUserQuizzes() {
         const user = await checkLogin();
         let quizzes_data = [];
 
+        console.debug(`database-helper: getUserQuizzes: User:`, user);
+
         /* Get all the quizzes associated with the user */
         const querySnapshot = await getDocs(query(
             collection(db, user)
