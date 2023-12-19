@@ -233,13 +233,24 @@ if (quizzes_data_test.length == 0) {
 
     console.log('~~~');
 
+    // Two Short Answer Quizzes
     const quiz1 = new Quiz(`GCSE AQA History Norman England 1066-1100`, `The Norman Rule in England`, 5, 'short_answer');
     await quiz1.generateQuestions();
 
-    const quiz2 = new Quiz(`Tayler Swift`, `Lyrics`, 5, 'short_answer');
+    const quiz2 = new Quiz(`A-Level OCR Physics Mechanics`, `The Newtonian World`, 5, 'short_answer');
     await quiz2.generateQuestions();
 
-    // await addQuizToDB(quiz);
+    // Two Multiple Choice Quizzes
+    const quiz3 = new Quiz(`Multi-choice Quiz 1`, `Something about america`, 5, 'multiple_choice');
+    await quiz3.generateQuestions();
+
+    const quiz4 = new Quiz(`Multi-choice Quiz 2`, `Something about america`, 5, 'multiple_choice');
+    await quiz4.generateQuestions();
+
+    await addQuizToDB(quiz1);   
+    await addQuizToDB(quiz2);
+    await addQuizToDB(quiz3);   
+    await addQuizToDB(quiz4);
 
     console.log('~~~');
 }

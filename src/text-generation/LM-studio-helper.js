@@ -3,25 +3,26 @@ console.log('Loading: LM-studio-helper.js');
 import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
 
 /* Example Response:
-    "id": "chatcmpl-mdowwzprhxwl1kij74teg",
-    "object": "chat.completion",
-    "created": 1701974950,
-    "model": "C:\\Users\\Samuel Braham\\.cache\\lm-studio\\models\\TheBloke\\Llama-2-7B-Chat-GGUF\\llama-2-7b-chat.Q5_K_M.gguf",
-    "choices": [
-        {
-        "index": 0,
-        "message": {
-            "role": "assistant",
-            "content": "  Sure, I'd be happy to always answer in rhymes! Here's my response:\nHello, world, it's great to be here,\nWith a smile on my face and a rhyme in my ear.\nI hope you're feeling cheerful and bright,\nAnd that our conversation will be a delightful sight."
-        },
-        "finish_reason": "stop"
+    {
+        "id": "chatcmpl-mdowwzprhxwl1kij74teg",
+        "object": "chat.completion",
+        "created": 1701974950,
+        "model": "C:\\Users\\Samuel Braham\\.cache\\lm-studio\\models\\TheBloke\\Llama-2-7B-Chat-GGUF\\llama-2-7b-chat.Q5_K_M.gguf",
+        "choices": [
+            {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "  Sure, I'd be happy to always answer in rhymes! Here's my response:\nHello, world, it's great to be here,\nWith a smile on my face and a rhyme in my ear.\nI hope you're feeling cheerful and bright,\nAnd that our conversation will be a delightful sight."
+            },
+            "finish_reason": "stop"
+            }
+        ],
+        "usage": {
+            "prompt_tokens": 0,
+            "completion_tokens": 74,
+            "total_tokens": 74
         }
-    ],
-    "usage": {
-        "prompt_tokens": 0,
-        "completion_tokens": 74,
-        "total_tokens": 74
-    }
     }
 */
 
@@ -33,10 +34,13 @@ import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
  * @param {number} creativity - The creativity level for generating the response (default: 0.7).
  * @returns {Promise<string|null>} - A promise that resolves with the generated response or null if there was an error.
  */
-export async function callLMStudio(system_content, user_content, max_tokens = -1, creativity = 0.7) {
-    //console.log('LM-studio-helper.js: generateResponse');
+export async function callLMStudio(system_content, user_content, max_tokens = -1, creativity = 0.5) {
+    //console.log('LM-studio-helper.js: callLMStudio');
 
-    console.log('LM-studio-helper.js: generateResponse: $.ajax: awaiting...');
+    // Start the timer
+    const start_time = performance.now();
+
+    console.log('LM-studio-helper.js: callLMStudio: $.ajax: awaiting...');
     try {
         let response = await new Promise((resolve, reject) => {
             $.ajax({
@@ -54,17 +58,26 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
                     stream: false
                 }),
                 success: function (response) {
-                    console.log('LM-studio-helper.js: generateResponse: $.ajax: returned successfully');
-                    console.debug('LM-studio-helper.js: generateResponse:', response);
+                    //console.log('LM-studio-helper.js: callLMStudio: $.ajax: returned successfully');
+                    //console.debug('LM-studio-helper.js: callLMStudio:', response.choices[0].message.content);
                     resolve(response.choices[0].message.content);
                 },
                 error: function (error) {
-                    console.log('LM-studio-helper.js: generateResponse: $.ajax: returned erroneously');
+                    //console.log('LM-studio-helper.js: callLMStudio: $.ajax: returned erroneously');
                     console.error('LM-studio-helper.js: ERROR:', error);
                     reject('');
                 }
             });
         });
+
+        // Calculate the execution time
+        const end_time = performance.now();
+        const execution_time = end_time - start_time;
+        const minutes = Math.floor(execution_time / 60000);
+        const seconds = Math.floor((execution_time % 60000) / 1000);
+        const milliseconds = Math.floor((execution_time % 1000));
+        
+        console.log(`LM-studio-helper.js: callLMStudio: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
 
         return response;
     } catch (error) {
@@ -89,10 +102,10 @@ export async function generateShortQuestion(context, existing_questions = []) {
     system_content += 'Generate the output in the format "Question:<question>".';
 
     if (existing_questions.length > 0) {
-        system_content += `The question must significantly different from the following questions: `;
+        system_content += 'Outputs must significantly different from the following questions: ';
 
         for (let i = 0; i < existing_questions.length; i++) {
-            system_content += `${existing_questions[i].question}`;
+            system_content += `"${existing_questions[i].question}"`;
 
             if (i < existing_questions.length - 1) {
                 system_content += ', ';
@@ -203,8 +216,8 @@ export async function generateDistractors(context, question, distractors = []) {
  * @param {Array} existing_questions - An array of existing questions to avoid duplication (default: []).
  * @returns {Promise<Object>} - A promise that resolves to an object containing the generated question, answer, and options.
  */
-export async function StepwiseQuestionGeneration(quiz_type, context, number_of_options = 4, existing_questions = []) {
-    console.debug(`LM-studio-helper.js: StepwiseQuestionGeneration(${quiz_type})`);
+export async function stepwiseQuestionGeneration(quiz_type, context, number_of_options = 4, existing_questions = []) {
+    //console.debug(`LM-studio-helper.js: StepwiseQuestionGeneration(${quiz_type})`);
 
     // Start the timer
     const start_time = performance.now();
@@ -255,11 +268,11 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
 
     if (quiz_type == 'short_answer') {
         /* Step 1: Generate a question */
-        console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 1: Generate a question');
+        //console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 1: Generate a question');
         question = await generateShortQuestion(context, existing_questions);
 
         /* Step 2: Generate the answer */
-        console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 2: Generate the answer');
+        //console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 2: Generate the answer');
         answer = await generateAnswer(question);
 
         /* Step 3: Generate the distractors */
@@ -272,7 +285,36 @@ export async function StepwiseQuestionGeneration(quiz_type, context, number_of_o
     const minutes = Math.floor(execution_time / 60000);
     const seconds = Math.floor((execution_time % 60000) / 1000);
     const milliseconds = Math.floor((execution_time % 1000));
+    
     console.log(`LM-studio-helper.js: StepwiseQuestionGeneration: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
 
     return { question: question, answer: answer, options: options };
+}
+
+export async function checkAnswer(question, expected_answer, given_answer) {
+    //console.log(`LM-studio-helper.js: checkAnswer`);
+
+    let system_content = `Outputting YES or NO. Consider the question and expected_answer. Is the given_answer close to the expected_answer?`;
+    let user_content = `question: ${question}, expected_answer: ${expected_answer}, given_answer: ${given_answer}. `;
+
+    try {
+        let valid_answers = ['YES', 'NO'];
+        let response = '';
+
+        while (!valid_answers.includes(response.trim())) {
+            response = await callLMStudio(system_content, user_content, 2);
+        }
+
+        if (response.trim() === 'YES') {
+            return true;
+        } else if (response.trim() === 'NO') {
+            return false;
+        } else {
+            console.error(`LM-studio-helper.js: checkAnswer: Invalid response: ${response}`);
+            return false;
+        }
+    } catch (error) {
+        console.error('LM-studio-helper.js: ERROR:', error);
+        return '';
+    }
 }

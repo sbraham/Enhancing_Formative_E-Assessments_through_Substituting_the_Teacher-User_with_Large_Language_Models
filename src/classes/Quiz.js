@@ -1,8 +1,8 @@
 // import { getElement } from '../src/getElement';
-import { StepwiseQuestionGeneration } from '../text-generation/LM-studio-helper.js';
+import { stepwiseQuestionGeneration, checkAnswer } from '../text-generation/LM-studio-helper.js';
 
 export class Quiz {
-    async generateQuestions(generate = true) {
+    async generateQuestions() {
         /**
          * Question = {
          *     question: 'What is the capital of the United States?', 
@@ -15,29 +15,31 @@ export class Quiz {
 
         console.log(`Quiz: generateQuestions`);
 
-        if (!generate) {
+        if (this.quiz_type == 'multiple_choice') {
             console.warn(`Quiz: generateQuestions: using placeholder questions`);
 
             const placeholder_question = {
                 question: 'What is the capital of the United States?', 
                 answer: 'Washington D.C.', 
-                options: [answer, 'New York', 'Los Angeles', 'Chicago']
+                options: ['Washington D.C.', 'New York', 'Los Angeles', 'Chicago']
             };
 
             for (let i = 0; i < this.number_of_questions; i++) {
                 this.questions.push(placeholder_question);
             }
+
+            return;
         }
 
-        const quiz_context = `${this.title} (${this.description})`;
+        const quiz_context = `${this.title} (${this.description}) `;
 
         for (let i = 0; i < this.number_of_questions; i++) {
             console.log(`Quiz: generateQuestions: Question ${i}: generating...`);
-            let question = await StepwiseQuestionGeneration(this.quiz_type, quiz_context, 4, this.questions);
-            console.log(`Quiz: generateQuestions: Question ${i}:`);
-            console.log(`question:`, question.question);
-            console.log(`answer:`, question.answer);
-            console.log(`options:`, question.options);
+            let question = await stepwiseQuestionGeneration(this.quiz_type, quiz_context, 4, this.questions);
+            // console.log(`Quiz: generateQuestions: Question ${i}: generated`);
+            // console.log(`question:`, question.question);
+            // console.log(`answer:`, question.answer);
+            // console.log(`options:`, question.options);
 
             this.questions.push(question);
         }
@@ -86,6 +88,7 @@ export class Quiz {
         this._given_answers = [];
 
         this.#displayQuiz();
+        this.#createAnswerElements()
         this.#getNextQuestion();
         this.#displayQuestion();
     }
@@ -103,6 +106,50 @@ export class Quiz {
         }
     }
 
+    #createAnswerElements() {
+        console.log(`Quiz:createAnswerElements()`);
+
+        if(this.quiz_type == 'multiple_choice') {
+            try {
+                for (let i = 0; i < 4; i++) {
+                    const container = document.createElement('div');
+                    container.classList.add('form-check');
+
+                    container.innerHTML = `
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="multichoice" id="option_${i}" value="${i}" required>
+                            <label class="form-check-label w-100" id="option_${i}_label" for="option_${i}">
+                                <p class="placeholder-glow">
+                                    <span class="placeholder col-7"></span>
+                                </p>
+                            </label>
+                        </div>
+                    `;
+
+                    document.getElementById('answer_container').appendChild(container);
+                }
+            } catch (error) {
+                console.error(`Quiz.createAnswerElements() error: ${error}`);
+            }
+        } else if (this.quiz_type == 'true_or_false') {
+            console.warn(`Quiz.createAnswerElements(): true_or_false is not implemented!`);
+        } else if (this.quiz_type == 'short_answer') {
+            try {
+                const container = document.createElement('div');
+                container.classList.add('form-group', 'margin-top');
+
+                container.innerHTML = `
+                    <label for="short_answer" id="answer">Short Answer:</label>
+                    <input type="text" class="form-control" name="short_answer" id="short_answer" required>
+                `;
+
+                document.getElementById('answer_container').appendChild(container);
+            } catch (error) {
+                console.error(`Quiz.createAnswerElements() error: ${error}`);
+            }
+        }
+    }
+
     #getNextQuestion() {
         console.log(`Quiz:getNextQuestion()`);
 
@@ -112,7 +159,7 @@ export class Quiz {
 
     #displayQuestion() {
         console.log(`Quiz:displayQuestion()`);
-
+        
         try {
             document.getElementById(`question_index`).innerHTML = `Question ${this._question_index}`;
 
@@ -125,9 +172,15 @@ export class Quiz {
             document.getElementById(`offcanvas_wrong_count_info`).innerHTML = `${this._wrong_count} / ${this.questions.length}`;
 
             document.getElementById(`question`).innerHTML = this._current_question.question;
-
-            for (let i = 0; i < this._current_question.options.length; i++) {
-                document.getElementById(`option_${i}_label`).innerHTML = this._current_question.options[i];
+            
+            if (this.quiz_type == 'multiple_choice') {
+                for (let i = 0; i < this._current_question.options.length; i++) {
+                    document.getElementById(`option_${i}_label`).innerHTML = this._current_question.options[i];
+                }
+            } else if (this.quiz_type == 'true_or_false') {
+                console.warn(`Quiz.displayQuestion(): true_or_false is not implemented!`);
+            } else if (this.quiz_type == 'short_answer') {
+                document.getElementById(`answer`).innerHTML = 'Short Answer: ';
             }
         } catch (error) {
             console.error(`Quiz.displayQuestion() error: ${error}`);
@@ -152,19 +205,35 @@ export class Quiz {
         }
     }
 
-    submitAnswer(given_answer) {
+    async submitAnswer(given_answer) {
         console.log(`Quiz:submitAnswer(${given_answer})`);
 
         this.#addWheel();
+        this.#disableQuizForm();
 
         let correct = false;
 
-        if (this._current_question.question_type == 'multiple_choice') {
+        if (this.quiz_type == 'multiple_choice') {
             if (this._current_question.options[given_answer] == this._current_question.answer) {
                 correct = true;
                 this._correct_count++;
             } else {
                 this._wrong_count++;
+            }
+        } if (this.quiz_type == 'true_or_false') {
+            console.warn(`Quiz.submitAnswer(): true_or_false is not implemented!`);
+        } else if (this.quiz_type == 'short_answer') {
+            if (this._current_question.answer == given_answer) {
+                correct = true;
+                this._correct_count++;
+            } else {
+                correct = await checkAnswer(this._current_question.question, this._current_question.answer, given_answer);
+                
+                if (correct) {
+                    this._correct_count++;
+                } else {
+                    this._wrong_count++;
+                }
             }
         }
 
@@ -179,7 +248,6 @@ export class Quiz {
         console.log(`this.given_answers:`, this._given_answers);
 
         this.showResult(given_answer, correct);
-        this.#disableQuizForm();
 
         setTimeout(() => {
             /* Reset quiz */
@@ -201,25 +269,35 @@ export class Quiz {
     showResult(given_answer, correct) {
         console.log(`Quiz:showResult(${correct})`);
 
-        if (correct) {
-            /* If the answer is correct */
-            for (let i = 0; i < this._current_question.options.length; i++) {
-                if (this._current_question.options[i] == this._current_question.answer) {
-                    /* Highlight it with green */
-                    document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-success">${this._current_question.options[i]}</span>`;
+        if (this.quiz_type == 'multiple_choice') {
+            if (correct) {
+                /* If the answer is correct */
+                for (let i = 0; i < this._current_question.options.length; i++) {
+                    if (this._current_question.options[i] == this._current_question.answer) {
+                        /* Highlight it with green */
+                        document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-success">${this._current_question.options[i]}</span>`;
+                    }
+                }
+            } else {  
+                /* If the answer is wrong */      
+                for (let i = 0; i < this._current_question.options.length; i++) {
+                    if (this._current_question.options[i] == this._current_question.answer) {
+                        /* Highlight the correct answer with green */
+                        document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-success">${this._current_question.options[i]}</span>`;
+                    }
+                    if (this._current_question.options[i] == this._current_question.options[given_answer]) {
+                        /* Highlight the given answer with red */
+                        document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-danger">${this._current_question.options[i]}</span>`;
+                    }
                 }
             }
-        } else {  
-            /* If the answer is wrong */      
-            for (let i = 0; i < this._current_question.options.length; i++) {
-                if (this._current_question.options[i] == this._current_question.answer) {
-                    /* Highlight the correct answer with green */
-                    document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-success">${this._current_question.options[i]}</span>`;
-                }
-                if (this._current_question.options[i] == this._current_question.options[given_answer]) {
-                    /* Highlight the given answer with red */
-                    document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-danger">${this._current_question.options[i]}</span>`;
-                }
+        } else if (this.quiz_type == 'true_or_false') {
+            console.warn(`Quiz.showResult(): true_or_false is not implemented!`);
+        } else if (this.quiz_type == 'short_answer') {
+            if (correct) {
+                document.getElementById(`answer`).innerHTML = `<span class="text-success">Short Answer: ✅</span>`;
+            } else {
+                document.getElementById(`answer`).innerHTML = `<span class="text-danger">Short Answer: ❌</span>`;
             }
         }
     }
@@ -228,8 +306,14 @@ export class Quiz {
         console.log(`Quiz:disableQuizForm()`);
 
         try {
-            for (let i = 0; i < this._current_question.options.length; i++) {
-                document.getElementById(`option_${i}`).disabled = true;
+            if (this.quiz_type == 'multiple_choice') {
+                for (let i = 0; i < this._current_question.options.length; i++) {
+                    document.getElementById(`option_${i}`).disabled = true;
+                }
+            } else if (this.quiz_type == 'true_or_false') {
+                console.warn(`Quiz.disableQuizForm(): true_or_false is not implemented!`);
+            } else if (this.quiz_type == 'short_answer') {
+                document.getElementById(`short_answer`).disabled = true;
             }
         } catch (error) {
             console.error(`Quiz.disableQuizForm() error: ${error}`);
@@ -240,8 +324,14 @@ export class Quiz {
         console.log(`Quiz:enableQuizForm()`);
 
         try {
-            for (let i = 0; i < this._current_question.options.length; i++) {
-                document.getElementById(`option_${i}`).disabled = false;
+            if (this.quiz_type == 'multiple_choice') {
+                for (let i = 0; i < this._current_question.options.length; i++) {
+                    document.getElementById(`option_${i}`).disabled = false;
+                }
+            } else if (this.quiz_type == 'true_or_false') {
+                console.warn(`Quiz.enableQuizForm(): true_or_false is not implemented!`);
+            } else if (this.quiz_type == 'short_answer') {
+                document.getElementById(`short_answer`).disabled = false;
             }
         } catch (error) {
             console.error(`Quiz.enableQuizForm() error: ${error}`);
@@ -251,8 +341,18 @@ export class Quiz {
     #resetQuizForm() {
         console.log(`Quiz:resetQuizForm()`);
 
-        for (let i = 0; i < this._current_question.options.length; i++) {
-            document.getElementById(`option_${i}`).checked = false;
+        try {
+            if (this.quiz_type === 'multiple_choice') {
+                for (let i = 0; i < this._current_question.options.length; i++) {
+                    document.getElementById(`option_${i}`).checked = false;
+                }
+            } else if (this.quiz_type === 'true_or_false') {
+                console.warn(`Quiz.resetQuizForm(): true_or_false is not implemented!`);
+            } else if (this.quiz_type === 'short_answer') {
+                document.getElementById(`short_answer`).value = '';
+            }
+        } catch (error) {
+            console.error(`Quiz.resetQuizForm() error: ${error}`);
         }
     }
 

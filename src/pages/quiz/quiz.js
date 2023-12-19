@@ -21,22 +21,28 @@ quiz.startQuiz();
 
 let given_answer;
 let quiz_finished = false;
-quiz_form.addEventListener('submit', (event) => {
+quiz_form.addEventListener('submit', async (event) => {
     try {
-        console.log(`quiz_form submitted`);
+        console.log(`Quiz: quiz_form submitted`);
 
         event.preventDefault(); // Prevents the page from reloading when the form is submitted.
 
-        const data = new FormData(quiz_form);
+        if (quiz.quiz_type == 'multiple_choice') {
+            const data = new FormData(quiz_form);
 
-        for (const value of data) {
-            given_answer = Number(value[1]);
+            for (const value of data) {
+                given_answer = Number(value[1]);
+            }
+        } else if (quiz.quiz_type == 'true_false') {
+            console.warn(`Quiz: true_or_false is not implemented!`);
+        } else if (quiz.quiz_type == 'short_answer') {
+            given_answer = quiz_form.short_answer.value;
         }
 
         console.log(`given_answer:`, given_answer);
 
-        quiz_finished = quiz.submitAnswer(given_answer);
+        await quiz.submitAnswer(given_answer);
     } catch (error) {
-        alert(error);
+        console.error(error);
     }
 });
