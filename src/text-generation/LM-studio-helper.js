@@ -34,7 +34,7 @@ import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
  * @param {number} creativity - The creativity level for generating the response (default: 0.7).
  * @returns {Promise<string|null>} - A promise that resolves with the generated response or null if there was an error.
  */
-export async function callLMStudio(system_content, user_content, max_tokens = -1, creativity = 0.5) {
+export async function callLMStudio(system_content, user_content, max_tokens = -1, creativity = 0.7) {
     //console.log('LM-studio-helper.js: callLMStudio');
 
     // Start the timer
