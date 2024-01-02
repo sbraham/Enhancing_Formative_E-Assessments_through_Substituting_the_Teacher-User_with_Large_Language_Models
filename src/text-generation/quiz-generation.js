@@ -69,14 +69,14 @@ export async function generateAnswer(context, question) {
  * @param {Array<string>} distractors - An optional array of existing distractors to avoid generating duplicates.
  * @returns {Promise<string>} - A promise that resolves to the generated distractors.
  */
-export async function generateDistractors(context, question, distractors = []) {
+export async function generateDistractors(context, question, options = []) {
     //console.log(`LM-studio-helper.js: generateDistractors`);
 
-    let system_content = `Given the context, generate a distractor answer to the following multiple choice question. Distractor answer must be FALSE.`;
+    let system_content = `Given the context, what is a FALSE answer to the following question?`;
     let user_content = `context: ${context}, question: ${question}`;
 
     if (distractors.length > 0) {
-        system_content += ` The distractor must be different from the following options: ${distractors}`;
+        system_content += ` The distractor must be different from the following options: ${options}`;
     }
 
     try {
@@ -126,7 +126,7 @@ export async function SWQG(quiz_type, context, number_of_options = 4, existing_q
         options.push(answer)
 
         for (let i = 0; i < number_of_options - 1; i++) {
-            let responce = await generateDistractors(question, context, options);
+            let responce = await generateDistractors(context, question, options);
             distractor = responce.responce;
             total_time += responce.time;
             options.push(distractor);

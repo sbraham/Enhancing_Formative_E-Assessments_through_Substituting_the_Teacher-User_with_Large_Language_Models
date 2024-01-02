@@ -1,50 +1,7 @@
 // import { getElement } from '../src/getElement';
-import { stepwiseQuestionGeneration, checkAnswer } from '../text-generation/LM-studio-helper.js';
+import { SWQG, checkAnswer } from '../text-generation/LM-studio-helper.js';
 
 export class Quiz {
-    async generateQuestions() {
-        /**
-         * Question = {
-         *     question: 'What is the capital of the United States?', 
-         *     answer: 'Washington D.C.', 
-         *     options: [answer, 'New York', 'Los Angeles', 'Chicago']
-         * };
-        */
-
-        // this.questions = [];
-
-        console.log(`Quiz: generateQuestions`);
-
-        if (this.quiz_type == 'multiple_choice') {
-            console.warn(`Quiz: generateQuestions: using placeholder questions`);
-
-            const placeholder_question = {
-                question: 'What is the capital of the United States?', 
-                answer: 'Washington D.C.', 
-                options: ['Washington D.C.', 'New York', 'Los Angeles', 'Chicago']
-            };
-
-            for (let i = 0; i < this.number_of_questions; i++) {
-                this.questions.push(placeholder_question);
-            }
-
-            return;
-        }
-
-        const quiz_context = `${this.title} (${this.description}) `;
-
-        for (let i = 0; i < this.number_of_questions; i++) {
-            console.log(`Quiz: generateQuestions: Question ${i}: generating...`);
-            let question = await stepwiseQuestionGeneration(this.quiz_type, quiz_context, 4, this.questions);
-            // console.log(`Quiz: generateQuestions: Question ${i}: generated`);
-            // console.log(`question:`, question.question);
-            // console.log(`answer:`, question.answer);
-            // console.log(`options:`, question.options);
-
-            this.questions.push(question);
-        }
-    }
-
     constructor(title, description = null, number_of_questions, quiz_type, 
         id = null, endless = false, questions = [], attempts = 0) 
     {
@@ -71,6 +28,35 @@ export class Quiz {
         this._wrong_count = 0;
 
         // console.log(`Quiz:Constructor:`, this);
+    }
+
+    async generateQuestions() {
+        /**
+         * Question = {
+         *     question: 'What is the capital of the United States?', 
+         *     answer: 'Washington D.C.', 
+         *     options: [answer, 'New York', 'Los Angeles', 'Chicago']
+         * };
+        */
+
+        console.log(`Quiz: generateQuestions`);
+
+        if (this.questions.length > 0) {
+            const quiz_context = `${this.title} (${this.description}) `;
+
+            for (let i = 0; i < this.number_of_questions; i++) {
+                //console.log(`Quiz: generateQuestions: Question ${i}: generating...`);
+                let question = await SWQG(this.quiz_type, quiz_context, 4, this.questions);
+                // console.log(`Quiz: generateQuestions: Question ${i}: generated`);
+                // console.log(`question:`, question.question);
+                // console.log(`answer:`, question.answer);
+                // console.log(`options:`, question.options);
+
+                this.questions.push(question);
+            }
+        } else {
+            console.warn(`Quiz: generateQuestions: questions already generated`);
+        }
     }
 
     startQuiz() {
