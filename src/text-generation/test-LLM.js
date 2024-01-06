@@ -1,19 +1,31 @@
-import { SWQG } from "./LM-studio-helper";
-import * as XLSX from 'https://unpkg.com/xlsx/dist/xlsx.full.min.js';
-const XLSX = require('xlsx');
+import { SWQG } from "./quiz-generation.js";
 
-// Step 3: Create a workbook
-let workbook = XLSX.utils.book_new();
+// Define the number of quizzes you want to generate
+const number_of_quizzes = 5;
 
-// Step 4: Create a worksheet
-let worksheet = XLSX.utils.aoa_to_sheet([
-  ['Header1', 'Header2', 'Header3'],
-  ['Data1', 'Data2', 'Data3'],
-  ['Data4', 'Data5', 'Data6']
-]);
+// Define the structure of your quizzes
+const quizzes = [];
 
-// Step 5: Add the worksheet to the workbook
-XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+for (let i = 0; i < number_of_quizzes; i++) {
+    // Generate a quiz using your SWQG module
+    const quiz = await SWQG('short_answer', 'GCSE Biology (Cell Biology)', 4, []);
 
-// Step 6: Write the workbook to a file
-XLSX.writeFile(workbook, 'Spreadsheet.xlsx');
+    // Store the quiz in the quizzes array
+    quizzes.push(quiz);
+}
+
+for (let i = 0; i < number_of_quizzes; i++) {
+    // Generate a quiz using your SWQG module
+    const quiz = await SWQG('multiple_choice', 'GCSE Biology (Cell Biology)', 4, []);
+
+    // Store the quiz in the quizzes array
+    quizzes.push(quiz);
+}
+
+// Convert the quizzes array to a string
+const quizzesString = JSON.stringify(quizzes);
+
+console.log(quizzesString);
+
+export const exportable = null;
+

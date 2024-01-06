@@ -225,52 +225,53 @@ function takeQuiz(quiz) {
 console.log(`dashbourd: checking login`);
 await checkLogin(`../login/login.html`);
 
-const quizzes_data_test = await getUserQuizzes();
+const LLM_test = false;
+// import { exportable } from "../../text-generation/test-LLM.js";
 
-console.log(`dashbourd: quizzes_data_test:`, quizzes_data_test);
+if (!LLM_test) {
+    console.log(`dashbourd: fetching user quizzes`);
+    const quizzes_data = await getUserQuizzes();
+    const user_quizzes = [];
 
-if (quizzes_data_test.length == 0) {
+    if (quizzes_data.length == 0) {
 
-    console.log('~~~');
+        console.log('~~~');
 
-    // Two Short Answer Quizzes
-    const quiz1 = new Quiz(`GCSE AQA History Norman England 1066-1100`, `The Norman Rule in England`, 5, 'short_answer');
-    await quiz1.generateQuestions();
+        // Two Short Answer Quizzes
+        const quiz1 = new Quiz(`GCSE AQA History Norman England 1066-1100`, `The Norman Rule in England`, 5, 'short_answer');
+        await quiz1.generateQuestions();
 
-    const quiz2 = new Quiz(`A-Level OCR Physics Mechanics`, `The Newtonian World`, 5, 'short_answer');
-    await quiz2.generateQuestions();
+        const quiz2 = new Quiz(`A-Level OCR Physics Mechanics`, `The Newtonian World`, 5, 'short_answer');
+        await quiz2.generateQuestions();
 
-    // Two Multiple Choice Quizzes
-    const quiz3 = new Quiz(`Multi-choice Quiz 1`, `Something about america`, 5, 'multiple_choice');
-    await quiz3.generateQuestions();
+        // Two Multiple Choice Quizzes
+        const quiz3 = new Quiz(`GCSE AQA History Norman England 1066-1100`, `The Norman Rule in England`, 5, 'multiple_choice');
+        await quiz3.generateQuestions();
 
-    const quiz4 = new Quiz(`Multi-choice Quiz 2`, `Something about america`, 5, 'multiple_choice');
-    await quiz4.generateQuestions();
+        const quiz4 = new Quiz(`A-Level OCR Physics Mechanics`, `The Newtonian World`, 5, 'multiple_choice');
+        await quiz4.generateQuestions();
 
-    await addQuizToDB(quiz1);   
-    await addQuizToDB(quiz2);
-    await addQuizToDB(quiz3);   
-    await addQuizToDB(quiz4);
+        await addQuizToDB(quiz1);   
+        await addQuizToDB(quiz2);
+        await addQuizToDB(quiz3);   
+        await addQuizToDB(quiz4);
 
-    console.log('~~~');
-}
+        console.log('~~~');
+    }
 
-console.log(`dashbourd: fetching user quizzes`);
-const quizzes_data = await getUserQuizzes();
-const user_quizzes = [];
+    console.log(`dashbourd: creating quiz cards`);
+    quizzes_data.forEach(quiz_data => {
+        const quiz = Quiz.fromObject(quiz_data.quiz);
+        user_quizzes.push(quiz); // Add quiz to user quizzes
 
-console.log(`dashbourd: creating quiz cards`);
-quizzes_data.forEach(quiz_data => {
-    const quiz = Quiz.fromObject(quiz_data.quiz);
-    user_quizzes.push(quiz); // Add quiz to user quizzes
+        createQuizCard(quiz);
+    });
 
-    createQuizCard(quiz);
-});
+    createCreateQuizCard()
 
-createCreateQuizCard()
+    const loading_spinner = document.getElementById("loading_spinner");
 
-const loading_spinner = document.getElementById("loading_spinner");
-
-if (loading_spinner) {
-    loading_spinner.remove();
+    if (loading_spinner) {
+        loading_spinner.remove();
+    }
 }

@@ -41,7 +41,7 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
     // Start the timer
     const start_time = performance.now();
 
-    console.log('LM-studio-helper.js: callLMStudio: $.ajax: awaiting...');
+    //console.log('LM-studio-helper.js: callLMStudio: $.ajax: awaiting...');
     try {
         let response = await new Promise((resolve, reject) => {
             $.ajax({
@@ -80,7 +80,7 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
         
         //console.debug(`Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
 
-        return { response: response, time: execution_time };
+        return response;
     } catch (error) {
         console.error('LM-studio-helper.js: ERROR:', error);
         return '';

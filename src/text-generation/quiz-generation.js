@@ -11,7 +11,7 @@ import { QUIZ_GENERATION_CREATIVITY, QUESTION_MAX_TOKENS, ANSWER_MAX_TOKENS } fr
 export async function generateQuestion(context, existing_questions = []) {
     //console.log(`LM-studio-helper.js: generateQuestion`);
 
-    let system_content = 'Generate a short answer question relating to the following context. ';
+    let system_content = 'Generate one short answer question relating to the following context. ';
     system_content += 'The question must be answerable by a single word or phrase. ';
     system_content += 'Only write the question, do not state the answer. ';
 
@@ -75,7 +75,7 @@ export async function generateDistractors(context, question, options = []) {
     let system_content = `Given the context, what is a FALSE answer to the following question?`;
     let user_content = `context: ${context}, question: ${question}`;
 
-    if (distractors.length > 0) {
+    if (options.length > 0) {
         system_content += ` The distractor must be different from the following options: ${options}`;
     }
 
@@ -101,45 +101,39 @@ export async function generateDistractors(context, question, options = []) {
 export async function SWQG(quiz_type, context, number_of_options = 4, existing_questions = []) {
     //console.debug(`LM-studio-helper.js: SWQG()`);
 
-    let responce = {};
+    // Start the timer
+    const start_time = performance.now();
 
     let question, answer = '';
     let options = [];
 
-    let total_time = 0;
-
     /* Step 1: Generate a question */
-    console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 1: Generate a question');
-    responce = await generateShortQuestion(context, existing_questions);
-    question = responce.responce;
-    total_time += responce.time;
+    console.debug('LM-studio-helper.js: SWQG: Step 1: Generate a question');
+    question = await generateQuestion(context, existing_questions);
 
     /* Step 2: Generate the answer */
-    console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 2: Generate the answer');
-    responce = await generateAnswer(context, question);
-    answer = responce.responce;
-    total_time += responce.time;
+    console.debug('LM-studio-helper.js: SWQG: Step 2: Generate the answer');
+    answer = await generateAnswer(context, question);
 
     if (quiz_type == 'multiple_choice') {
         /* Step 3: Generate the distractors */
-        console.debug('LM-studio-helper.js: StepwiseQuestionGeneration: Step 3: Generate the distractors');
+        console.debug('LM-studio-helper.js: SWQG: Step 3: Generate the distractors');
         options.push(answer)
 
         for (let i = 0; i < number_of_options - 1; i++) {
-            let responce = await generateDistractors(context, question, options);
-            distractor = responce.responce;
-            total_time += responce.time;
+            let distractor = await generateDistractors(context, question, options);
             options.push(distractor);
         }
     }
 
-    const execution_time = total_time;
+    // Calculate the execution time
+    const end_time = performance.now();
+    const execution_time = end_time - start_time;
     const minutes = Math.floor(execution_time / 60000);
     const seconds = Math.floor((execution_time % 60000) / 1000);
     const milliseconds = Math.floor((execution_time % 1000));
+    
+    console.log(`LM-studio-helper.js: SWQG: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
 
-    // Calculate the execution time    
-    console.log(`LM-studio-helper.js: StepwiseQuestionGeneration: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
-
-    return { question: question, answer: answer, options: options, execution_time: execution_time };
+    return { question: question, answer: answer, options: options };
 }

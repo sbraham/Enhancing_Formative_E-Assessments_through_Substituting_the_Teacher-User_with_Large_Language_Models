@@ -1,8 +1,8 @@
 // import { getElement } from '../src/getElement';
-import { SWQG, checkAnswer } from '../text-generation/LM-studio-helper.js';
+import { SWQG } from '../text-generation/quiz-generation.js';
 
 export class Quiz {
-    constructor(title, description = null, number_of_questions, quiz_type, 
+    constructor(title, description = '', number_of_questions, quiz_type, 
         id = null, endless = false, questions = [], attempts = 0) 
     {
         this.id = id;
@@ -42,6 +42,8 @@ export class Quiz {
         console.log(`Quiz: generateQuestions`);
 
         if (this.questions.length > 0) {
+            console.warn(`Quiz: generateQuestions: questions already generated`);
+        } else {
             const quiz_context = `${this.title} (${this.description}) `;
 
             for (let i = 0; i < this.number_of_questions; i++) {
@@ -54,8 +56,6 @@ export class Quiz {
 
                 this.questions.push(question);
             }
-        } else {
-            console.warn(`Quiz: generateQuestions: questions already generated`);
         }
     }
 
@@ -73,13 +73,13 @@ export class Quiz {
         /* Reset given answers */
         this._given_answers = [];
 
-        this.#displayQuiz();
-        this.#createAnswerElements()
-        this.#getNextQuestion();
-        this.#displayQuestion();
+        this.displayQuiz();
+        this.createAnswerElements()
+        this.getNextQuestion();
+        this.displayQuestion();
     }
 
-    #displayQuiz() {
+    displayQuiz() {
         console.log(`Quiz:displayQuiz()`);
 
         try {
@@ -92,7 +92,7 @@ export class Quiz {
         }
     }
 
-    #createAnswerElements() {
+    createAnswerElements() {
         console.log(`Quiz:createAnswerElements()`);
 
         if(this.quiz_type == 'multiple_choice') {
@@ -136,14 +136,25 @@ export class Quiz {
         }
     }
 
-    #getNextQuestion() {
-        console.log(`Quiz:getNextQuestion()`);
+    getPreviousQuestion() {
+        console.log(`Quiz:getPreviousQuestion()`);
 
-        this._current_question = this.questions[this._question_index];
-        this._question_index++;
+        if (this._question_index === 1) {
+            throw new Error(`Quiz.getPreviousQuestion(): Cannot go back any further!`);
+        }
+
+        this._question_index--;
+        this._current_question = this.questions[this._question_index-1];
     }
 
-    #displayQuestion() {
+    getNextQuestion() {
+        console.log(`Quiz:getNextQuestion()`);
+
+        this._question_index++;
+        this._current_question = this.questions[this._question_index-1];
+    }
+
+    displayQuestion() {
         console.log(`Quiz:displayQuestion()`);
         
         try {
@@ -173,29 +184,31 @@ export class Quiz {
         }
     }
 
-    #addWheel() {
-        const submitButton = document.querySelector('#submit_button');
-        const loadingWheel = document.createElement('div');
-        loadingWheel.classList.add('spinner-border', 'spinner-border-sm', 'text-primary', 'mx-2');
-        loadingWheel.setAttribute('id', 'loading_wheel');
-        loadingWheel.setAttribute('role', 'status');
-        loadingWheel.innerHTML = '<span class="visually-hidden">Loading...</span>';
+    addWheel() {
+        const previous_button = document.getElementById('previous_button');
+        const loading_wheel = document.createElement('div');
+        loading_wheel.classList.add('spinner-border', 'spinner-border-sm', 'text-primary', 'mx-2');
+        loading_wheel.setAttribute('id', 'loading_wheel');
+        loading_wheel.setAttribute('role', 'status');
+        loading_wheel.innerHTML = '<span class="visually-hidden">Loading...</span>';
 
-        submitButton.insertAdjacentElement('beforebegin', loadingWheel);
+        previous_button.insertAdjacentElement('beforebegin', loading_wheel);
     }
 
-    #removeWheel() {
-        const loadingWheel = document.querySelector('#loading_wheel');
-        if (loadingWheel) {
-            loadingWheel.remove();
+    removeWheel() {
+        const loading_wheel = document.getElementById('loading_wheel');
+        if (loading_wheel) {
+            loading_wheel.remove();
         }
     }
 
     async submitAnswer(given_answer) {
         console.log(`Quiz:submitAnswer(${given_answer})`);
 
-        this.#addWheel();
-        this.#disableQuizForm();
+        document.getElementById('previous_button').disabled = false;
+
+        this.addWheel();
+        this.disableQuizForm();
 
         let correct = false;
 
@@ -225,11 +238,19 @@ export class Quiz {
 
         console.log(`typeof(given_answer):`, typeof (given_answer));
 
-        this._given_answers.push({
-            "correct": correct,
-            "correct_answer": this._current_question.answer,
-            "given_answer": this._current_question.options[given_answer]
-        });
+        if (this._given_answers.length < this._question_index) {
+            this._given_answers.push({
+                "correct": correct,
+                "correct_answer": this._current_question.answer,
+                "given_answer": this._current_question.options[given_answer]
+            });
+        } else {
+            this._given_answers[this._question_index - 1] = {
+                "correct": correct,
+                "correct_answer": this._current_question.answer,
+                "given_answer": this._current_question.options[given_answer]
+            };
+        }
 
         console.log(`this.given_answers:`, this._given_answers);
 
@@ -237,16 +258,16 @@ export class Quiz {
 
         setTimeout(() => {
             /* Reset quiz */
-            this.#resetQuizForm();
-            this.#enableQuizForm();
-            this.#removeWheel();
+            this.resetQuizForm();
+            this.enableQuizForm();
+            this.removeWheel();
 
             /* Got to next question OR end quiz */
             if (this._question_index === this.questions.length) {
                 return true;
             } else {
-                this.#getNextQuestion();
-                this.#displayQuestion();
+                this.getNextQuestion();
+                this.displayQuestion();
                 return false;
             }
         }, 1500);
@@ -288,7 +309,7 @@ export class Quiz {
         }
     }
 
-    #disableQuizForm() {
+    disableQuizForm() {
         console.log(`Quiz:disableQuizForm()`);
 
         try {
@@ -306,7 +327,7 @@ export class Quiz {
         }
     }
 
-    #enableQuizForm() {
+    enableQuizForm() {
         console.log(`Quiz:enableQuizForm()`);
 
         try {
@@ -324,7 +345,7 @@ export class Quiz {
         }
     }
 
-    #resetQuizForm() {
+    resetQuizForm() {
         console.log(`Quiz:resetQuizForm()`);
 
         try {

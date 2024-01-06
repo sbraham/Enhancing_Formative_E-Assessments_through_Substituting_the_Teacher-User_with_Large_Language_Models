@@ -17,10 +17,25 @@ const quiz = Quiz.fromObject(quiz_data.quiz);
 console.debug(`quiz: getQuizById: returned`);
 console.debug(`quiz: getQuizById: quiz:`, quiz);
 
+document.getElementById('previous_button').addEventListener('click', () => {
+    quiz.resetQuizForm();
+    quiz.enableQuizForm();
+    quiz.removeWheel();
+
+    quiz.getPreviousQuestion();
+
+    if (quiz._question_index === 1) {
+        document.getElementById('previous_button').disabled = true;
+    }
+
+    quiz.displayQuestion();
+});
+
 quiz.startQuiz();
 
 let given_answer;
 let quiz_finished = false;
+
 quiz_form.addEventListener('submit', async (event) => {
     try {
         console.log(`Quiz: quiz_form submitted`);
