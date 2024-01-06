@@ -238,6 +238,14 @@ export class Quiz {
 
         console.log(`typeof(given_answer):`, typeof (given_answer));
 
+        /* Answer Objects: 
+            {
+                "correct": false,
+                "correct_answer": "Washington D.C.",
+                "given_answer": "New York"
+            }
+        */
+
         if (this._given_answers.length < this._question_index) {
             this._given_answers.push({
                 "correct": correct,
@@ -366,7 +374,13 @@ export class Quiz {
     endQuiz() {
         console.log(`Quiz:endQuiz()`);
 
-        console.warn(`Quiz.endQuiz() is not implemented!`);
+        // TODO: Make this._given_answers into a JSON object and send it to the database
+
+        // TODO: Move to the feedback page
+
+        // TODO: Somehow get the _given_answers from the database and display them on the feedback page
+
+        // TODO: Make the LLM generate feedback based on the _given_answers
     }
 
     toString() {
