@@ -304,6 +304,7 @@ export class Quiz {
 
         setTimeout(() => {
             /* Reset quiz */
+            this.enableQuizForm();
             this.removeWheel();
 
             /* Check if quiz has ended */
@@ -312,8 +313,6 @@ export class Quiz {
                 const result = confirm("Quiz completed. Are you happy with all your answers?");
                 if (result) {
                     // End quiz
-                    this.resetQuizForm();
-                    this.enableQuizForm();
                     this.endQuiz();
                 } else {
                     // Wait for next input
@@ -321,7 +320,6 @@ export class Quiz {
             } else {
                 /* If no, get next question */
                 this.resetQuizForm();
-                this.enableQuizForm();
                 this.getNextQuestion();
                 this.displayQuestion();
                 return false;
