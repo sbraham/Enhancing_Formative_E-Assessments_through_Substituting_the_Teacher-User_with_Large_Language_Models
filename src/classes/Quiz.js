@@ -149,14 +149,19 @@ export class Quiz {
             throw new Error(`Quiz.getPreviousQuestion(): Cannot go back any further!`);
         }
 
-        this.selectPreviousAnswer();
-
         this._question_index--;
         this._current_question = this.questions[this._question_index-1];
+
+        this.selectPreviousAnswer();
     }
 
     selectPreviousAnswer() {
         console.log(`Quiz:selectPreviousAnswer()`);
+
+        console.log(`this._given_answers:`, this._given_answers);
+        console.log(`this._question_index:`, this._question_index);
+        console.log(`this._given_answers[this._question_index-1]:`, this._given_answers[this._question_index-1]);
+        console.log(`this._given_answers[this._question_index-1].given_index:`, this._given_answers[this._question_index-1].given_index);
 
         if (this.quiz_type == 'multiple_choice') {
             document.getElementById(`option_${this._given_answers[this._question_index-1].given_index}`).checked = true;
@@ -199,10 +204,11 @@ export class Quiz {
     addWheel() {
         const previous_button = document.getElementById('previous_button');
         const loading_wheel = document.createElement('div');
-        loading_wheel.classList.add('spinner-border', 'spinner-border-sm', 'text-primary', 'mx-2');
+        loading_wheel.classList.add('spinner-border', 'text-primary', 'mx-2', 'spinner-lg');
         loading_wheel.setAttribute('id', 'loading_wheel');
         loading_wheel.setAttribute('role', 'status');
         loading_wheel.innerHTML = '<span class="visually-hidden">Loading...</span>';
+        loading_wheel.style.alignSelf = 'center';
 
         previous_button.insertAdjacentElement('beforebegin', loading_wheel);
     }
@@ -259,19 +265,17 @@ export class Quiz {
             }
         */
 
+        const answer_object = {
+            "correct": isCorrect,
+            "correct_answer": this._current_question.answer,
+            "given_answer": this._current_question.options[given_answer],
+            "given_index": given_answer
+        }
+
         if (this._given_answers.length < this._question_index) {
-            this._given_answers.push({
-                "correct": isCorrect,
-                "correct_answer": this._current_question.answer,
-                "given_answer": this._current_question.options[given_answer],
-                "given_index": given_answer
-            });
+            this._given_answers.push(answer_object);
         } else {
-            this._given_answers[this._question_index - 1] = {
-                "correct": isCorrect,
-                "correct_answer": this._current_question.answer,
-                "given_answer": this._current_question.options[given_answer]
-            };
+            this._given_answers[this._question_index - 1] = answer_object;
         }
 
         console.log(`this.given_answers:`, this._given_answers);
@@ -303,7 +307,7 @@ export class Quiz {
                 this.displayQuestion();
                 return false;
             }
-        }, 1500);
+        }, 500);
     }
 
     showResult(given_answer, correct) {
