@@ -65,12 +65,9 @@ quiz_form.addEventListener('submit', async (event) => {
 /* Start quiz */
 quiz.startQuiz();
 
-/* Run quiz */
-while (quiz.isRunning) {
-    // Wait for quiz to finish
-}
+/** The Quiz will run
+ * when the final quiz has been submitted
+ * the window will be redirected to the feedback page
+*/
 
-/* Move to feedback page */
-url = `feedback.html?given_answers=${quiz._given_answers}`;
-
-window.location.href = url;
+url = `../feedback/feedback.html?given_answers=${quiz._given_answers}`;

@@ -284,10 +284,18 @@ export class Quiz {
             this.enableQuizForm();
             this.removeWheel();
 
-            /* Got to next question OR end quiz */
+            /* Check if quiz has ended */
             if (this._question_index === this.questions.length) {
-                return true;
+                /* If yes, check if the player wants the quiz to end */
+                const result = confirm("Quiz completed. Are you happy with all your answers?");
+                if (result) {
+                    // End quiz
+                    this.endQuiz();
+                } else {
+                    // Wait for next input
+                }
             } else {
+                /* If no, get next question */
                 this.getNextQuestion();
                 this.displayQuestion();
                 return false;
@@ -391,6 +399,11 @@ export class Quiz {
         console.log(`Final answers are:`, this._given_answers);
 
         this.isRunning = false;
+
+        /* Move to feedback page */
+        url = `../feedback/feedback.html?given_answers=${quiz._given_answers}`;
+
+        window.location.href = url;
     }
 
     toString() {
