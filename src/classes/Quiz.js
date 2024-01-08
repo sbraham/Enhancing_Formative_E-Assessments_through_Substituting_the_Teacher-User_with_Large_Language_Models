@@ -161,8 +161,8 @@ export class Quiz {
         console.log(`Quiz:displayQuestion()`);
         
         try {
+            /* Set question number and question text */
             document.getElementById(`question_index`).innerHTML = `Question ${this._question_index}`;
-
             document.getElementById(`question`).innerHTML = this._current_question.question;
             
             if (this.quiz_type == 'multiple_choice') {
@@ -173,6 +173,17 @@ export class Quiz {
                 console.warn(`Quiz.displayQuestion(): true_or_false is not implemented!`);
             } else if (this.quiz_type == 'short_answer') {
                 document.getElementById(`answer`).innerHTML = 'Short Answer: ';
+            }
+
+            /* Set give answer */
+            if (this._given_answers[this._question_index-1]) {
+                if (this.quiz_type == 'multiple_choice') {
+                    document.getElementById(`option_${this._given_answers[this._question_index-1].given_index}`).checked = true;
+                } else if (this.quiz_type == 'true_or_false') {
+                    console.warn(`Quiz.selectPreviousAnswer(): true_or_false is not implemented!`);
+                } else if (this.quiz_type == 'short_answer') {
+                    document.getElementById(`short_answer`).value = this._given_answers[this._question_index-1].given_answer;
+                }
             }
         } catch (error) {
             console.error(`Quiz.displayQuestion() error: ${error}`);
@@ -222,23 +233,6 @@ export class Quiz {
         this._current_question = this.questions[this._question_index-1];
 
         this.selectPreviousAnswer();
-    }
-
-    selectPreviousAnswer() {
-        console.log(`Quiz:selectPreviousAnswer()`);
-
-        console.log(`this._given_answers:`, this._given_answers);
-        console.log(`this._question_index:`, this._question_index);
-        console.log(`this._given_answers[this._question_index-1]:`, this._given_answers[this._question_index-1]);
-        console.log(`this._given_answers[this._question_index-1].given_index:`, this._given_answers[this._question_index-1].given_index);
-
-        if (this.quiz_type == 'multiple_choice') {
-            document.getElementById(`option_${this._given_answers[this._question_index-1].given_index}`).checked = true;
-        } else if (this.quiz_type == 'true_or_false') {
-            console.warn(`Quiz.selectPreviousAnswer(): true_or_false is not implemented!`);
-        } else if (this.quiz_type == 'short_answer') {
-            document.getElementById(`short_answer`).value = this._given_answers[this._question_index-1].given_answer;
-        }
     }
 
     /** Submit answer */
