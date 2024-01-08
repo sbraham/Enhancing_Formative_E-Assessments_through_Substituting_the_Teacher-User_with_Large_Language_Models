@@ -276,6 +276,7 @@ export class Quiz {
         /* Answer Objects: 
             {
                 "correct": false,
+                "question": "What is the capital of the United States?
                 "correct_answer": "Washington D.C.",
                 "given_answer": "New York"
                 "given_index": 3
@@ -424,12 +425,14 @@ export class Quiz {
     endQuiz() {
         console.log(`Quiz:endQuiz()`);
 
-        console.log(`Final answers are:`, this._given_answers);
+        const given_answers = JSON.stringify(this._given_answers);
+
+        console.log(`Final answers are:`, given_answers);
 
         this.isRunning = false;
 
         /* Move to feedback page */
-        const url = `../feedback/feedback.html?given_answers=${this._given_answers}`;
+        const url = `../feedback/feedback.html?given_answers=${given_answers}`;
 
         window.location.href = url;
     }
