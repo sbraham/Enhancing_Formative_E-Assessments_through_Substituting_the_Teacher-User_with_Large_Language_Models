@@ -70,4 +70,4 @@ quiz.startQuiz();
  * the window will be redirected to the feedback page
 */
 
-url = `../feedback/feedback.html?given_answers=${quiz._given_answers}`;
+const url = `../feedback/feedback.html?given_answers=${quiz._given_answers}`;

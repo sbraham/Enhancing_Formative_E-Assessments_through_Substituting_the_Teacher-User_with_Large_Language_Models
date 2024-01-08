@@ -401,7 +401,7 @@ export class Quiz {
         this.isRunning = false;
 
         /* Move to feedback page */
-        url = `../feedback/feedback.html?given_answers=${quiz._given_answers}`;
+        const url = `../feedback/feedback.html?given_answers=${quiz._given_answers}`;
 
         window.location.href = url;
     }
