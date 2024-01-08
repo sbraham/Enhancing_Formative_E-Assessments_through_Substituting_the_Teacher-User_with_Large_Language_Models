@@ -2,9 +2,21 @@
 import { SWQG } from '../text-generation/quiz-generation.js';
 
 export class Quiz {
-    constructor(title, description = '', number_of_questions, quiz_type, 
-        id = null, endless = false, questions = [], attempts = 0) 
-    {
+    /**
+     * Represents a Quiz object.
+     * @constructor
+     * @param {string} title - The title of the quiz.
+     * @param {string} [description=''] - The description of the quiz.
+     * @param {number} number_of_questions - The number of questions in the quiz.
+     * @param {string} quiz_type - The type of the quiz (multiple_choice, true_or_false, short_answer).
+     * @param {number|null} [id=null] - The ID of the quiz.
+     * @param {boolean} [endless=false] - Indicates if the quiz is endless.
+     * @param {Array} [questions=[]] - The array of questions in the quiz.
+     * @param {number} [attempts=0] - The number of attempts made on the quiz.
+     */
+    constructor(title, description = '', number_of_questions, quiz_type, id = null, endless = false, questions = [], attempts = 0) {
+        console.log(`Quiz: Constructor`);
+
         this.id = id;
         this.attempts = attempts;
         
@@ -28,10 +40,9 @@ export class Quiz {
         this._wrong_count = 0;
 
         this.isRunning = false;
-
-        // console.log(`Quiz:Constructor:`, this);
     }
 
+    /** Generates questions for the quiz. */
     async generateQuestions() {
         /**
          * Question = {
@@ -61,6 +72,8 @@ export class Quiz {
         }
     }
 
+    /** Starts the quiz. */
+
     startQuiz() {
         console.log(`Quiz:startQuiz()`);
 
@@ -82,6 +95,8 @@ export class Quiz {
         this.getNextQuestion();
         this.displayQuestion();
     }
+
+    /** Set initial quiz UI */
 
     displayQuiz() {
         console.log(`Quiz:displayQuiz()`);
@@ -140,6 +155,60 @@ export class Quiz {
         }
     }
 
+    /** Set quiz UI throughout */
+
+    displayQuestion() {
+        console.log(`Quiz:displayQuestion()`);
+        
+        try {
+            document.getElementById(`question_index`).innerHTML = `Question ${this._question_index}`;
+
+            document.getElementById(`question`).innerHTML = this._current_question.question;
+            
+            if (this.quiz_type == 'multiple_choice') {
+                for (let i = 0; i < this._current_question.options.length; i++) {
+                    document.getElementById(`option_${i}_label`).innerHTML = this._current_question.options[i];
+                }
+            } else if (this.quiz_type == 'true_or_false') {
+                console.warn(`Quiz.displayQuestion(): true_or_false is not implemented!`);
+            } else if (this.quiz_type == 'short_answer') {
+                document.getElementById(`answer`).innerHTML = 'Short Answer: ';
+            }
+        } catch (error) {
+            console.error(`Quiz.displayQuestion() error: ${error}`);
+        }
+    }
+
+    /** Set loading wheel */
+
+    addWheel() {
+        const previous_button = document.getElementById('previous_button');
+        const loading_wheel = document.createElement('div');
+        loading_wheel.classList.add('spinner-border', 'text-primary', 'mx-2', 'spinner-lg');
+        loading_wheel.setAttribute('id', 'loading_wheel');
+        loading_wheel.setAttribute('role', 'status');
+        loading_wheel.innerHTML = '<span class="visually-hidden">Loading...</span>';
+        loading_wheel.style.alignSelf = 'center';
+
+        previous_button.insertAdjacentElement('beforebegin', loading_wheel);
+    }
+
+    removeWheel() {
+        const loading_wheel = document.getElementById('loading_wheel');
+        if (loading_wheel) {
+            loading_wheel.remove();
+        }
+    }
+
+    /** Question index controls */
+
+    getNextQuestion() {
+        console.log(`Quiz:getNextQuestion()`);
+
+        this._question_index++;
+        this._current_question = this.questions[this._question_index-1];
+    }
+
     getPreviousQuestion() {
         console.log(`Quiz:getPreviousQuestion()`);
 
@@ -172,53 +241,7 @@ export class Quiz {
         }
     }
 
-    getNextQuestion() {
-        console.log(`Quiz:getNextQuestion()`);
-
-        this._question_index++;
-        this._current_question = this.questions[this._question_index-1];
-    }
-
-    displayQuestion() {
-        console.log(`Quiz:displayQuestion()`);
-        
-        try {
-            document.getElementById(`question_index`).innerHTML = `Question ${this._question_index}`;
-
-            document.getElementById(`question`).innerHTML = this._current_question.question;
-            
-            if (this.quiz_type == 'multiple_choice') {
-                for (let i = 0; i < this._current_question.options.length; i++) {
-                    document.getElementById(`option_${i}_label`).innerHTML = this._current_question.options[i];
-                }
-            } else if (this.quiz_type == 'true_or_false') {
-                console.warn(`Quiz.displayQuestion(): true_or_false is not implemented!`);
-            } else if (this.quiz_type == 'short_answer') {
-                document.getElementById(`answer`).innerHTML = 'Short Answer: ';
-            }
-        } catch (error) {
-            console.error(`Quiz.displayQuestion() error: ${error}`);
-        }
-    }
-
-    addWheel() {
-        const previous_button = document.getElementById('previous_button');
-        const loading_wheel = document.createElement('div');
-        loading_wheel.classList.add('spinner-border', 'text-primary', 'mx-2', 'spinner-lg');
-        loading_wheel.setAttribute('id', 'loading_wheel');
-        loading_wheel.setAttribute('role', 'status');
-        loading_wheel.innerHTML = '<span class="visually-hidden">Loading...</span>';
-        loading_wheel.style.alignSelf = 'center';
-
-        previous_button.insertAdjacentElement('beforebegin', loading_wheel);
-    }
-
-    removeWheel() {
-        const loading_wheel = document.getElementById('loading_wheel');
-        if (loading_wheel) {
-            loading_wheel.remove();
-        }
-    }
+    /** Submit answer */
 
     async submitAnswer(given_answer) {
         console.log(`Quiz:submitAnswer(${given_answer})`);
@@ -346,6 +369,8 @@ export class Quiz {
         }
     }
 
+    /* Quiz form controls */
+
     disableQuizForm() {
         console.log(`Quiz:disableQuizForm()`);
 
@@ -399,6 +424,8 @@ export class Quiz {
             console.error(`Quiz.resetQuizForm() error: ${error}`);
         }
     }
+    
+    /** End quiz */
 
     endQuiz() {
         console.log(`Quiz:endQuiz()`);
@@ -408,10 +435,12 @@ export class Quiz {
         this.isRunning = false;
 
         /* Move to feedback page */
-        const url = `../feedback/feedback.html?given_answers=${quiz._given_answers}`;
+        const url = `../feedback/feedback.html?given_answers=${this._given_answers}`;
 
         window.location.href = url;
     }
+
+    /** For saving quiz */
 
     toString() {
         return JSON.stringify(this);
