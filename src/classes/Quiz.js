@@ -27,6 +27,8 @@ export class Quiz {
         this._correct_count = 0;
         this._wrong_count = 0;
 
+        this.isRunning = false;
+
         // console.log(`Quiz:Constructor:`, this);
     }
 
@@ -61,6 +63,8 @@ export class Quiz {
 
     startQuiz() {
         console.log(`Quiz:startQuiz()`);
+
+        this.isRunning = true;
 
         /* Increment attempts */
         this.attempts++;
@@ -210,11 +214,11 @@ export class Quiz {
         this.addWheel();
         this.disableQuizForm();
 
-        let correct = false;
+        let isCorrect = false;
 
         if (this.quiz_type == 'multiple_choice') {
             if (this._current_question.options[given_answer] == this._current_question.answer) {
-                correct = true;
+                isCorrect = true;
                 this._correct_count++;
             } else {
                 this._wrong_count++;
@@ -223,12 +227,12 @@ export class Quiz {
             console.warn(`Quiz.submitAnswer(): true_or_false is not implemented!`);
         } else if (this.quiz_type == 'short_answer') {
             if (this._current_question.answer == given_answer) {
-                correct = true;
+                isCorrect = true;
                 this._correct_count++;
             } else {
-                correct = await checkAnswer(this._current_question.question, this._current_question.answer, given_answer);
+                isCorrect = await checkAnswer(this._current_question.question, this._current_question.answer, given_answer);
                 
-                if (correct) {
+                if (isCorrect) {
                     this._correct_count++;
                 } else {
                     this._wrong_count++;
@@ -248,13 +252,13 @@ export class Quiz {
 
         if (this._given_answers.length < this._question_index) {
             this._given_answers.push({
-                "correct": correct,
+                "correct": isCorrect,
                 "correct_answer": this._current_question.answer,
                 "given_answer": this._current_question.options[given_answer]
             });
         } else {
             this._given_answers[this._question_index - 1] = {
-                "correct": correct,
+                "correct": isCorrect,
                 "correct_answer": this._current_question.answer,
                 "given_answer": this._current_question.options[given_answer]
             };
@@ -262,7 +266,7 @@ export class Quiz {
 
         console.log(`this.given_answers:`, this._given_answers);
 
-        this.showResult(given_answer, correct);
+        this.showResult(given_answer, isCorrect);
 
         setTimeout(() => {
             /* Reset quiz */
@@ -374,13 +378,9 @@ export class Quiz {
     endQuiz() {
         console.log(`Quiz:endQuiz()`);
 
-        // TODO: Make this._given_answers into a JSON object and send it to the database
+        console.log(`Final answers are:`, this._given_answers);
 
-        // TODO: Move to the feedback page
-
-        // TODO: Somehow get the _given_answers from the database and display them on the feedback page
-
-        // TODO: Make the LLM generate feedback based on the _given_answers
+        this.isRunning = false;
     }
 
     toString() {

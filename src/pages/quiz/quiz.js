@@ -6,8 +6,10 @@ import { Quiz } from "../../classes/Quiz.js";
 /* Get DOM elements */
 const quiz_form = document.getElementById('quiz_form');
 
+/* Get quiz_id from URL */
 const quiz_id = new URLSearchParams(window.location.search).get('quiz_id');
 
+/* Get quiz from database */
 console.debug(`quiz: quiz_id:`, quiz_id);
 console.debug(`quiz: get quiz from database`);
 
@@ -17,6 +19,7 @@ const quiz = Quiz.fromObject(quiz_data.quiz);
 console.debug(`quiz: getQuizById: returned`);
 console.debug(`quiz: getQuizById: quiz:`, quiz);
 
+/* Set quiz related listeners */
 document.getElementById('previous_button').addEventListener('click', () => {
     quiz.resetQuizForm();
     quiz.enableQuizForm();
@@ -31,10 +34,7 @@ document.getElementById('previous_button').addEventListener('click', () => {
     quiz.displayQuestion();
 });
 
-quiz.startQuiz();
-
 let given_answer;
-let quiz_finished = false;
 
 quiz_form.addEventListener('submit', async (event) => {
     try {
@@ -61,3 +61,16 @@ quiz_form.addEventListener('submit', async (event) => {
         console.error(error);
     }
 });
+
+/* Start quiz */
+quiz.startQuiz();
+
+/* Run quiz */
+while (quiz.isRunning) {
+    // Wait for quiz to finish
+}
+
+/* Move to feedback page */
+url = `feedback.html?given_answers=${quiz._given_answers}`;
+
+window.location.href = url;
