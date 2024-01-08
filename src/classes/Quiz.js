@@ -143,12 +143,28 @@ export class Quiz {
     getPreviousQuestion() {
         console.log(`Quiz:getPreviousQuestion()`);
 
+        this.resetQuizForm();
+
         if (this._question_index === 1) {
             throw new Error(`Quiz.getPreviousQuestion(): Cannot go back any further!`);
         }
 
+        this.selectPreviousAnswer();
+
         this._question_index--;
         this._current_question = this.questions[this._question_index-1];
+    }
+
+    selectPreviousAnswer() {
+        console.log(`Quiz:selectPreviousAnswer()`);
+
+        if (this.quiz_type == 'multiple_choice') {
+            document.getElementById(`option_${this._given_answers[this._question_index-1].given_index}`).checked = true;
+        } else if (this.quiz_type == 'true_or_false') {
+            console.warn(`Quiz.selectPreviousAnswer(): true_or_false is not implemented!`);
+        } else if (this.quiz_type == 'short_answer') {
+            document.getElementById(`short_answer`).value = this._given_answers[this._question_index-1].given_answer;
+        }
     }
 
     getNextQuestion() {
@@ -163,14 +179,6 @@ export class Quiz {
         
         try {
             document.getElementById(`question_index`).innerHTML = `Question ${this._question_index}`;
-
-            document.getElementById(`quiz_index_info`).innerHTML = `${this._question_index} / ${this.questions.length}`;
-            document.getElementById(`correct_count_info`).innerHTML = `${this._correct_count} / ${this.questions.length}`;
-            document.getElementById(`wrong_count_info`).innerHTML = `${this._wrong_count} / ${this.questions.length}`;
-
-            document.getElementById(`offcanvas_quiz_index_info`).innerHTML = `${this._question_index} / ${this.questions.length}`;
-            document.getElementById(`offcanvas_correct_count_info`).innerHTML = `${this._correct_count} / ${this.questions.length}`;
-            document.getElementById(`offcanvas_wrong_count_info`).innerHTML = `${this._wrong_count} / ${this.questions.length}`;
 
             document.getElementById(`question`).innerHTML = this._current_question.question;
             
@@ -247,6 +255,7 @@ export class Quiz {
                 "correct": false,
                 "correct_answer": "Washington D.C.",
                 "given_answer": "New York"
+                "given_index": 3
             }
         */
 
@@ -254,7 +263,8 @@ export class Quiz {
             this._given_answers.push({
                 "correct": isCorrect,
                 "correct_answer": this._current_question.answer,
-                "given_answer": this._current_question.options[given_answer]
+                "given_answer": this._current_question.options[given_answer],
+                "given_index": given_answer
             });
         } else {
             this._given_answers[this._question_index - 1] = {
