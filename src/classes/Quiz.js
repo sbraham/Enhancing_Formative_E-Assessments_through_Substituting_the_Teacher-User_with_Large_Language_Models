@@ -232,7 +232,7 @@ export class Quiz {
         this._question_index--;
         this._current_question = this.questions[this._question_index-1];
 
-        this.selectPreviousAnswer();
+        this.displayQuestion();
     }
 
     /** Submit answer */
