@@ -276,7 +276,10 @@ export class Quiz {
 
         console.log(`this.given_answers:`, this._given_answers);
 
-        this.showResult(given_answer, isCorrect);
+        /* The showResult function would display the answers to the user as they go through the quiz */
+        /* Do to the existence of the previous button, this function is not needed */
+        
+        // this.showResult(given_answer, isCorrect);
 
         setTimeout(() => {
             /* Reset quiz */
