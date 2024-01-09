@@ -1,7 +1,0 @@
-export const QUIZ_GENERATION_CREATIVITY = 0.7;
-export const QUESTION_MAX_TOKENS = 100;
-export const ANSWER_MAX_TOKENS = 50;
-
-export const FEEDBACK_GENERATION_CREATIVITY = 0.7;
-
-export const HALLUCINATION_SENSITIVITY = 0.7;

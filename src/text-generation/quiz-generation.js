@@ -1,5 +1,8 @@
 import { callLMStudio } from './LM-studio-helper.js';
-import { QUIZ_GENERATION_CREATIVITY, QUESTION_MAX_TOKENS, ANSWER_MAX_TOKENS } from '../config.js';
+
+const QUIZ_GENERATION_CREATIVITY = 0.5;
+const QUESTION_MAX_TOKENS = 100; 
+const ANSWER_MAX_TOKENS = 50;
 
 /**
  * Generates a question based on the given context.
@@ -10,10 +13,10 @@ import { QUIZ_GENERATION_CREATIVITY, QUESTION_MAX_TOKENS, ANSWER_MAX_TOKENS } fr
  */
 export async function generateQuestion(context, existing_questions = []) {
     //console.log(`LM-studio-helper.js: generateQuestion`);
-
+ 
     let system_content = 'Generate one short answer question relating to the following context.';
     system_content += '\nThe question must be answerable by a single word or phrase.';
-    system_content += '\nOnly write the question, do not state the answer.';
+    system_content += '\nOnly write the question, do not state the answer or any examples.';
 
     let user_content = `Context: ${context}.`;
 
@@ -51,7 +54,7 @@ export async function generateAnswer(context, question) {
     //console.log(`LM-studio-helper.js: generateAnswer`);
 
     let system_content = `Given the context, what is the TRUE answer to the following question?`;
-    
+
     let user_content = `Context: ${context}.`;
     user_content += `\nQuestion: ${question}.`;
 
@@ -75,7 +78,7 @@ export async function generateDistractors(context, question, options = []) {
     //console.log(`LM-studio-helper.js: generateDistractors`);
 
     let system_content = `Given the context, what is a FALSE distractor answer to the following question?`;
-    
+
     let user_content = `Context: ${context}.`;
     user_content += `\nQuestion: ${question}.`;
 
