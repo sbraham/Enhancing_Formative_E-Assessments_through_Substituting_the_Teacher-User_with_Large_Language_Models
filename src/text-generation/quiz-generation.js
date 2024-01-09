@@ -78,6 +78,7 @@ export async function generateDistractors(context, question, options = []) {
     //console.log(`LM-studio-helper.js: generateDistractors`);
 
     let system_content = `Given the context, what is a FALSE distractor answer to the following question?`;
+    system_content += `\nDo not state in any way that the answer is false, or that it is a distractor.`;
 
     let user_content = `Context: ${context}.`;
     user_content += `\nQuestion: ${question}.`;
