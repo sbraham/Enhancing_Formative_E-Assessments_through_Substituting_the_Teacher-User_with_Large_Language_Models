@@ -11,17 +11,17 @@ import { QUIZ_GENERATION_CREATIVITY, QUESTION_MAX_TOKENS, ANSWER_MAX_TOKENS } fr
 export async function generateQuestion(context, existing_questions = []) {
     //console.log(`LM-studio-helper.js: generateQuestion`);
 
-    let system_content = 'Generate one short answer question relating to the following context. ';
-    system_content += 'The question must be answerable by a single word or phrase. ';
-    system_content += 'Only write the question, do not state the answer. ';
+    let system_content = 'Generate one short answer question relating to the following context.';
+    system_content += '\nThe question must be answerable by a single word or phrase.';
+    system_content += '\nOnly write the question, do not state the answer.';
 
-    let user_content = `context: ${context}.`;
+    let user_content = `Context: ${context}.`;
 
     if (existing_questions.length > 0) {
-        system_content += 'Outputs must different in topic from the following questions: ';
+        system_content += '\nOutputs must different in topic from the following questions: ';
 
         for (let i = 0; i < existing_questions.length; i++) {
-            system_content += `"${existing_questions[i].question}"`;
+            system_content += `\n"${i}: ${existing_questions[i].question}"`;
 
             if (i < existing_questions.length - 1) {
                 system_content += ', ';
@@ -51,7 +51,9 @@ export async function generateAnswer(context, question) {
     //console.log(`LM-studio-helper.js: generateAnswer`);
 
     let system_content = `Given the context, what is the TRUE answer to the following question?`;
-    let user_content = `context: ${context}, question: ${question}`;
+    
+    let user_content = `Context: ${context}.`;
+    user_content += `\nQuestion: ${question}.`;
 
     try {
         let response = await callLMStudio(system_content, user_content, ANSWER_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
@@ -72,11 +74,13 @@ export async function generateAnswer(context, question) {
 export async function generateDistractors(context, question, options = []) {
     //console.log(`LM-studio-helper.js: generateDistractors`);
 
-    let system_content = `Given the context, what is a FALSE answer to the following question?`;
-    let user_content = `context: ${context}, question: ${question}`;
+    let system_content = `Given the context, what is a FALSE distractor answer to the following question?`;
+    
+    let user_content = `Context: ${context}.`;
+    user_content += `\nQuestion: ${question}.`;
 
     if (options.length > 0) {
-        system_content += ` The distractor must be different from the following options: ${options}`;
+        system_content += `\nThe distractor must be different from the following options: ${options}.`;
     }
 
     try {

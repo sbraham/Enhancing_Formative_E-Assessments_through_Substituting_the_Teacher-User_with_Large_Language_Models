@@ -285,6 +285,7 @@ export class Quiz {
 
         const answer_object = {
             "correct": isCorrect,
+            "question": this._current_question.question,
             "correct_answer": this._current_question.answer,
             "given_answer": this._current_question.options[given_answer],
             "given_index": given_answer

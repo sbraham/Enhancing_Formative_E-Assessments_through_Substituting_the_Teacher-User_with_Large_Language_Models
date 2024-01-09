@@ -27,6 +27,21 @@ import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
 */
 
 /**
+ * Cleans the response by removing special characters and keywords.
+ * 
+ * @param {string} response - The response to be cleaned.
+ * @returns {string} The cleaned response.
+ */
+function responseCleaning(response) {
+    const specialCharactersRegex = /[<>[\]]|SYS|INST/g;
+
+    // Remove special characters and keywords
+    response = response.replace(specialCharactersRegex, '');
+
+    return response;
+}
+
+/**
  * Calls the LM Studio API to generate text based on system and user content.
  * @param {string} system_content - The system content.
  * @param {string} user_content - The user content.
@@ -79,6 +94,8 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
         const milliseconds = Math.floor((execution_time % 1000));
         
         //console.debug(`Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
+
+        response = responseCleaning(response);
 
         return response;
     } catch (error) {
