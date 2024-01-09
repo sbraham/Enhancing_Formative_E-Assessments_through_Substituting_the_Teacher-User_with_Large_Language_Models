@@ -1,0 +1,43 @@
+sxb1567
+├─ .firebase
+├─ .firebaserc
+├─ .git
+├─ .gitignore
+├─ firebase.json
+├─ README.md
+└─ src
+   ├─ 404.html
+   ├─ assets
+   ├─ classes
+   │  └─ Quiz.js
+   ├─ firebase
+   │  ├─ auth-helper.js
+   │  ├─ config.js
+   │  └─ database-helper.js
+   ├─ index.html
+   ├─ index.js
+   ├─ loading.html
+   ├─ pages
+   │  ├─ create_account
+   │  │  ├─ create_account.html
+   │  │  └─ create_account.js
+   │  ├─ dashboard
+   │  │  ├─ dashboard.html
+   │  │  └─ dashbourd.js
+   │  ├─ feedback
+   │  │  ├─ feedback.html
+   │  │  └─ feedback.js
+   │  ├─ login
+   │  │  ├─ login.html
+   │  │  └─ login.js
+   │  └─ quiz
+   │     ├─ quiz.html
+   │     └─ quiz.js
+   ├─ stylesheet.css
+   └─ text-generation
+      ├─ feedback-generation.js
+      ├─ hallucination-mitigation.js
+      ├─ LM-studio-helper.js
+      ├─ question-verification.js
+      ├─ quiz-generation.js
+      └─ test-LLM.js
