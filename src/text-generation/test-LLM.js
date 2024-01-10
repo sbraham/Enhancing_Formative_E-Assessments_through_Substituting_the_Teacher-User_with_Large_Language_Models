@@ -9,7 +9,7 @@ isBatch = true;
 /* Variables */
 
 // Define the number of quizzes you want to generate
-const number_of_quizzes = 1;
+const number_of_questions = 10;
 
 // Define the structure of your quizzes
 const quiz = [];
@@ -54,6 +54,9 @@ if (isBatch) {
 // Convert the quizzes array to a string
 let i = 1;
 
+data += "Short Answer Questions: \n";
+data += "\n";
+
 quiz.forEach(question => {
     data += "Question : " + (i++) + "\n";
 
@@ -62,6 +65,11 @@ quiz.forEach(question => {
     data += "Options  : " + question.options + "\n";
 
     data += "\n";
+
+    if (i == number_of_questions + 1) {
+        data += "Multiple Choice Questions: \n";
+        data += "\n";
+    }
 });
 
 console.log(data);

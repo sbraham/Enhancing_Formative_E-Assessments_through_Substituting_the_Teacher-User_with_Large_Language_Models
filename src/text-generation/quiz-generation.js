@@ -21,10 +21,10 @@ export async function generateQuestion(context, existing_questions = []) {
     let user_content = `Context: ${context}.`;
 
     if (existing_questions.length > 0) {
-        system_content += `\nOutputs must different in topic from the following questions: `;
+        system_content += '\nThe question must be different to the following questions: ';
 
         for (let i = 0; i < existing_questions.length; i++) {
-            system_content += `\n"${i}: ${existing_questions[i].question}"`;
+            system_content += `"${i}: ${existing_questions[i].question}"`;
 
             if (i < existing_questions.length - 1) {
                 system_content += `, `;
