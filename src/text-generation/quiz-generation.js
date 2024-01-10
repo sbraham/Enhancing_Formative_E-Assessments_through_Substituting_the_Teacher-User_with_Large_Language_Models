@@ -146,10 +146,11 @@ export async function generateDistractors(context, question, options = []) {
  * @param {string} question - The question for which distractors need to be generated.
  * @returns {Promise<string[]|string>} - An array of distractor answers or an error message if an error occurs.
  */
-export async function generateManyDistractors(number_of_distractors, context, question) {
+export async function generateManyDistractors(number_of_distractors, context, question, answer) {
     //console.log(`LM-studio-helper.js: generateDistractors`);
 
     let system_content = `Given the context, give ${number_of_distractors} FALSE distractor answers to the following question?`;
+    system_content += `\nThe true answer is "${answer}", and distractors should be similar in format to it.`;
     system_content += `\nDo not state in any way that the answer is false, or that it is a distractor.`;
     system_content += `\nDo not number the distractors.`;
     system_content += `\n`;
@@ -274,7 +275,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
         for (const question of question_objects) {
             question.options.push(question.answer);
 
-            distractors = await generateManyDistractors(number_of_options - 1, context, question.question);
+            distractors = await generateManyDistractors(number_of_options - 1, context, question.question, question.answer);
 
             distractors.forEach(distractor => {
                 question.options.push(distractor);
