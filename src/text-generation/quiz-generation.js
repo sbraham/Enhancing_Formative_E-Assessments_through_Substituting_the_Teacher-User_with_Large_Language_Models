@@ -1,4 +1,4 @@
-import { callLMStudio } from `./LM-studio-helper.js`;
+import { callLMStudio } from './LM-studio-helper.js';
 
 const QUIZ_GENERATION_CREATIVITY = 0.5;
 const QUESTION_MAX_TOKENS = 100; 
