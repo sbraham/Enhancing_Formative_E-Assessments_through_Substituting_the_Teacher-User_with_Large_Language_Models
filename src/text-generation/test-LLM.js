@@ -2,7 +2,9 @@ console.log('Loading: test-LLM.js');
 
 /* Imports */
 
-import { SWQG } from "./quiz-generation.js";
+import { SWQG, BatchSWQG } from "./quiz-generation.js";
+
+isBatch = true;
 
 /* Variables */
 
@@ -20,20 +22,33 @@ let quiz_description = "Computer systems consist of hardware and software. Hardw
 
 /* Functions */
 
-for (let i = 0; i < number_of_quizzes; i++) {
+if (isBatch) {
+
     // Generate a quiz using your SWQG module
-    const question = await SWQG('short_answer', `${quiz_title} (${quiz_description})`);
+    const short_answer = await BatchSWQG(10, 'short_answer', `${quiz_title} (${quiz_description})`);
+    const multiple_choice = await BatchSWQG(10, 'multiple_choice', `${quiz_title} (${quiz_description})`);
 
     // Store the quiz in the quizzes array
-    quiz.push(question);
-}
+    quiz.concat(short_answer, multiple_choice);
 
-for (let i = 0; i < number_of_quizzes; i++) {
-    // Generate a quiz using your SWQG module
-    const question = await SWQG('multiple_choice', `${quiz_title} (${quiz_description})`);
+} else {
 
-    // Store the quiz in the quizzes array
-    quiz.push(question);
+    for (let i = 0; i < number_of_quizzes; i++) {
+        // Generate a quiz using your SWQG module
+        const question = await SWQG('short_answer', `${quiz_title} (${quiz_description})`);
+
+        // Store the quiz in the quizzes array
+        quiz.push(question);
+    }
+
+    for (let i = 0; i < number_of_quizzes; i++) {
+        // Generate a quiz using your SWQG module
+        const question = await SWQG('multiple_choice', `${quiz_title} (${quiz_description})`);
+
+        // Store the quiz in the quizzes array
+        quiz.push(question);
+    }
+
 }
 
 // Convert the quizzes array to a string
