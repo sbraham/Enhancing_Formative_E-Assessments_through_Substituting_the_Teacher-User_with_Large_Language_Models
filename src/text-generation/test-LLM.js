@@ -4,7 +4,7 @@ console.log('Loading: test-LLM.js');
 
 import { SWQG, BatchSWQG } from "./quiz-generation.js";
 
-isBatch = true;
+const isBatch = true;
 
 /* Variables */
 
