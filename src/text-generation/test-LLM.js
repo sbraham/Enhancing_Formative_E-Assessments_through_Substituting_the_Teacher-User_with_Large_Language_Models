@@ -43,10 +43,13 @@ if (isBatch) {
 
         data += "Question: " + question.question + "\n";
         data += "Answer: " + question.answer + "\n";
-        data += "Options: \n";
-        question.options.forEach(option => {
-            data += "   - " + option + "\n";
-        });
+
+        if (question.options != []) {
+            data += "Options: \n";
+            question.options.forEach(option => {
+                data += "   - " + option + "\n";
+            });
+        }
 
         data += "\n";
 
