@@ -64,9 +64,16 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     let user_content = `Context: ${context}.`;
 
     try {
-        let response = await callLMStudio(system_content, user_content, QUESTION_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
-        
-        const questions = response.split('|').filter(question => question !== "");
+        let questions = [];
+
+        while (questions.length !== number_of_questions) {
+
+            let response = await callLMStudio(system_content, user_content, QUESTION_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
+            
+            questions = response.split('|')
+
+            questions = questions.filter(question => question !== "");
+        }
         
         return questions;
     } catch (error) {
@@ -86,6 +93,8 @@ export async function generateAnswer(context, question) {
     //console.log(`LM-studio-helper.js: generateAnswer`);
 
     let system_content = `Given the context, what is the TRUE answer to the following question?`;
+    system_content += `\nDo not state in any way that the answer is true, or that it is the answer.`;
+    system_content += `\nOnly write the answer, do not write any examples or other possible answers.`;
 
     let user_content = `Context: ${context}.`;
     user_content += `\nQuestion: ${question}.`;
@@ -149,10 +158,17 @@ export async function generateManyDistractors(number_of_distractors, context, qu
     user_content += `\nQuestion: ${question}.`;
 
     try {
-        let response = await callLMStudio(system_content, user_content, ANSWER_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
+        let distractors = [];
 
-        const distractors = response.split('|').filter(distractor => distractor !== "");
+        while (distractors.length !== number_of_distractors) {
 
+            let response = await callLMStudio(system_content, user_content, ANSWER_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
+            
+            distractors = response.split('|')
+
+            distractors = distractors.filter(distractor => distractor !== "");
+        }
+        
         return distractors;
     } catch (error) {
         console.error(`LM-studio-helper.js: ERROR:`, error);
