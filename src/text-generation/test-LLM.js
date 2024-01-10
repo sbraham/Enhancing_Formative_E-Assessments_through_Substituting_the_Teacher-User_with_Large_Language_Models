@@ -9,7 +9,7 @@ const isBatch = true;
 /* Variables */
 
 // Define the number of quizzes you want to generate
-const number_of_questions = 25;
+const number_of_questions = 10;
 
 // Define the structure of your quizzes
 const quiz = [];
