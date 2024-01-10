@@ -1,7 +1,7 @@
 import { callLMStudio } from './LM-studio-helper.js';
 
 const QUIZ_GENERATION_CREATIVITY = 0.5;
-const QUESTION_MAX_TOKENS = 100; 
+const QUESTION_MAX_TOKENS = 1000; 
 const ANSWER_MAX_TOKENS = 50;
 
 /**
@@ -59,14 +59,14 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     system_content += `\nOnly write the question, do not state the answer or any examples.`;
     system_content += `\n`;
     system_content += `\nEach question should have the following format:`;
-    system_content += `\nQuestion: <question> |`;
+    system_content += `\nQuestion 1. <question> |`;
 
     let user_content = `Context: ${context}.`;
 
     try {
         let response = await callLMStudio(system_content, user_content, QUESTION_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
         
-        const questions = response.split('|');
+        const questions = response.split('|').filter(question => question !== "");
         
         return questions;
     } catch (error) {
@@ -151,7 +151,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
     try {
         let response = await callLMStudio(system_content, user_content, ANSWER_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
 
-        const distractors = response.split('|');
+        const distractors = response.split('|').filter(distractor => distractor !== "");
 
         return distractors;
     } catch (error) {
@@ -233,24 +233,27 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
     /* Step 1: Generate a question */
     console.debug(`LM-studio-helper.js: BatchSWQG: Step 1: Generate all the questions`);
     array_of_questions = await generateManyQuestion(number_of_questions, context);
-    console.log(array_of_questions);
     
     array_of_questions.forEach(question => {
         question_objects.push({ question: question, answer: ``, options: [] });
     });
 
+    console.log(question_objects);
+
     /* Step 2: Generate the answer */
     console.debug(`LM-studio-helper.js: BatchSWQG: Step 2: Generate an answer for each question`);
-    question_objects.forEach(async question => {
-        answer = await generateAnswer(context, question);
+    for (const question of question_objects) {
+        answer = await generateAnswer(context, question.question);
         question.answer = answer;
-    });
+    }
+
+    console.log(question_objects);
 
     if (quiz_type == `multiple_choice`) {
         /* Step 3: Generate the distractors */
         console.debug(`LM-studio-helper.js: SWQG: Step 3: Generate the distractors`);
         
-        question_objects.forEach(async question => {
+        for (const question of question_objects) {
             question.options.push(question.answer);
 
             distractors = await generateManyDistractors(number_of_options - 1, context, question.question);
@@ -258,7 +261,9 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
             distractors.forEach(distractor => {
                 question.options.push(distractor);
             });
-        });
+        }
+
+        console.log(question_objects);
     }
 
     // Calculate the execution time

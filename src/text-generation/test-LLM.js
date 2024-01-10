@@ -9,7 +9,7 @@ const isBatch = true;
 /* Variables */
 
 // Define the number of quizzes you want to generate
-const number_of_questions = 10;
+const number_of_questions = 1;
 
 // Define the structure of your quizzes
 const quiz = [];
@@ -29,7 +29,34 @@ if (isBatch) {
     const multiple_choice = await BatchSWQG(10, 'multiple_choice', `${quiz_title} (${quiz_description})`);
 
     // Store the quiz in the quizzes array
-    quiz.concat(short_answer, multiple_choice);
+    quiz.push(...short_answer);
+    quiz.push(...multiple_choice);
+
+    // Convert the quizzes array to a string
+    let i = 1;
+
+    data += "Short Answer Questions: \n";
+    data += "\n";
+
+    quiz.forEach(question => {
+        data += "Question : " + (i++) + "\n";
+
+        data += "Question : " + question.question + "\n";
+        data += "Answer   : " + question.answer + "\n";
+        data += "Options  : \n";
+        question.forEach(option => {
+            data += "    " + option + "\n";
+        });
+
+        data += "\n";
+
+        if (i == number_of_questions + 1) {
+            data += "Multiple Choice Questions: \n";
+            data += "\n";
+        }
+    });
+
+    console.log(data);
 
 } else {
 
@@ -49,27 +76,28 @@ if (isBatch) {
         quiz.push(question);
     }
 
-}
 
-// Convert the quizzes array to a string
-let i = 1;
 
-data += "Short Answer Questions: \n";
-data += "\n";
+    // Convert the quizzes array to a string
+    let i = 1;
 
-quiz.forEach(question => {
-    data += "Question : " + (i++) + "\n";
-
-    data += "Question : " + question.question + "\n";
-    data += "Answer   : " + question.answer + "\n";
-    data += "Options  : " + question.options + "\n";
-
+    data += "Short Answer Questions: \n";
     data += "\n";
 
-    if (i == number_of_questions + 1) {
-        data += "Multiple Choice Questions: \n";
-        data += "\n";
-    }
-});
+    quiz.forEach(question => {
+        data += "Question : " + (i++) + "\n";
 
-console.log(data);
+        data += "Question : " + question.question + "\n";
+        data += "Answer   : " + question.answer + "\n";
+        data += "Options  : " + question.options + "\n";
+
+        data += "\n";
+
+        if (i == number_of_questions + 1) {
+            data += "Multiple Choice Questions: \n";
+            data += "\n";
+        }
+    });
+
+    console.log(data);
+}

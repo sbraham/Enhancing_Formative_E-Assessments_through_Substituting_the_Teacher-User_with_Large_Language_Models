@@ -33,14 +33,12 @@ import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
  * @returns {string} The cleaned response.
  */
 function responseCleaning(response) {
-    console.log('Response + : ', response);
-
     const specialCharactersRegex = /[<>[\]\n]|SYS|INST|:|QUESTION|Question|ANSWER|Answer|Option|Distractor/g;
 
     // Remove special characters and keywords
     response = response.replace(specialCharactersRegex, '');
 
-    console.log('Response - : ', response);
+    console.debug('response:', response);
 
     return response;
 }
