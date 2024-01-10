@@ -57,6 +57,7 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     let system_content = `Generate ${number_of_questions} different short answer question relating to the following context.`;
     system_content += `\nThe question must be answerable by a single word or phrase.`;
     system_content += `\nOnly write the question, do not state the answer or any examples.`;
+    system_content += `\nDo not number the questions.`;
     system_content += `\n`;
     system_content += `\nEach question should have the following format:`;
     system_content += `\nQuestion: <question> |`;
@@ -150,6 +151,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
 
     let system_content = `Given the context, give ${number_of_distractors} FALSE distractor answers to the following question?`;
     system_content += `\nDo not state in any way that the answer is false, or that it is a distractor.`;
+    system_content += `\nDo not number the distractors.`;
     system_content += `\n`;
     system_content += `\nEach distractor answer should have the following format:`;
     system_content += `\nDistractor: <distractor> |`;

@@ -17,8 +17,8 @@ const quiz = [];
 // Data which will write in a file.
 let data = ""
 
-let quiz_title = "GCSE AQA Computer Science - Hardware and software";
-let quiz_description = "Computer systems consist of hardware and software. Hardware is the physical components of the computer, such as the central processing unit (CPU), hard disk, monitor, keyboard and mouse. Software is the programs that run on a computer.";
+let quiz_title = "GCSE French - Vocabulary - meals and meal times";
+let quiz_description = "Food and eating out vocabulary - Breakfast, Lunch, Dinner and Restaurants";
 
 /* Functions */
 
