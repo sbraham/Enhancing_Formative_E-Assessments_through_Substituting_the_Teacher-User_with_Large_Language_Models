@@ -7,7 +7,7 @@ import { SWQG } from "./quiz-generation.js";
 /* Variables */
 
 // Define the number of quizzes you want to generate
-const number_of_quizzes = 1;
+const number_of_questions = 10;
 
 // Define the structure of your quizzes
 const quiz = [];
@@ -20,17 +20,17 @@ let quiz_description = "Computer systems consist of hardware and software. Hardw
 
 /* Functions */
 
-for (let i = 0; i < number_of_quizzes; i++) {
+for (let i = 0; i < number_of_questions; i++) {
     // Generate a quiz using your SWQG module
-    const question = await SWQG('short_answer', `${quiz_title} (${quiz_description})`);
+    const question = await SWQG('short_answer', `${quiz_title} (${quiz_description})`, 4, quiz);
 
     // Store the quiz in the quizzes array
     quiz.push(question);
 }
 
-for (let i = 0; i < number_of_quizzes; i++) {
+for (let i = 0; i < number_of_questions; i++) {
     // Generate a quiz using your SWQG module
-    const question = await SWQG('multiple_choice', `${quiz_title} (${quiz_description})`);
+    const question = await SWQG('multiple_choice', `${quiz_title} (${quiz_description})`, 4, quiz);
 
     // Store the quiz in the quizzes array
     quiz.push(question);
@@ -38,6 +38,9 @@ for (let i = 0; i < number_of_quizzes; i++) {
 
 // Convert the quizzes array to a string
 let i = 1;
+
+data += "Short Answer Questions: \n";
+data += "\n";
 
 quiz.forEach(question => {
     data += "Question : " + (i++) + "\n";
@@ -47,6 +50,11 @@ quiz.forEach(question => {
     data += "Options  : " + question.options + "\n";
 
     data += "\n";
+
+    if (i == number_of_questions + 1) {
+        data += "Multiple Choice Questions: \n";
+        data += "\n";
+    }
 });
 
 console.log(data);
