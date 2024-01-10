@@ -59,7 +59,7 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     system_content += `\nOnly write the question, do not state the answer or any examples.`;
     system_content += `\n`;
     system_content += `\nEach question should have the following format:`;
-    system_content += `\nQuestion 1. <question> |`;
+    system_content += `\nQuestion: <question> |`;
 
     let user_content = `Context: ${context}.`;
 

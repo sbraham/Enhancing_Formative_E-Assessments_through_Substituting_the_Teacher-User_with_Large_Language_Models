@@ -9,7 +9,7 @@ const isBatch = true;
 /* Variables */
 
 // Define the number of quizzes you want to generate
-const number_of_questions = 1;
+const number_of_questions = 25;
 
 // Define the structure of your quizzes
 const quiz = [];
@@ -25,8 +25,8 @@ let quiz_description = "Computer systems consist of hardware and software. Hardw
 if (isBatch) {
 
     // Generate a quiz using your SWQG module
-    const short_answer = await BatchSWQG(10, 'short_answer', `${quiz_title} (${quiz_description})`);
-    const multiple_choice = await BatchSWQG(10, 'multiple_choice', `${quiz_title} (${quiz_description})`);
+    const short_answer = await BatchSWQG(number_of_questions, 'short_answer', `${quiz_title} (${quiz_description})`);
+    const multiple_choice = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_title} (${quiz_description})`);
 
     // Store the quiz in the quizzes array
     quiz.push(...short_answer);
@@ -44,7 +44,7 @@ if (isBatch) {
         data += "Question : " + question.question + "\n";
         data += "Answer   : " + question.answer + "\n";
         data += "Options  : \n";
-        question.forEach(option => {
+        question.options.forEach(option => {
             data += "    " + option + "\n";
         });
 
