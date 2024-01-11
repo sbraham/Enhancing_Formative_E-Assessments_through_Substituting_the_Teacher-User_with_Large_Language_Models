@@ -7,12 +7,11 @@ import { getUserQuizzes, addQuizToDB } from "../../firebase/database-helper.js";
 import { Quiz } from "../../classes/Quiz.js";
 
 let index = 0;
+let isGenerating = false;
 
 /* Function to create a new Quiz Card */
-function createQuizCard(quiz) {
+function createQuizCard(quiz, index) {
     console.log('createQuizCard: Creating quiz card:', quiz.id);
-
-    index++;
 
     /* Get the location to insert into */
     const row = document.getElementById('row_of_quizzes');
@@ -36,9 +35,11 @@ function createQuizCard(quiz) {
                         data-bs-target="#details_modal_${index}">
                         <div class="cut-text-1">Details</div>
                     </button>
-                    <button type="button" class="btn btn-success card-button" id="${index}">
-                        <div class="cut-text-1">Take Quiz</div>
-                    </button>
+                    <div id="take_quiz_button_${index}_container" class="no-spacing card-button">
+                        <button type="button" class="btn btn-success no-spacing w-100 h-100" id="${index}">
+                            <div class="cut-text-1">Take Quiz</div>
+                        </button>
+                    </div>
                 </div>
                 <div class="modal fade" id="details_modal_${index}" tabindex="-1" aria-labelledby="details_modal_${index}_label"
                     aria-hidden="true">
@@ -55,12 +56,14 @@ function createQuizCard(quiz) {
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-danger delete_quiz_button">
+                                <button type="button" class="btn btn-danger delete_quiz_button" id="${index}_delete">
                                     <div class="cut-text-1">Delete Quiz</div>
                                 </button>
-                                <button type="button" class="btn btn-success card-button" id="${index}_model">
-                                    <div class="cut-text-1">Take Quiz</div>
-                                </button>
+                                <div id="take_quiz_button_${index}_model_container">
+                                    <button type="button" class="btn btn-success" id="${index}_model">
+                                        <div class="cut-text-1">Take Quiz</div>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -69,18 +72,23 @@ function createQuizCard(quiz) {
         </div>
     `;
 
-
-    row.appendChild(card_container);
+    row.insertBefore(card_container, row.lastElementChild);
 
     document.getElementById(`${index}`).addEventListener('click', () => takeQuiz(quiz));
 
     document.getElementById(`${index}_model`).addEventListener('click', () => takeQuiz(quiz));
 }
 
+/* Function to create the button used to create new quizzes */
 function createCreateQuizCard() {
     console.log('createCreateQuizCard: Creating create quiz card');
 
     const row = document.getElementById('row_of_quizzes');
+
+    let tooltip_text = `The description will help you specify exactly what topics you want the quiz to cover.\n`
+    tooltip_text += `It will also help you remember what the quiz is about when you come back to it later. \n`
+    tooltip_text += `You can leave it blank for a broud quiz, give it a specific topic area to focus on, or give it a large piece of text to make the questions from. \n`
+    tooltip_text += `It's up to you!`;
 
     const card_container = document.createElement('div');
     card_container.className = 'card-container col-sm-4';
@@ -109,12 +117,16 @@ function createCreateQuizCard() {
                                 <input type="text" class="form-control" id="quiz_title" required
                                     placeholder="Enter quiz title">
                             </div>
-
+                            
                             <!-- Quiz Description -->
                             <div class="mb-3">
-                                <label for="quiz_description" class="form-label">Description</label>
-                                <textarea class="form-control" id="quiz_description" rows="3"
-                                    placeholder="Enter quiz description"></textarea>
+                                <div class="info-group">
+                                    <label for="quiz_description" class="form-label">Description</label>
+                                    <span class="badge text-bg-info fs-6 fw-bold" data-bs-toggle="tooltip" data-bs-placement="right" title="${tooltip_text}">
+                                        ⓘ
+                                    </span>
+                                </div>
+                                <textarea class="form-control" id="quiz_description" rows="3" placeholder="Enter quiz description"></textarea>
                             </div>
 
                             <!-- Number of Questions -->
@@ -127,7 +139,7 @@ function createCreateQuizCard() {
                                     </div>
 
                                     <!-- Endless Checkbox -->
-                                    <div class="col-sm">
+                                    <!-- <div class="col-sm">
                                         <input class="form-check-input" type="checkbox" value=""
                                             id="endless_checkbox">
                                     </div>
@@ -135,7 +147,7 @@ function createCreateQuizCard() {
                                         <label class="form-check-label" for="endless_checkbox">
                                             Endless
                                         </label>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
 
@@ -144,7 +156,6 @@ function createCreateQuizCard() {
                                 <label for="question_type" class="form-label">Question Type</label>
                                 <select class="form-select" id="question_type" required>
                                     <option value="multiple_choice" selected>Multiple Choice</option>
-                                    <option value="true_or_false">True/False</option>
                                     <option value="short_answer">Short Answer</option>
                                 </select>
                             </div>
@@ -167,47 +178,93 @@ function createCreateQuizCard() {
 
     row.appendChild(card_container);
 
-    document.getElementById('endless_checkbox').addEventListener('change', () => {
-        if (document.getElementById('endless_checkbox').checked) {
-            document.getElementById('number_of_questions').disabled = true;
-            document.getElementById('number_of_questions').value = '';
-        } else {
-            document.getElementById('number_of_questions').disabled = false;
-            document.getElementById('number_of_questions').value = placeholder;
-        }
-    });
+    // document.getElementById('endless_checkbox').addEventListener('change', () => {
+    //     if (document.getElementById('endless_checkbox').checked) {
+    //         document.getElementById('number_of_questions').disabled = true;
+    //         document.getElementById('number_of_questions').value = '';
+    //     } else {
+    //         document.getElementById('number_of_questions').disabled = false;
+    //         document.getElementById('number_of_questions').value = placeholder;
+    //     }
+    // });
 
     document.getElementById('create_quiz_form').addEventListener('submit', event => {
         event.preventDefault(); // Prevents the default behaviour of the form
     
         addNewQuiz()
     });
+
+    // Initialise the tooltips
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 }
 
 
-function addNewQuiz() {
+async function addNewQuiz() {
     console.log('addNewQuiz: Creating quiz');
+
+    if (isGenerating) {
+        console.log('addNewQuiz: Already generating quiz');
+
+        alert('You cannot create a new quiz while another quiz is being created. Please wait until the current quiz has finished generating.');
+
+        return;
+    }
 
     // Getting the values from the form
     const quiz_title = document.getElementById('quiz_title').value;
     const quiz_description = document.getElementById('quiz_description').value;
     const number_of_questions = document.getElementById('number_of_questions').value;
-    const endless_checkbox = document.getElementById('endless_checkbox').value;
+    //const endless_checkbox = document.getElementById('endless_checkbox').value;
     const question_type = document.getElementById('question_type').value;
-
-    const quiz = new Quiz(quiz_title, quiz_description, number_of_questions, question_type, endless_checkbox);
-
-    createQuizCard(quiz);
-
-    addQuizToDB(quiz);
 
     // Clearing the form
     document.getElementById('quiz_title').value = '';
     document.getElementById('quiz_description').value = '';
     document.getElementById('number_of_questions').value = '';
-    document.getElementById('endless_checkbox').value = '';
+    //document.getElementById('endless_checkbox').value = '';
     document.getElementById('question_type').value = '';
+
+    // Creating the quiz
+    const quiz = new Quiz(quiz_title, quiz_description, number_of_questions, question_type);   
+
+    createQuizCard(quiz, index);
+
+    // Replace inner HTML with spinner
+    const take_quiz_button_container = document.getElementById(`take_quiz_button_${index}_container`);
+    const take_quiz_button_modal_container = document.getElementById(`take_quiz_button_${index}_model_container`);
+
+    console.log(take_quiz_button_container);
+    console.log(take_quiz_button_modal_container);
+
+    const take_quiz_button_container_innerHTML = take_quiz_button_container.innerHTML;
+    const take_quiz_button_modal_container_innerHTML = take_quiz_button_modal_container.innerHTML;
+    take_quiz_button_container.innerHTML = '<div class="spinner"></div>';
+    take_quiz_button_modal_container.innerHTML = '<div class="spinner"></div>';
+
+    // TO DO - make this spinning wheel look better
+
+    // TO DO - make the Take Quiz button work for a newly created quiz - you will need to reasign the event listener BELLOW (1)
+
+    isGenerating = true;
+
+    // Run await generateQuestions
+    await quiz.generateQuestions();
+
+    isGenerating = false;
+
+    // Return containers back to their original inner HTML
+    take_quiz_button_container.innerHTML = take_quiz_button_container_innerHTML;
+    take_quiz_button_modal_container.innerHTML = take_quiz_button_modal_container_innerHTML;
+
+    // HERE (1)
+
+    index++;
+
+    // It would be nice for the modal to close automatically, but I don't know how to do that and it's not a priority
 }
+
+// TO DO - make the delete button work
 
 function takeQuiz(quiz) {
     const quiz_id = quiz.id;
@@ -225,53 +282,38 @@ function takeQuiz(quiz) {
 console.log(`dashbourd: checking login`);
 await checkLogin(`../login/login.html`);
 
-const LLM_test = false;
-// import { exportable } from "../../text-generation/test-LLM.js";
+console.log(`dashbourd: fetching user quizzes`);
+const quizzes_data = await getUserQuizzes();
+const user_quizzes = [];
 
-if (!LLM_test) {
-    console.log(`dashbourd: fetching user quizzes`);
-    const quizzes_data = await getUserQuizzes();
-    const user_quizzes = [];
+console.log(`dashbourd: creating quiz cards`);
+quizzes_data.forEach(quiz_data => {
+    const quiz = Quiz.fromObject(quiz_data.quiz);
+    user_quizzes.push(quiz); // Add quiz to user quizzes
+});
 
-    if (quizzes_data.length == 0) {
+user_quizzes.sort((a, b) => {
+    const titleA = a.title.toLowerCase();
+    const titleB = b.title.toLowerCase();
 
-        console.log('~~~');
-
-        // Two Short Answer Quizzes
-        const quiz1 = new Quiz(`GCSE AQA History Norman England 1066-1100`, `The Norman Rule in England`, 5, 'short_answer');
-        await quiz1.generateQuestions();
-
-        const quiz2 = new Quiz(`A-Level OCR Physics Mechanics`, `The Newtonian World`, 5, 'short_answer');
-        await quiz2.generateQuestions();
-
-        // Two Multiple Choice Quizzes
-        const quiz3 = new Quiz(`GCSE AQA History Norman England 1066-1100`, `The Norman Rule in England`, 5, 'multiple_choice');
-        await quiz3.generateQuestions();
-
-        const quiz4 = new Quiz(`A-Level OCR Physics Mechanics`, `The Newtonian World`, 5, 'multiple_choice');
-        await quiz4.generateQuestions();
-
-        await addQuizToDB(quiz1);   
-        await addQuizToDB(quiz2);
-        await addQuizToDB(quiz3);   
-        await addQuizToDB(quiz4);
-
-        console.log('~~~');
+    if (titleA < titleB) {
+        return -1;
     }
-
-    console.log(`dashbourd: creating quiz cards`);
-    quizzes_data.forEach(quiz_data => {
-        const quiz = Quiz.fromObject(quiz_data.quiz);
-        user_quizzes.push(quiz); // Add quiz to user quizzes
-
-        createQuizCard(quiz);
-    });
-
-    createCreateQuizCard()
-
-    const loading_spinner = document.getElementById("loading_spinner");
-
-    if (loading_spinner) {
-        loading_spinner.remove();
+    if (titleA > titleB) {
+        return 1;
     }
+    return 0;
+});
+
+createCreateQuizCard();
+
+user_quizzes.forEach((quiz) => {
+    createQuizCard(quiz, index);
+    index++;
+});
+
+const loading_spinner = document.getElementById("loading_spinner");
+
+if (loading_spinner) {
+    loading_spinner.remove();
 }

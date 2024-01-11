@@ -53,8 +53,15 @@ export async function generateQuestion(context, existing_questions = []) {
  */
 export async function generateManyQuestion(number_of_questions, context = ``) {
     //console.log(`LM-studio-helper.js: generateQuestion`);
- 
-    let system_content = `Generate ${number_of_questions} different short answer question relating to the following context.`;
+
+    let system_content = ``;
+
+    if (number_of_questions > 1) {
+        system_content += `Generate ${number_of_questions} different short answer question relating to the following context.`;
+    } else {
+        system_content += `Generate a short answer question relating to the following context.`;
+    }
+
     system_content += `\nThe question must be answerable by a single word or phrase.`;
     system_content += `\nOnly write the question, do not state the answer or any examples.`;
     system_content += `\n`;
@@ -65,13 +72,11 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     try {
         let questions = [];
 
-        while (questions.length !== number_of_questions) {
+        while (Number(questions.length) !== Number(number_of_questions)) {
 
             let response = await callLMStudio(system_content, user_content);
             
-            questions = response.split('|')
-
-            questions = questions.filter(question => question !== "");
+            questions = response.split('|').filter(question => /[a-zA-Z0-9]/.test(question));
         }
         
         return questions;

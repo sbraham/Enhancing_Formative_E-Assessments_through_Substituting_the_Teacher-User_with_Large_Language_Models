@@ -1,5 +1,5 @@
 // import { getElement } from '../src/getElement';
-import { SWQG } from '../text-generation/quiz-generation.js';
+import { BatchSWQG } from '../text-generation/quiz-generation.js';
 
 export class Quiz {
     /**
@@ -11,7 +11,7 @@ export class Quiz {
      * @param {string} quiz_type - The type of the quiz (multiple_choice, true_or_false, short_answer).
      * @param {number|null} [id=null] - The ID of the quiz.
      * @param {boolean} [endless=false] - Indicates if the quiz is endless.
-     * @param {Array} [questions=[]] - The array of questions in the quiz.
+     * @param {Array<Object>} [questions=[]] - The array of question objects.
      * @param {number} [attempts=0] - The number of attempts made on the quiz.
      */
     constructor(title, description = '', number_of_questions, quiz_type, id = null, endless = false, questions = [], attempts = 0) {
@@ -59,16 +59,7 @@ export class Quiz {
         } else {
             const quiz_context = `${this.title} (${this.description}) `;
 
-            for (let i = 0; i < this.number_of_questions; i++) {
-                //console.log(`Quiz: generateQuestions: Question ${i}: generating...`);
-                let question = await SWQG(this.quiz_type, quiz_context, 4, this.questions);
-                // console.log(`Quiz: generateQuestions: Question ${i}: generated`);
-                // console.log(`question:`, question.question);
-                // console.log(`answer:`, question.answer);
-                // console.log(`options:`, question.options);
-
-                this.questions.push(question);
-            }
+            this.questions = await BatchSWQG(this.number_of_questions, this.quiz_type, quiz_context);
         }
     }
 
