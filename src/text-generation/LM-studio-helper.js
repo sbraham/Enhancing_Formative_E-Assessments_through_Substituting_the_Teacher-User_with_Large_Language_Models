@@ -47,12 +47,10 @@ function responseCleaning(response) {
  * Calls the LM Studio API to generate text based on system and user content.
  * @param {string} system_content - The system content.
  * @param {string} user_content - The user content.
- * @param {number} [max_tokens=-1] - The maximum number of tokens to generate.
- * @param {number} [creativity=0.7] - The creativity level.
  * @returns {Promise<[string, string]>} - A promise that resolves to an array containing the generated text and the execution time.
  * @throws {Error} - If an error occurs during the API call.
  */
-export async function callLMStudio(system_content, user_content, max_tokens = -1, creativity = 0.7) {
+export async function callLMStudio(system_content, user_content) {
     //console.log('LM-studio-helper.js: callLMStudio');
 
     // Start the timer
@@ -71,8 +69,8 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
                         { role: 'system', content: system_content },
                         { role: 'user', content: user_content }
                     ],
-                    temperature: creativity,
-                    max_tokens: max_tokens,
+                    temperature: 0.7,
+                    max_tokens: -1,
                     stream: false
                 }),
                 success: function (response) {

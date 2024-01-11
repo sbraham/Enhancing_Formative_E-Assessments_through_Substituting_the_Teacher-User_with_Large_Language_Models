@@ -35,7 +35,7 @@ export async function generateQuestion(context, existing_questions = []) {
     }
 
     try {
-        let response = await callLMStudio(system_content, user_content, QUESTION_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
+        let response = await callLMStudio(system_content, user_content);
         return response;
     } catch (error) {
         console.error(`LM-studio-helper.js: ERROR:`, error);
@@ -57,10 +57,8 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     let system_content = `Generate ${number_of_questions} different short answer question relating to the following context.`;
     system_content += `\nThe question must be answerable by a single word or phrase.`;
     system_content += `\nOnly write the question, do not state the answer or any examples.`;
-    system_content += `\nDo not number the questions.`;
     system_content += `\n`;
-    system_content += `\nEach question should have the following format:`;
-    system_content += `\nQuestion: <question> |`;
+    system_content += `\nStart and end each question with a | character.`;
 
     let user_content = `Context: ${context}.`;
 
@@ -69,7 +67,7 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
 
         while (questions.length !== number_of_questions) {
 
-            let response = await callLMStudio(system_content, user_content, QUESTION_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
+            let response = await callLMStudio(system_content, user_content);
             
             questions = response.split('|')
 
@@ -101,7 +99,7 @@ export async function generateAnswer(context, question) {
     user_content += `\nQuestion: ${question}.`;
 
     try {
-        let response = await callLMStudio(system_content, user_content, ANSWER_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
+        let response = await callLMStudio(system_content, user_content);
         return response;
     } catch (error) {
         console.error(`LM-studio-helper.js: ERROR:`, error);
@@ -130,7 +128,7 @@ export async function generateDistractors(context, question, options = []) {
     }
 
     try {
-        let response = await callLMStudio(system_content, user_content, ANSWER_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
+        let response = await callLMStudio(system_content, user_content);
         return response;
     } catch (error) {
         console.error(`LM-studio-helper.js: ERROR:`, error);
@@ -153,9 +151,10 @@ export async function generateManyDistractors(number_of_distractors, context, qu
     system_content += `\nThe true answer is "${answer}", and distractors should be similar in format to it.`;
     system_content += `\nDo not state in any way that the answer is false, or that it is a distractor.`;
     system_content += `\nDo not number the distractors.`;
+    system_content += `\nOnly generate ${number_of_distractors} distractors, do not generate more.`;
     system_content += `\n`;
     system_content += `\nEach distractor answer should have the following format:`;
-    system_content += `\nDistractor: <distractor> |`;
+    system_content += `\nStart and end each question with a | character.`;
 
     let user_content = `Context: ${context}.`;
     user_content += `\nQuestion: ${question}.`;
@@ -165,7 +164,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
 
         while (distractors.length !== number_of_distractors) {
 
-            let response = await callLMStudio(system_content, user_content, ANSWER_MAX_TOKENS, QUIZ_GENERATION_CREATIVITY);
+            let response = await callLMStudio(system_content, user_content);
             
             distractors = response.split('|')
 

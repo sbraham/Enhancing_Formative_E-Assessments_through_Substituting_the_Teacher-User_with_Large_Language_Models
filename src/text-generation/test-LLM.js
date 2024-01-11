@@ -17,8 +17,8 @@ const quiz = [];
 // Data which will write in a file.
 let data = ""
 
-let quiz_title = "GCSE AQA Computer Science - Hardware and software";
-let quiz_description = `Computer systems consist of hardware and software. Hardware is the physical components of the computer, such as the central processing unit (CPU), hard disk, monitor, keyboard and mouse. Software is the programs that run on a computer`;
+let quiz_title = "Biology";
+let quiz_description = ``;
 
 /* Functions */
 
@@ -29,7 +29,7 @@ if (isBatch) {
     const multiple_choice = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_title} (${quiz_description})`);
 
     // Store the quiz in the quizzes array
-    quiz.push(...short_answer);
+    //quiz.push(...short_answer);
     quiz.push(...multiple_choice);
 
     // Convert the quizzes array to a string
@@ -44,12 +44,10 @@ if (isBatch) {
         data += "Question: " + question.question + "\n";
         data += "Answer: " + question.answer + "\n";
 
-        if (question.options != []) {
-            data += "Options: \n";
-            question.options.forEach(option => {
-                data += "   - " + option + "\n";
-            });
-        }
+        data += "Options: \n";
+        question.options.forEach(option => {
+            data += "   - " + option + "\n";
+        });
 
         data += "\n";
 

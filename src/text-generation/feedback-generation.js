@@ -24,7 +24,7 @@ export async function generateFeedback(answer_object) {
     // console.log('user_content:', user_content);
 
     try {
-        let response = await callLMStudio(system_content, user_content, 200, 0.7);
+        let response = await callLMStudio(system_content, user_content);
         return response;
     } catch (error) {
         console.error('LM-studio-helper.js: ERROR:', error);
