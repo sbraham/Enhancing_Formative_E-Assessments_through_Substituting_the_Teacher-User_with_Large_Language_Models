@@ -9,6 +9,8 @@ import { Quiz } from "../../classes/Quiz.js";
 let index = 0;
 let isGenerating = false;
 
+const spinnerHTML = `<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>`
+
 /* Function to create a new Quiz Card */
 function createQuizCard(quiz, index) {
     console.log('createQuizCard: Creating quiz card:', quiz.id);
@@ -35,7 +37,7 @@ function createQuizCard(quiz, index) {
                         data-bs-target="#details_modal_${index}">
                         <div class="cut-text-1">Details</div>
                     </button>
-                    <div id="take_quiz_button_${index}_container" class="no-spacing card-button">
+                    <div id="take_quiz_button_${index}_container" class="no-spacing card-button" style="text-align: center;">
                         <button type="button" class="btn btn-success no-spacing w-100 h-100" id="${index}">
                             <div class="cut-text-1">Take Quiz</div>
                         </button>
@@ -239,12 +241,8 @@ async function addNewQuiz() {
 
     const take_quiz_button_container_innerHTML = take_quiz_button_container.innerHTML;
     const take_quiz_button_modal_container_innerHTML = take_quiz_button_modal_container.innerHTML;
-    take_quiz_button_container.innerHTML = '<div class="spinner"></div>';
-    take_quiz_button_modal_container.innerHTML = '<div class="spinner"></div>';
-
-    // TO DO - make this spinning wheel look better
-
-    // TO DO - make the Take Quiz button work for a newly created quiz - you will need to reasign the event listener BELLOW (1)
+    take_quiz_button_container.innerHTML = spinnerHTML;
+    take_quiz_button_modal_container.innerHTML = spinnerHTML;
 
     isGenerating = true;
 
@@ -257,9 +255,15 @@ async function addNewQuiz() {
     take_quiz_button_container.innerHTML = take_quiz_button_container_innerHTML;
     take_quiz_button_modal_container.innerHTML = take_quiz_button_modal_container_innerHTML;
 
-    // HERE (1)
+    document.getElementById(`${index}`).addEventListener('click', () => takeQuiz(quiz));
+    document.getElementById(`${index}_model`).addEventListener('click', () => takeQuiz(quiz));
 
     index++;
+
+    // Add quiz to database
+    console.log('addNewQuiz: Adding quiz to database...');
+    await addQuizToDB(quiz);
+    console.log('addNewQuiz: Quiz added to database');
 
     // It would be nice for the modal to close automatically, but I don't know how to do that and it's not a priority
 }
