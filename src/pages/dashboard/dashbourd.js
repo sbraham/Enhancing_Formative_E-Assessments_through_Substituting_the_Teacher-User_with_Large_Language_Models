@@ -2,7 +2,7 @@ console.log('Loading: dashbourd.js');
 
 /* Importing Firebase helper functions from setup file */
 import { checkLogin } from "../../firebase/auth-helper.js";
-import { getUserQuizzes, addQuizToDB } from "../../firebase/database-helper.js";
+import { getUserQuizzes, addQuizToDB, removeQuizFromDB } from "../../firebase/database-helper.js";
 
 import { Quiz } from "../../classes/Quiz.js";
 
@@ -56,9 +56,10 @@ function createQuizCard(quiz, index) {
                                 ${quiz.description}
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-danger delete_quiz_button" id="${index}_delete">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                                <button type="button" class="btn btn-danger delete_quiz_button" data-bs-dismiss="modal" id="${index}_delete">
                                     <div class="cut-text-1">Delete Quiz</div>
                                 </button>
                                 <div id="take_quiz_button_${index}_model_container">
@@ -77,8 +78,9 @@ function createQuizCard(quiz, index) {
     row.insertBefore(card_container, row.lastElementChild);
 
     document.getElementById(`${index}`).addEventListener('click', () => takeQuiz(quiz));
-
     document.getElementById(`${index}_model`).addEventListener('click', () => takeQuiz(quiz));
+
+    document.getElementById(`${index}_delete`).addEventListener('click', () => deleteQuiz(quiz, index));
 }
 
 /* Function to create the button used to create new quizzes */
@@ -268,7 +270,17 @@ async function addNewQuiz() {
     // It would be nice for the modal to close automatically, but I don't know how to do that and it's not a priority
 }
 
-// TO DO - make the delete button work
+function deleteQuiz(quiz, index) {
+    console.log('deleteQuiz: Deleting quiz:', quiz.id);
+
+    // Remove the quiz from the database
+    removeQuizFromDB(quiz);
+
+    // Remove the quiz card from the page
+    const card_container = document.getElementById(`details_modal_${index}`).parentElement.parentElement.parentElement;
+
+    card_container.remove();
+}
 
 function takeQuiz(quiz) {
     const quiz_id = quiz.id;

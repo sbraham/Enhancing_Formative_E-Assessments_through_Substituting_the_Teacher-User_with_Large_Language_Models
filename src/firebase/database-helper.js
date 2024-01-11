@@ -1,7 +1,7 @@
 console.log('Loading: firebase/database-helper.js');
 
 /* Importing Firebase features */
-import { doc, getDoc, getDocs, setDoc, addDoc, query, where, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
+import { doc, getDoc, getDocs, setDoc, addDoc, deleteDoc, query, where, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
 
 import { auth, db } from './config.js';
 import { checkLogin } from './auth-helper.js';
@@ -77,6 +77,27 @@ export async function addQuizToDB(quiz) {
     } catch (error) {
         console.error(`database-helper: addQuiz: Error adding document:`, error);
     }
+}
+
+export async function removeQuizFromDB(quiz) {
+    console.log(`database-helper: removeQuizFromDB: Removing a quiz from the database`, quiz.title);
+
+    try {
+        /* Get the user's id token */
+        const user = await checkLogin();
+        if (user == null) {
+            console.error(`User is not logged in`);
+            return;
+        }
+
+        // console.debug(`database-helper: removeQuizFromDB: User:`, user);
+
+        /* Remove the quiz from the database */
+        await deleteDoc(doc(db, user, quiz.id));
+    } catch (error) {
+        console.error(`database-helper: removeQuizFromDB: Error removing document:`, error);
+    }
+
 }
 
 /**
