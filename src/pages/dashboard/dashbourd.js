@@ -118,19 +118,21 @@ function createCreateQuizCard() {
                             <!-- Quiz Title -->
                             <div class="mb-3">
                                 <label for="quiz_title" class="form-label">Title</label>
-                                <input type="text" class="form-control" id="quiz_title" required
-                                    placeholder="Enter quiz title">
+                                <input type="text" class="form-control" id="quiz_title" required 
+                                    pattern="[a-zA-Z]+" placeholder="Enter quiz title">
                             </div>
-                            
+
                             <!-- Quiz Description -->
                             <div class="mb-3">
                                 <div class="info-group">
                                     <label for="quiz_description" class="form-label">Description</label>
-                                    <span class="badge text-bg-info fs-6 fw-bold" data-bs-toggle="tooltip" data-bs-placement="right" title="${tooltip_text}">
+                                    <span class="badge text-bg-info fs-6 fw-bold" data-bs-toggle="tooltip" 
+                                        data-bs-placement="right" title="${tooltip_text}">
                                         ⓘ
                                     </span>
                                 </div>
-                                <textarea class="form-control" id="quiz_description" rows="3" placeholder="Enter quiz description"></textarea>
+                                <input type="text" class="form-control" id="quiz_description" rows="3" 
+                                    pattern="[a-zA-Z]+" placeholder="Enter quiz description"></input>
                             </div>
 
                             <!-- Number of Questions -->
@@ -138,8 +140,8 @@ function createCreateQuizCard() {
                                 <label for="number_of_questions" class="form-label">Number of Questions</label>
                                 <div class="row align-items-center">
                                     <div class="col-sm-9">
-                                        <input type="number" class="form-control" id="number_of_questions" required
-                                            placeholder="Enter number of questions" min="0" max="20">
+                                        <input type="number" class="form-control" id="number_of_questions" 
+                                            required min="1" max="50" placeholder="Enter number of questions">
                                     </div>
 
                                     <!-- Endless Checkbox -->
@@ -267,7 +269,7 @@ async function addNewQuiz() {
     await addQuizToDB(quiz);
     console.log('addNewQuiz: Quiz added to database');
 
-    // It would be nice for the modal to close automatically, but I don't know how to do that and it's not a priority
+    // It would be nice for the modal to close automatically, but I don't know how that can be done and it's not a priority
 }
 
 function deleteQuiz(quiz, index) {
