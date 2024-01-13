@@ -73,10 +73,55 @@ export class Quiz {
         this._question_index = 0;
         this._given_answers = [];
 
+        this._running_questions = [...this.questions]; // Create a shallow copy of this.questions
+
+        /* If the quiz is multiple choice */
+        if (this.quiz_type === 'multiple_choice') {
+            // Shuffle the order of options in running questions
+            this._running_questions.forEach(question => {
+                question.options = this.shuffleArray(question.options);
+            });
+        }
+
         this.displayQuiz();
-        this.createAnswerElements()
+        this.createAnswerElements();
 
         this.getNextQuestion();
+    }
+
+    shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    /** Question index controls */
+
+    getNextQuestion() {
+        /* get the next question */
+        this._question_index++;
+        this._current_question = this._running_questions[this._question_index-1];
+
+        /* display it */
+        this.displayQuestion();
+    }
+
+    getPreviousQuestion() {
+        /* if the quiz is on the first question */
+        if (this._question_index === 1) {
+            /* log and do nothing */
+            console.warn(`Quiz.getPreviousQuestion(): Cannot go back any further!`);
+            return;
+        }
+
+        /* Otherwise, get the previous question */
+        this._question_index--;
+        this._current_question = this._running_questions[this._question_index-1];
+
+        /* display it */
+        this.displayQuestion();
     }
 
     /** Set initial quiz UI */
@@ -163,7 +208,15 @@ export class Quiz {
             if (this._given_answers[this._question_index-1]) {
                 /* Set the answer */
                 if (this.quiz_type == 'multiple_choice') {
-                    document.getElementById(`option_${this._given_answers[this._question_index-1].given_index}`).checked = true;
+                    let i = 0;
+
+                    this._current_question.options.forEach(option => {
+                        if (option == this._given_answers[this._question_index-1].given_answer) {
+                            document.getElementById(`option_${i}`).checked = true;
+                        }
+
+                        i++;
+                    });
                 } else if (this.quiz_type == 'short_answer') {
                     document.getElementById(`short_answer`).value = this._given_answers[this._question_index-1].given_answer;
                 }
@@ -205,34 +258,8 @@ export class Quiz {
         }
     }
 
-    /** Question index controls */
-
-    getNextQuestion() {
-        /* get the next question */
-        this._question_index++;
-        this._current_question = this.questions[this._question_index-1];
-
-        /* display it */
-        this.displayQuestion();
-    }
-
-    getPreviousQuestion() {
-        /* if the quiz is on the first question */
-        if (this._question_index === 1) {
-            /* log and do nothing */
-            console.warn(`Quiz.getPreviousQuestion(): Cannot go back any further!`);
-            return;
-        }
-
-        /* Otherwise, get the previous question */
-        this._question_index--;
-        this._current_question = this.questions[this._question_index-1];
-
-        /* display it */
-        this.displayQuestion();
-    }
-
     /** Submit answer */
+
 
     async submitAnswer(given_answer) {
         /* Enable the previous button as quiz index will be at least 2 */
@@ -246,25 +273,18 @@ export class Quiz {
 
         /* Check if the answer is correct */
 
-        if (this.quiz_type == 'multiple_choice') {
-            if (this._current_question.options[given_answer] == this._current_question.answer) {
-                isCorrect = true;
-            }
-        } 
-        
+        if (this._current_question.answer == given_answer) {
+            isCorrect = true;
+        }
+
         else if (this.quiz_type == 'short_answer') {
-            if (this._current_question.answer == given_answer) {
-                isCorrect = true;
-            } else {
-                isCorrect = await checkAnswer(this._current_question.question, this._current_question.answer, given_answer);
-            }
+            isCorrect = await checkAnswer(this._current_question.question, this._current_question.answer, given_answer);
         }
 
         /* Create an answer_object detailing the given answer */
         const answer_object = {
             "question": this._current_question.question,
-            "given_index": given_answer,
-            "given_answer": this._current_question.options[given_answer],
+            "given_answer": given_answer,
             "correct_answer": this._current_question.answer,
             "isCorrect": isCorrect,
         }
@@ -283,7 +303,7 @@ export class Quiz {
             this.removeWheel();
 
             /* Check if quiz has ended */
-            if (this._question_index === this.questions.length) {
+            if (this._question_index === this._running_questions.length) {
                 /* If yes, check if the player wants the quiz to end */
                 const result = confirm("Quiz completed. Are you happy with all your answers?");
                 if (result) {

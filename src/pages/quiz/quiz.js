@@ -35,6 +35,7 @@ document.getElementById('previous_button').addEventListener('click', () => {
 
 /* Set next_button listener */
 let given_answer;
+let given_answer_index;
 
 quiz_form.addEventListener('submit', async (event) => {
     try {
@@ -44,8 +45,10 @@ quiz_form.addEventListener('submit', async (event) => {
             const data = new FormData(quiz_form);
 
             for (const value of data) {
-                given_answer = Number(value[1]);
+                given_answer_index = Number(value[1]);
             }
+
+            given_answer = quiz._running_questions[quiz._question_index - 1].options[given_answer_index];
         } 
         
         else if (quiz.quiz_type == 'short_answer') {
