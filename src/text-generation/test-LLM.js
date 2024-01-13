@@ -1,20 +1,13 @@
 console.log('Loading: test-LLM.js');
 
 /* Imports */
-
 import { SWQG, BatchSWQG } from "./quiz-generation.js";
 
 const isBatch = true;
 
 /* Variables */
-
-// Define the number of quizzes you want to generate
 const number_of_questions = 10;
-
-// Define the structure of your quizzes
 const quiz = [];
- 
-// Data which will write in a file.
 let data = ""
 
 let quiz_title = "Biology";

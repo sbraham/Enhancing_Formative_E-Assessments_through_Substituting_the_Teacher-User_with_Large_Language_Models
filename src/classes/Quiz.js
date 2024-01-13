@@ -1,189 +1,184 @@
 // import { getElement } from '../src/getElement';
 import { BatchSWQG } from '../text-generation/quiz-generation.js';
 
+/**
+ * Represents a Quiz object.
+ * 
+ * @constructor
+ * @param {string} title - The title of the quiz.
+ * @param {string} [description=''] - The description of the quiz.
+ * @param {number} number_of_questions - The number of questions in the quiz (1-50).
+ * @param {string} quiz_type - The type of the quiz (multiple_choice, short_answer).
+ * @param {number|null} [id=null] - The ID of the quiz (null if not in the database).
+ * @param {Array} [questions=[]] - The array of questions in the quiz.
+ */
 export class Quiz {
-    /**
-     * Represents a Quiz object.
-     * @constructor
-     * @param {string} title - The title of the quiz.
-     * @param {string} [description=''] - The description of the quiz.
-     * @param {number} number_of_questions - The number of questions in the quiz.
-     * @param {string} quiz_type - The type of the quiz (multiple_choice, true_or_false, short_answer).
-     * @param {number|null} [id=null] - The ID of the quiz.
-     * @param {boolean} [endless=false] - Indicates if the quiz is endless.
-     * @param {Array<Object>} [questions=[]] - The array of question objects.
-     * @param {number} [attempts=0] - The number of attempts made on the quiz.
-     */
-    constructor(title, description = '', number_of_questions, quiz_type, id = null, endless = false, questions = [], attempts = 0) {
-        console.log(`Quiz: Constructor`);
+    constructor(title, description = '', number_of_questions, quiz_type, id = null, questions = []) {
+        /* Core variables */
 
-        this.id = id;
-        this.attempts = attempts;
+        this.id = id; // id is null if the quiz is not in the database
         
         this.title = title;
         this.description = description;
-        this.number_of_questions = number_of_questions;
+        this.number_of_questions = number_of_questions; // number_of_questions: 1-50
 
-        // quiz_type: multiple_choice, true_or_false, short_answer
-        this.quiz_type = quiz_type;
-        this.endless = endless;
+        this.quiz_type = quiz_type; // quiz_type: multiple_choice, short_answer
 
         this.questions = questions;
 
-        // Varaiables for running the quiz
+        /* Varaiables for running the quiz */
+
+        this._question_index = 0;
+
         this._running_questions = [];
         this._current_question = null;
-        this._given_answers = [];
         
-        this._question_index = 0;
-        this._correct_count = 0;
-        this._wrong_count = 0;
-
-        this.isRunning = false;
+        this._given_answers = [];
     }
 
-    /** Generates questions for the quiz. */
+    /**
+     * Generates the questions for the quiz.
+     * 
+     * @async
+     * @returns {Promise<void>} A promise that resolves when the questions are generated.
+     */
     async generateQuestions() {
-        /**
-         * Question = {
-         *     question: 'What is the capital of the United States?', 
-         *     answer: 'Washington D.C.', 
-         *     options: [answer, 'New York', 'Los Angeles', 'Chicago']
-         * };
-        */
-
         console.log(`Quiz: generateQuestions`);
 
-        if (this.questions.length > 0) {
-            console.warn(`Quiz: generateQuestions: questions already generated`);
-        } else {
-            const quiz_context = `${this.title} (${this.description}) `;
+        /* Example question object */
+        const example_question_object = {
+            question: 'What is the capital of the United States?',
+            answer: 'Washington D.C.',
+            options: ['Washington D.C.', 'New York', 'Los Angeles', 'Chicago']
+        };
 
-            this.questions = await BatchSWQG(this.number_of_questions, this.quiz_type, quiz_context);
-        }
+        /* If the questions have already been generated */
+        if (this.questions.length > 0) {
+            /* Log and do nothing */
+            console.warn(`Quiz: generateQuestions: questions already generated`);
+            return;
+        } 
+
+        /* If the questions have not been generated */        
+        
+        /* Generate the questions */
+        const quiz_context = `${this.title} (${this.description})`;
+        this.questions = await BatchSWQG(this.number_of_questions, this.quiz_type, quiz_context);
     }
 
-    /** Starts the quiz. */
+    /** Start the quiz. */
 
     startQuiz() {
-        console.log(`Quiz:startQuiz()`);
-
-        this.isRunning = true;
-
-        /* Increment attempts */
-        this.attempts++;
-
-        /* Reset question values */
+        /* Reset quiz variables */
         this._question_index = 0;
-        this._correct_count = 0;
-        this._wrong_count = 0;
-
-        /* Reset given answers */
         this._given_answers = [];
 
         this.displayQuiz();
         this.createAnswerElements()
+
         this.getNextQuestion();
-        this.displayQuestion();
     }
 
     /** Set initial quiz UI */
 
     displayQuiz() {
-        console.log(`Quiz:displayQuiz()`);
 
+        /* Set quiz title */
         try {
             document.getElementById(`quiz_title`).innerHTML = this.title;
-
-            document.getElementById(`menu_quiz_title`).innerHTML = this.title;
-            document.getElementById(`menu_quiz_description`).innerHTML = this.description;
-        } catch (error) {
-            console.error(`Quiz.displayQuiz() error: ${error}`);
+        } 
+            
+        catch (error) {
+            throw error;
         }
     }
 
     createAnswerElements() {
-        console.log(`Quiz:createAnswerElements()`);
+        answer_container = document.getElementById('answer_container');
 
+        /* If the quiz is multiple choice */
         if(this.quiz_type == 'multiple_choice') {
-            try {
-                for (let i = 0; i < 4; i++) {
-                    const container = document.createElement('div');
-                    container.classList.add('form-check');
 
-                    container.innerHTML = `
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="multichoice" id="option_${i}" value="${i}" required>
-                            <label class="form-check-label w-100" id="option_${i}_label" for="option_${i}">
-                                <p class="placeholder-glow">
-                                    <span class="placeholder col-7"></span>
-                                </p>
-                            </label>
-                        </div>
-                    `;
-
-                    document.getElementById('answer_container').appendChild(container);
-                }
-            } catch (error) {
-                console.error(`Quiz.createAnswerElements() error: ${error}`);
-            }
-        } else if (this.quiz_type == 'true_or_false') {
-            console.warn(`Quiz.createAnswerElements(): true_or_false is not implemented!`);
-        } else if (this.quiz_type == 'short_answer') {
-            try {
+            /* Create 4 radio buttons for each option */
+            for (let i = 0; i < 4; i++) {
                 const container = document.createElement('div');
-                container.classList.add('form-group', 'margin-top');
+                container.classList.add('form-check');
 
                 container.innerHTML = `
-                    <label for="short_answer" id="answer">Short Answer:</label>
-                    <input type="text" class="form-control" name="short_answer" id="short_answer" required>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="multichoice" id="option_${i}" value="${i}" required>
+                        <label class="form-check-label w-100" id="option_${i}_label" for="option_${i}">
+                            <p class="placeholder-glow">
+                                <span class="placeholder col-7"></span>
+                            </p>
+                        </label>
+                    </div>
                 `;
 
-                document.getElementById('answer_container').appendChild(container);
-            } catch (error) {
-                console.error(`Quiz.createAnswerElements() error: ${error}`);
+                /* Add the radio button to the answer container */
+                answer_container.appendChild(container);
             }
+        } 
+        
+        /* If the quiz is short answer */
+        else if (this.quiz_type == 'short_answer') {
+
+            /* Create a text input for the answer */
+            const container = document.createElement('div');
+            container.classList.add('form-group', 'margin-top');
+
+            container.innerHTML = `
+                <label for="short_answer" id="answer">Short Answer:</label>
+                <input type="text" class="form-control" name="short_answer" id="short_answer" required>
+            `;
+
+            /* Add the text input to the answer container */
+            answer_container.appendChild(container);
         }
     }
 
     /** Set quiz UI throughout */
 
     displayQuestion() {
-        console.log(`Quiz:displayQuestion()`);
-        
         try {
             /* Set question number and question text */
             document.getElementById(`question_index`).innerHTML = `Question ${this._question_index}`;
             document.getElementById(`question`).innerHTML = this._current_question.question;
             
+            /* If the quiz is multiple choice */
             if (this.quiz_type == 'multiple_choice') {
+                /* Set the options */
                 for (let i = 0; i < this._current_question.options.length; i++) {
                     document.getElementById(`option_${i}_label`).innerHTML = this._current_question.options[i];
                 }
-            } else if (this.quiz_type == 'true_or_false') {
-                console.warn(`Quiz.displayQuestion(): true_or_false is not implemented!`);
-            } else if (this.quiz_type == 'short_answer') {
+            } 
+            
+            /* If the quiz is short answer */
+            else if (this.quiz_type == 'short_answer') {
+                /* Set the answer label */
                 document.getElementById(`answer`).innerHTML = 'Short Answer: ';
             }
 
-            /* Set give answer */
+            /* If an answer has already been give */
             if (this._given_answers[this._question_index-1]) {
+                /* Set the answer */
                 if (this.quiz_type == 'multiple_choice') {
                     document.getElementById(`option_${this._given_answers[this._question_index-1].given_index}`).checked = true;
-                } else if (this.quiz_type == 'true_or_false') {
-                    console.warn(`Quiz.selectPreviousAnswer(): true_or_false is not implemented!`);
                 } else if (this.quiz_type == 'short_answer') {
                     document.getElementById(`short_answer`).value = this._given_answers[this._question_index-1].given_answer;
                 }
             }
-        } catch (error) {
-            console.error(`Quiz.displayQuestion() error: ${error}`);
+        } 
+            
+        catch (error) {
+            throw error;
         }
     }
 
     /** Set loading wheel */
 
     addWheel() {
+        /* Create loading wheel */
         const previous_button = document.getElementById('previous_button');
         const loading_wheel = document.createElement('div');
         loading_wheel.classList.add('spinner-border', 'text-primary', 'mx-2', 'spinner-lg');
@@ -192,11 +187,19 @@ export class Quiz {
         loading_wheel.innerHTML = '<span class="visually-hidden">Loading...</span>';
         loading_wheel.style.alignSelf = 'center';
 
+        /* Add loading wheel to the DOM */
         previous_button.insertAdjacentElement('beforebegin', loading_wheel);
     }
 
     removeWheel() {
-        const loading_wheel = document.getElementById('loading_wheel');
+        /* Get loading wheel */
+        try { 
+            const loading_wheel = document.getElementById('loading_wheel');
+        } catch (error) {
+            return;
+        }
+
+        /* Remove loading wheel from the DOM, if it was found */
         if (loading_wheel) {
             loading_wheel.remove();
         }
@@ -205,96 +208,75 @@ export class Quiz {
     /** Question index controls */
 
     getNextQuestion() {
-        console.log(`Quiz:getNextQuestion()`);
-
+        /* get the next question */
         this._question_index++;
         this._current_question = this.questions[this._question_index-1];
+
+        /* display it */
+        this.displayQuestion();
     }
 
     getPreviousQuestion() {
-        console.log(`Quiz:getPreviousQuestion()`);
-
-        this.resetQuizForm();
-
+        /* if the quiz is on the first question */
         if (this._question_index === 1) {
-            throw new Error(`Quiz.getPreviousQuestion(): Cannot go back any further!`);
+            /* log and do nothing */
+            console.warn(`Quiz.getPreviousQuestion(): Cannot go back any further!`);
+            return;
         }
 
+        /* Otherwise, get the previous question */
         this._question_index--;
         this._current_question = this.questions[this._question_index-1];
 
+        /* display it */
         this.displayQuestion();
     }
 
     /** Submit answer */
 
     async submitAnswer(given_answer) {
-        console.log(`Quiz:submitAnswer(${given_answer})`);
-
+        /* Enable the previous button as quiz index will be at least 2 */
         document.getElementById('previous_button').disabled = false;
 
+        /* Disable the quiz form and add the loading wheel */
         this.addWheel();
         this.disableQuizForm();
 
         let isCorrect = false;
 
+        /* Check if the answer is correct */
+
         if (this.quiz_type == 'multiple_choice') {
             if (this._current_question.options[given_answer] == this._current_question.answer) {
                 isCorrect = true;
-                this._correct_count++;
-            } else {
-                this._wrong_count++;
             }
-        } if (this.quiz_type == 'true_or_false') {
-            console.warn(`Quiz.submitAnswer(): true_or_false is not implemented!`);
-        } else if (this.quiz_type == 'short_answer') {
+        } 
+        
+        else if (this.quiz_type == 'short_answer') {
             if (this._current_question.answer == given_answer) {
                 isCorrect = true;
-                this._correct_count++;
             } else {
                 isCorrect = await checkAnswer(this._current_question.question, this._current_question.answer, given_answer);
-                
-                if (isCorrect) {
-                    this._correct_count++;
-                } else {
-                    this._wrong_count++;
-                }
             }
         }
 
-        console.log(`typeof(given_answer):`, typeof (given_answer));
-
-        /* Answer Objects: 
-            {
-                "correct": false,
-                "question": "What is the capital of the United States?
-                "correct_answer": "Washington D.C.",
-                "given_answer": "New York"
-                "given_index": 3
-            }
-        */
-
+        /* Create an answer_object detailing the given answer */
         const answer_object = {
-            "correct": isCorrect,
             "question": this._current_question.question,
-            "correct_answer": this._current_question.answer,
+            "given_index": given_answer,
             "given_answer": this._current_question.options[given_answer],
-            "given_index": given_answer
+            "correct_answer": this._current_question.answer,
+            "isCorrect": isCorrect,
         }
 
+        /* Add the answer_object to the given_answers array */
         if (this._given_answers.length < this._question_index) {
             this._given_answers.push(answer_object);
         } else {
             this._given_answers[this._question_index - 1] = answer_object;
         }
 
-        console.log(`this.given_answers:`, this._given_answers);
-
-        /* The showResult function would display the answers to the user as they go through the quiz */
-        /* Do to the existence of the previous button, this function is not needed */
-        
-        // this.showResult(given_answer, isCorrect);
-
+        /* Wait 500ms before moving on */
         setTimeout(() => {
             /* Reset quiz */
             this.enableQuizForm();
@@ -305,80 +287,45 @@ export class Quiz {
                 /* If yes, check if the player wants the quiz to end */
                 const result = confirm("Quiz completed. Are you happy with all your answers?");
                 if (result) {
-                    // End quiz
+                    // If yes, End quiz
                     this.endQuiz();
                 } else {
-                    // Wait for next input
+                    // If no, Wait for next input
                 }
             } else {
                 /* If no, get next question */
                 this.resetQuizForm();
                 this.getNextQuestion();
-                this.displayQuestion();
                 return false;
             }
         }, 500);
     }
 
-    showResult(given_answer, correct) {
-        console.log(`Quiz:showResult(${correct})`);
-
-        if (this.quiz_type == 'multiple_choice') {
-            if (correct) {
-                /* If the answer is correct */
-                for (let i = 0; i < this._current_question.options.length; i++) {
-                    if (this._current_question.options[i] == this._current_question.answer) {
-                        /* Highlight it with green */
-                        document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-success">${this._current_question.options[i]}</span>`;
-                    }
-                }
-            } else {  
-                /* If the answer is wrong */      
-                for (let i = 0; i < this._current_question.options.length; i++) {
-                    if (this._current_question.options[i] == this._current_question.answer) {
-                        /* Highlight the correct answer with green */
-                        document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-success">${this._current_question.options[i]}</span>`;
-                    }
-                    if (this._current_question.options[i] == this._current_question.options[given_answer]) {
-                        /* Highlight the given answer with red */
-                        document.getElementById(`option_${i}_label`).innerHTML = `<span class="text-danger">${this._current_question.options[i]}</span>`;
-                    }
-                }
-            }
-        } else if (this.quiz_type == 'true_or_false') {
-            console.warn(`Quiz.showResult(): true_or_false is not implemented!`);
-        } else if (this.quiz_type == 'short_answer') {
-            if (correct) {
-                document.getElementById(`answer`).innerHTML = `<span class="text-success">Short Answer: ✅</span>`;
-            } else {
-                document.getElementById(`answer`).innerHTML = `<span class="text-danger">Short Answer: ❌</span>`;
-            }
-        }
-    }
-
     /* Quiz form controls */
 
     disableQuizForm() {
-        console.log(`Quiz:disableQuizForm()`);
-
+        
+        /* Disable the quiz form */
         try {
             if (this.quiz_type == 'multiple_choice') {
                 for (let i = 0; i < this._current_question.options.length; i++) {
                     document.getElementById(`option_${i}`).disabled = true;
                 }
-            } else if (this.quiz_type == 'true_or_false') {
-                console.warn(`Quiz.disableQuizForm(): true_or_false is not implemented!`);
-            } else if (this.quiz_type == 'short_answer') {
+            } 
+            
+            else if (this.quiz_type == 'short_answer') {
                 document.getElementById(`short_answer`).disabled = true;
             }
-        } catch (error) {
-            console.error(`Quiz.disableQuizForm() error: ${error}`);
+        } 
+            
+        catch (error) {
+            throw error;
         }
     }
 
     enableQuizForm() {
-        console.log(`Quiz:enableQuizForm()`);
 
+        /* Enable the quiz form */
         try {
             if (this.quiz_type == 'multiple_choice') {
                 for (let i = 0; i < this._current_question.options.length; i++) {
@@ -389,51 +336,50 @@ export class Quiz {
             } else if (this.quiz_type == 'short_answer') {
                 document.getElementById(`short_answer`).disabled = false;
             }
-        } catch (error) {
-            console.error(`Quiz.enableQuizForm() error: ${error}`);
+        } 
+            
+        catch (error) {
+            throw error;
         }
     }
 
     resetQuizForm() {
-        console.log(`Quiz:resetQuizForm()`);
 
+        /* Reset the quiz form */
         try {
             if (this.quiz_type === 'multiple_choice') {
                 for (let i = 0; i < this._current_question.options.length; i++) {
                     document.getElementById(`option_${i}`).checked = false;
                 }
-            } else if (this.quiz_type === 'true_or_false') {
-                console.warn(`Quiz.resetQuizForm(): true_or_false is not implemented!`);
-            } else if (this.quiz_type === 'short_answer') {
+            } 
+            
+            else if (this.quiz_type === 'short_answer') {
                 document.getElementById(`short_answer`).value = '';
             }
-        } catch (error) {
-            console.error(`Quiz.resetQuizForm() error: ${error}`);
+        } 
+            
+        catch (error) {
+            throw error;
         }
     }
     
     /** End quiz */
 
     endQuiz() {
-        console.log(`Quiz:endQuiz()`);
-
+        /* save given_answers as raw JSON */
         const given_answers = JSON.stringify(this._given_answers);
 
-        console.log(`Final answers are:`, given_answers);
-
-        this.isRunning = false;
-
         /* Move to feedback page */
+
+        console.log('Redirecting to feedback page...');
+        console.log('--------------------------------------------------');
+
         const url = `../feedback/feedback.html?given_answers=${given_answers}`;
 
         window.location.href = url;
     }
 
     /** For saving quiz */
-
-    toString() {
-        return JSON.stringify(this);
-    }
 
     static fromObject(object) {
         const quiz = new Quiz(
@@ -442,9 +388,7 @@ export class Quiz {
             object.number_of_questions,
             object.quiz_type,
             object.id,
-            object.endless,
             object.questions,
-            object.attempts
         );
         return quiz;
     }

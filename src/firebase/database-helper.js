@@ -3,101 +3,130 @@ console.log('Loading: firebase/database-helper.js');
 /* Importing Firebase features */
 import { doc, getDoc, getDocs, setDoc, addDoc, deleteDoc, query, where, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
 
+/* Importing Firebase config */
 import { auth, db } from './config.js';
+
+/* Importing auth helper */
 import { checkLogin } from './auth-helper.js';
+
 
 
 /**
  * Retrieves the quizzes associated with the logged-in user from the database.
- * @returns {Promise<Array<Object>>} A promise that resolves to an array of quiz objects.
+ * 
+ * @async
+ * @returns {Promise<Array<Object>>} An array of quiz objects.
+ * @throws {Error} If there is an error retrieving the quizzes.
  */
 export async function getUserQuizzes() {
-    console.log(`database-helper: getUserQuizzes`);
+    console.log(`getUserQuizzes: Retrieving the quizzes associated with the logged-in user from the database`);
+
+    const quizzes_data = [];
 
     try {
         const user = await checkLogin();
-        let quizzes_data = [];
 
-        console.debug(`database-helper: getUserQuizzes: User:`, user);
+        if (user == null) {
+            console.warn(`getUserQuizzes: User is not logged in. Returning empty array.`);
+            return quizzes_data;
+        }
 
         /* Get all the quizzes associated with the user */
+        console.debug(`getDocs: awaiting response...`);
         const querySnapshot = await getDocs(query(
             collection(db, user)
         ));
+        console.log(`getDocs: received`);
 
         /* For each quiz, add it to the list of quizzes */
         querySnapshot.forEach((doc) => {
             /* doc.data() is never undefined for query doc snapshots */
-            // console.debug(`database-helper: getUserQuizzes:`, doc.id, " => ", doc.data());
             quizzes_data.push(doc.data());
         });
 
         return quizzes_data;
-    } catch (error) {
-        console.error(`database-helper: getUserQuizzes: Error adding document:`, error);
-        return [];
+    } 
+            
+    catch (error) {
+        throw error;
     }
 }
 
 /**
  * Adds a quiz to the database.
+ * 
+ * @async
  * @param {Object} quiz - The quiz object to be added.
- * @returns {Promise<void>} - A promise that resolves when the quiz is added successfully.
+ * @returns {Promise<void>} - A promise that resolves when the quiz is successfully added to the database.
+ * @throws {Error} - If the user is not logged in, an error is thrown.
  */
 export async function addQuizToDB(quiz) {
-    console.log(`database-helper: addQuizToDB: Adding a quiz to the database`, quiz.title);
+    console.log(`addQuizToDB: Adding a quiz to the database:`, quiz.title);
 
     try {
         /* Get the user's id token */
         const user = await checkLogin();
+        
         if (user == null) {
-            console.error(`User is not logged in`);
-            return;
+            throw new Error(`User is not logged in. Cannot add quiz to database.`);
         }
 
-        // console.debug(`database-helper: addQuizToDB: User:`, user);
-
         /* Save space in memory and save the docRef */
+        console.debug(`addDoc: awaiting response...`);
         const docRef = await addDoc(collection(db, user), {
             quiz: null
         });
-        console.log(`database-helper: addQuizToDB: Document written with ID:`, docRef.id);
+        console.debug(`addDoc: received`);
 
+        /* Add the quiz id to the quiz object */
         quiz.id = docRef.id;
 
-        // console.debug(`database-helper: addQuizToDB: Quiz:`, quiz);
-
-        /* Convert quiz to a plain JavaScript object */
-        const plainQuiz = JSON.parse(JSON.stringify(quiz));
+        /* Make an unattached copy of the quiz, so changes to quiz don't effect this object */
+        const quiz_copy = JSON.parse(JSON.stringify(quiz));
 
         /* Add the quiz in the previous location in the Databse */
+        console.debug(`setDoc: awaiting response...`);
         await setDoc(doc(db, user, docRef.id), {
-            quiz: plainQuiz
+            quiz: quiz_copy
         });
-    } catch (error) {
-        console.error(`database-helper: addQuiz: Error adding document:`, error);
+        console.debug(`setDoc: received`);
+
+    } 
+            
+    catch (error) {
+        throw error;
     }
 }
 
+/**
+ * Removes a quiz from the database.
+ * 
+ * @async
+ * @param {Object} quiz - The quiz object to be removed.
+ * @returns {Promise<void>} - A promise that resolves when the quiz is successfully removed.
+ * @throws {Error} - If the user is not logged in, an error is thrown.
+ */
 export async function removeQuizFromDB(quiz) {
-    console.log(`database-helper: removeQuizFromDB: Removing a quiz from the database`, quiz.title);
+    console.log(`removeQuizFromDB: Removing a quiz from the database:`, quiz.title);
 
     try {
         /* Get the user's id token */
         const user = await checkLogin();
+        
         if (user == null) {
-            console.error(`User is not logged in`);
-            return;
+            throw new Error(`User is not logged in. Cannot remove quiz from database.`);
         }
 
-        // console.debug(`database-helper: removeQuizFromDB: User:`, user);
-
         /* Remove the quiz from the database */
+        console.debug(`deleteDoc: awaiting response...`);
         await deleteDoc(doc(db, user, quiz.id));
-    } catch (error) {
-        console.error(`database-helper: removeQuizFromDB: Error removing document:`, error);
-    }
+        console.debug(`deleteDoc: received`);
 
+    } 
+            
+    catch (error) {
+        throw error;
+    }
 }
 
 /**
@@ -106,27 +135,31 @@ export async function removeQuizFromDB(quiz) {
  * @returns {Promise<Object|null>} - A promise that resolves to the quiz data if it exists, or null if it doesn't.
  */
 export async function getQuizById(quiz_id) {
-    console.log(`database-helper: getQuizById`);
-    // console.debug(`database-helper: getQuizById: quiz_id:`, quiz_id);
+    console.log(`getQuizById: Retrieving a quiz by its ID from the Firebase database`);
 
     try {
         const user = await checkLogin();
 
-        /* Get all the quizzes associated with the user */
-        // console.log(`database-helper: getQuizById: getDoc: awaiting...`);
-        const docSnap = await getDoc(doc(db, user, quiz_id));
-        // console.log(`database-helper: getQuizById: getDoc: returned`);
-
-        if (docSnap.exists()) {
-            // console.debug("database-helper: getQuizById: quiz data:", docSnap.data());
-        } else {
-            /* docSnap.data() will be undefined in this case */
-            console.error("database-helper: getQuizById: No such document!");
+        if (user == null) {
+            console.warn(`getQuizById: User is not logged in. Returning null.`);
+            return null;
         }
 
-        return docSnap.data();
-    } catch (error) {
-        console.error(`database-helper: getQuizById: Error adding document:`, error);
-        return null;
+        /* Get all the quizzes associated with the user */
+        console.debug(`getDoc: awaiting response...`);
+        const docSnap = await getDoc(doc(db, user, quiz_id));
+        console.debug(`getDoc: received`);
+
+        if (docSnap.exists()) {
+            return docSnap.data();
+        } else {
+            console.warn(`getQuizById: No such document. Returning null.`);
+            return null;
+        }
+
+    } 
+            
+    catch (error) {
+        throw error;
     }
 }

@@ -1,5 +1,6 @@
 console.log('Loading: LM-studio-helper.js');
 
+/* Imports */
 import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
 
 /* Example Response:
@@ -38,25 +39,19 @@ function responseCleaning(response) {
     // Remove special characters and keywords
     response = response.replace(specialCharactersRegex, '');
 
-    console.debug('response:', response);
-
     return response;
 }
 
 /**
- * Calls the LM Studio API to generate text based on system and user content.
- * @param {string} system_content - The system content.
- * @param {string} user_content - The user content.
- * @returns {Promise<[string, string]>} - A promise that resolves to an array containing the generated text and the execution time.
- * @throws {Error} - If an error occurs during the API call.
+ * Calls the LM Studio API to generate text based on system and user input.
+ * 
+ * @async
+ * @param {string} system_content - The system input content.
+ * @param {string} user_content - The user input content.
+ * @returns {Promise<string>} - The generated text response.
+ * @throws {Error} - If there is an error during the API call.
  */
 export async function callLMStudio(system_content, user_content) {
-    //console.log('LM-studio-helper.js: callLMStudio');
-
-    // Start the timer
-    const start_time = performance.now();
-
-    //console.log('LM-studio-helper.js: callLMStudio: $.ajax: awaiting...');
     try {
         let response = await new Promise((resolve, reject) => {
             $.ajax({
@@ -74,32 +69,20 @@ export async function callLMStudio(system_content, user_content) {
                     stream: false
                 }),
                 success: function (response) {
-                    //console.log('LM-studio-helper.js: callLMStudio: $.ajax: returned successfully');
-                    //console.debug('LM-studio-helper.js: callLMStudio:', response.choices[0].message.content);
                     resolve(response.choices[0].message.content);
                 },
                 error: function (error) {
-                    //console.log('LM-studio-helper.js: callLMStudio: $.ajax: returned erroneously');
-                    console.error('LM-studio-helper.js: ERROR:', error);
-                    reject('');
+                    throw error;
                 }
             });
         });
 
-        // Calculate the execution time
-        const end_time = performance.now();
-        const execution_time = end_time - start_time;
-        const minutes = Math.floor(execution_time / 60000);
-        const seconds = Math.floor((execution_time % 60000) / 1000);
-        const milliseconds = Math.floor((execution_time % 1000));
-        
-        //console.debug(`Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
-
         response = responseCleaning(response);
 
         return response;
-    } catch (error) {
-        console.error('LM-studio-helper.js: ERROR:', error);
-        return '';
+    } 
+            
+    catch (error) {
+        throw error;
     }
 }

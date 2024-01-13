@@ -1,19 +1,18 @@
+console.log(`Loading: LM-studio-helper.js`);
+
+/* Imports LM-Studio Helper */
 import { callLMStudio } from './LM-studio-helper.js';
 
-const QUIZ_GENERATION_CREATIVITY = 0.5;
-const QUESTION_MAX_TOKENS = 1000; 
-const ANSWER_MAX_TOKENS = 50;
-
 /**
- * Generates a question based on the given context.
+ * Generates a short answer question based on the given context.
  * 
- * @param {string} context - The context for generating the question.
- * @param {Array<string>} existing_questions - An optional array of existing questions to avoid generating duplicates.
+ * @async
+ * @param {string} context - The context for the question.
+ * @param {Array} existing_questions - An array of existing questions to avoid repetition.
  * @returns {Promise<string>} - A promise that resolves to the generated question.
+ * @throws {Error} - If there is an error while generating the question.
  */
 export async function generateQuestion(context, existing_questions = []) {
-    //console.log(`LM-studio-helper.js: generateQuestion`);
- 
     let system_content = `Generate one short answer question relating to the following context.`;
     system_content += `\nThe question must be answerable by a single word or phrase.`;
     system_content += `\nOnly write the question, do not state the answer or any examples.`;
@@ -37,23 +36,23 @@ export async function generateQuestion(context, existing_questions = []) {
     try {
         let response = await callLMStudio(system_content, user_content);
         return response;
-    } catch (error) {
-        console.error(`LM-studio-helper.js: ERROR:`, error);
-        return `ERROR`;
+    } 
+            
+    catch (error) {
+        throw error;
     }
 }
-
 
 /**
  * Generates multiple short answer questions based on a given context.
  * 
+ * @async
  * @param {number} number_of_questions - The number of questions to generate.
- * @param {string} [context=""] - The context for generating the questions.
+ * @param {string} [context=''] - The context for the questions.
  * @returns {Promise<string[]>} - An array of generated questions.
+ * @throws {Error} - If an error occurs during the question generation process.
  */
 export async function generateManyQuestion(number_of_questions, context = ``) {
-    //console.log(`LM-studio-helper.js: generateQuestion`);
-
     let system_content = ``;
 
     if (number_of_questions > 1) {
@@ -80,22 +79,23 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
         }
         
         return questions;
-    } catch (error) {
-        console.error(`LM-studio-helper.js: ERROR:`, error);
-        return `ERROR`;
+    } 
+            
+    catch (error) {
+        throw error;
     }
 }
 
 /**
  * Generates an answer to the given question using LM Studio.
  * 
+ * @async
  * @param {string} context - The context for generating the answer.
  * @param {string} question - The question to generate an answer for.
  * @returns {Promise<string>} - The generated answer.
+ * @throws {Error} - If an error occurs during the answer generation process.
  */
 export async function generateAnswer(context, question) {
-    //console.log(`LM-studio-helper.js: generateAnswer`);
-
     let system_content = `Given the context, what is the TRUE answer to the following question?`;
     system_content += `\nDo not state in any way that the answer is true, or that it is the answer.`;
     system_content += `\nOnly write the answer, do not write any examples or other possible answers.`;
@@ -106,22 +106,24 @@ export async function generateAnswer(context, question) {
     try {
         let response = await callLMStudio(system_content, user_content);
         return response;
-    } catch (error) {
-        console.error(`LM-studio-helper.js: ERROR:`, error);
-        return `ERROR`;
+    } 
+            
+    catch (error) {
+        throw error;
     }
 }
 
 /**
  * Generates distractors for a given question and context.
+ * 
+ * @async
  * @param {string} context - The context in which the question is asked.
  * @param {string} question - The question for which distractors need to be generated.
  * @param {Array<string>} distractors - An optional array of existing distractors to avoid generating duplicates.
  * @returns {Promise<string>} - A promise that resolves to the generated distractors.
+ * @throws {Error} - If an error occurs during the distractor generation process.
  */
 export async function generateDistractors(context, question, options = []) {
-    //console.log(`LM-studio-helper.js: generateDistractors`);
-
     let system_content = `Given the context, what is a FALSE distractor answer to the following question?`;
     system_content += `\nDo not state in any way that the answer is false, or that it is a distractor.`;
 
@@ -135,23 +137,24 @@ export async function generateDistractors(context, question, options = []) {
     try {
         let response = await callLMStudio(system_content, user_content);
         return response;
-    } catch (error) {
-        console.error(`LM-studio-helper.js: ERROR:`, error);
-        return `ERROR`;
+    } 
+            
+    catch (error) {
+        throw error;
     }
 }
 
 /**
  * Generates multiple distractor answers for a given question and context.
  * 
+ * @async
  * @param {number} number_of_distractors - The number of false distractor answers to generate.
  * @param {string} context - The context for the question.
  * @param {string} question - The question for which distractors need to be generated.
  * @returns {Promise<string[]|string>} - An array of distractor answers or an error message if an error occurs.
+ * @throws {Error} - If an error occurs during the distractor generation process.
  */
 export async function generateManyDistractors(number_of_distractors, context, question, answer) {
-    //console.log(`LM-studio-helper.js: generateDistractors`);
-
     let system_content = `Given the context, give ${number_of_distractors} FALSE distractor answers to the following question?`;
     system_content += `\nThe true answer is "${answer}", and distractors should be similar in format to it.`;
     system_content += `\nDo not state in any way that the answer is false, or that it is a distractor.`;
@@ -177,16 +180,17 @@ export async function generateManyDistractors(number_of_distractors, context, qu
         }
         
         return distractors;
-    } catch (error) {
-        console.error(`LM-studio-helper.js: ERROR:`, error);
-        return `ERROR`;
+    } 
+            
+    catch (error) {
+        throw error;
     }
 }
 
-/* quiz_type: multiple_choice, short_answer */
-
 /**
  * Generates a stepwise question for a quiz.
+ * 
+ * @async
  * @param {string} quiz_type - The type of quiz (multiple_choice, short_answer).
  * @param {string} context - The context for generating the question.
  * @param {number} number_of_options - The number of options for multiple choice questions (default: 4).
@@ -194,8 +198,6 @@ export async function generateManyDistractors(number_of_distractors, context, qu
  * @returns {Promise<Object>} - A promise that resolves to an object containing the generated question, answer, and options.
  */
 export async function SWQG(quiz_type, context, number_of_options = 4, existing_questions = []) {
-    //console.debug(`LM-studio-helper.js: SWQG()`);
-
     // Start the timer
     const start_time = performance.now();
 
@@ -228,7 +230,7 @@ export async function SWQG(quiz_type, context, number_of_options = 4, existing_q
     const seconds = Math.floor((execution_time % 60000) / 1000);
     const milliseconds = Math.floor((execution_time % 1000));
     
-    console.log(`LM-studio-helper.js: SWQG: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
+    console.debug(`LM-studio-helper.js: SWQG: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
 
     return { question: question, answer: answer, options: options };
 }
@@ -236,6 +238,8 @@ export async function SWQG(quiz_type, context, number_of_options = 4, existing_q
 
 /**
  * Generates a batch of questions for a quiz.
+ * 
+ * @async
  * @param {number} number_of_questions - The number of questions to generate.
  * @param {string} quiz_type - The type of quiz (e.g., "multiple_choice").
  * @param {string} context - The context for generating the questions.
@@ -243,8 +247,6 @@ export async function SWQG(quiz_type, context, number_of_options = 4, existing_q
  * @returns {Promise<Array<Object>>} - An array of question objects, each containing the question, answer, and options.
  */
 export async function BatchSWQG(number_of_questions, quiz_type, context, number_of_options = 4) {
-    //console.debug(`LM-studio-helper.js: BatchSWQG()`);
-
     // Start the timer
     const start_time = performance.now();
 
@@ -261,16 +263,12 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
         question_objects.push({ question: question, answer: ``, options: [] });
     });
 
-    console.log(question_objects);
-
     /* Step 2: Generate the answer */
     console.debug(`LM-studio-helper.js: BatchSWQG: Step 2: Generate an answer for each question`);
     for (const question of question_objects) {
         answer = await generateAnswer(context, question.question);
         question.answer = answer;
     }
-
-    console.log(question_objects);
 
     if (quiz_type == `multiple_choice`) {
         /* Step 3: Generate the distractors */
@@ -285,8 +283,6 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
                 question.options.push(distractor);
             });
         }
-
-        console.log(question_objects);
     }
 
     // Calculate the execution time
@@ -296,7 +292,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
     const seconds = Math.floor((execution_time % 60000) / 1000);
     const milliseconds = Math.floor((execution_time % 1000));
     
-    console.log(`LM-studio-helper.js: BatchSWQG: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
+    console.debug(`LM-studio-helper.js: BatchSWQG: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
 
     return question_objects;
 }

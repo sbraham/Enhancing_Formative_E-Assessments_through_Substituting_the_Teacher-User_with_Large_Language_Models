@@ -10,16 +10,14 @@ const quiz_form = document.getElementById('quiz_form');
 const quiz_id = new URLSearchParams(window.location.search).get('quiz_id');
 
 /* Get quiz from database */
-console.debug(`quiz: quiz_id:`, quiz_id);
-console.debug(`quiz: get quiz from database`);
-
-console.debug(`quiz: getQuizById: awaiting...`);
+console.debug(`getQuizById: awaiting...`);
 const quiz_data = await getQuizById(quiz_id);
-const quiz = Quiz.fromObject(quiz_data.quiz);
 console.debug(`quiz: getQuizById: returned`);
-console.debug(`quiz: getQuizById: quiz:`, quiz);
 
-/* Set quiz related listeners */
+/* Create quiz object */
+const quiz = Quiz.fromObject(quiz_data.quiz);
+
+/* Set previous_button listener */
 document.getElementById('previous_button').addEventListener('click', () => {
     quiz.resetQuizForm();
     quiz.enableQuizForm();
@@ -34,12 +32,12 @@ document.getElementById('previous_button').addEventListener('click', () => {
     quiz.displayQuestion();
 });
 
+
+/* Set next_button listener */
 let given_answer;
 
 quiz_form.addEventListener('submit', async (event) => {
     try {
-        console.log(`Quiz: quiz_form submitted`);
-
         event.preventDefault(); // Prevents the page from reloading when the form is submitted.
 
         if (quiz.quiz_type == 'multiple_choice') {
@@ -48,17 +46,17 @@ quiz_form.addEventListener('submit', async (event) => {
             for (const value of data) {
                 given_answer = Number(value[1]);
             }
-        } else if (quiz.quiz_type == 'true_false') {
-            console.warn(`Quiz: true_or_false is not implemented!`);
-        } else if (quiz.quiz_type == 'short_answer') {
+        } 
+        
+        else if (quiz.quiz_type == 'short_answer') {
             given_answer = quiz_form.short_answer.value;
         }
 
-        console.log(`given_answer:`, given_answer);
-
         await quiz.submitAnswer(given_answer);
-    } catch (error) {
-        console.error(error);
+    } 
+            
+    catch (error) {
+        throw error;
     }
 });
 
@@ -69,5 +67,8 @@ quiz.startQuiz();
  * when the final quiz has been submitted
  * the window will be redirected to the feedback page
 */
+
+console.log('Redirecting to feedback page...');
+console.log('--------------------------------------------------');
 
 const url = `../feedback/feedback.html?given_answers=${quiz._given_answers}`;

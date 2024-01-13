@@ -12,13 +12,22 @@ await checkLoginOnFrame(main);
 
 /* Adding event listeners to buttons */
 dashboard_button.addEventListener("click", async () => {
-    console.log(`Dashboard button clicked`);
+    console.log('dashboard_button clicked');
+
+    console.log('Redirecting to dashboard...');
+    console.log('--------------------------------------------------');
+
     main.src = "./pages/dashboard/dashboard.html";
 });
 
 account_button.addEventListener("click", async () => {
-    console.log(`Account button clicked`);
+    console.log(`account_button clicked`);
+
     console.log(`Loggin out...`);
     await logout();
+
+    console.log('Redirecting to login...');
+    console.log('--------------------------------------------------');
+    
     main.src = "./pages/login/login.html";
 });
