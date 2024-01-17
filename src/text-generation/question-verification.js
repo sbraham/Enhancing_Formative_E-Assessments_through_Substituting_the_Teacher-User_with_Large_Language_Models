@@ -2,8 +2,6 @@ console.log('Loading: LM-studio-helper.js');
 
 /* Imports */
 import { callLMStudio } from './LM-studio-helper.js';
-import { callLMStudio } from './LM-studio-helper.js';
-
 
 /**
  * Checks if the given answer is close to the expected answer for a given question.

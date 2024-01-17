@@ -3,15 +3,6 @@ console.log('Loading: feedback-generation.js');
 /* Imports LM-Studio Helper */
 import { callLMStudio } from './LM-studio-helper.js';
 
-/* Create an answer_object detailing the given answer */
-const answer_object = {
-    "context": `${this.title} (${this.description})`,
-    "question": this._current_question.question,
-    "given_answer": given_answer,
-    "correct_answer": this._current_question.answer,
-    "isCorrect": isCorrect,
-}
-
 /**
  * Generates supportive and constructive feedback for a given answer.
  * 

@@ -107,6 +107,9 @@ given_answers.forEach((answer) => {
 
 // TO DO - make sure that the the right question is handed to the generateFeedback function and are inserted into the right card
 
+// put a bunch of logs in it so you can tell what zee fuck its doing
+// It's not assigning or generating the first questions feedback for some reasong - TO DO
+
 try {
     wrong_answers.forEach(async (answer, index) => {
         let feedback = await generateFeedback(answer);
