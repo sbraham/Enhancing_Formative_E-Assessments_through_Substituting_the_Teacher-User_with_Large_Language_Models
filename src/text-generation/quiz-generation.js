@@ -164,7 +164,9 @@ export async function generateManyDistractors(number_of_distractors, context, qu
 
     system_content += `Each distractor answer should have the following format:`;
     system_content += `Start and end each question with a | character. `;
-    system_content += `For example, | 1. London | 2. Paris | ... | n. Rome |`;
+    system_content += `For example, | London | Paris | ... | Rome |`;
+    system_content += `Do not include the true answer in the distractors. `;
+    system_content += `Do not number the distracotrs. `;
 
     let user_content = `Context: ${context}. `;
     user_content += `Question: ${question}. `;

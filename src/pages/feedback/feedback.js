@@ -94,29 +94,28 @@ given_answers.forEach((answer) => {
     /* Create a card */
     createCard(answer, index);
 
+    console.log("answer: ", answer);
+    console.log("index: ", index);
+
     /* If the answer is incorrect, add it to the wrong_answers array */
     if (answer.isCorrect === false) {
-        wrong_answers.push(answer, index);
+        wrong_answers.push([answer, index]);
     }
 
     /* Increment index */
     index++;
 });
 
+console.log("wrong_answers: ", wrong_answers);
+
 /* Generate feedback for incorrect answers */
 
-// TO DO - make sure that the the right question is handed to the generateFeedback function and are inserted into the right card
+for (const [answer, index] of wrong_answers) {
+    console.log("answer: ", answer);
+    console.log("index: ", index);
 
-// put a bunch of logs in it so you can tell what zee fuck its doing
-// It's not assigning or generating the first questions feedback for some reasong - TO DO
+    let feedback = await generateFeedback(answer);
 
-try {
-    wrong_answers.forEach(async (answer, index) => {
-        let feedback = await generateFeedback(answer);
-
-        let feedback_element = document.getElementById(`feedback-${index}`);
-        feedback_element.innerHTML = `<p>${feedback}</p>`;
-    });
-} catch (error) {
-    throw new Error(error);
+    let feedback_element = document.getElementById(`feedback-${index}`);
+    feedback_element.innerHTML = `<p>${feedback}</p>`;
 }
