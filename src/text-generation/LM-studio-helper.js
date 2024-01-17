@@ -51,7 +51,7 @@ function responseCleaning(response) {
  * @returns {Promise<string>} - The generated text response.
  * @throws {Error} - If there is an error during the API call.
  */
-export async function callLMStudio(system_content, user_content) {
+export async function callLMStudio(system_content, user_content, max_tokens = -1) {
     try {
         let response = await new Promise((resolve, reject) => {
             $.ajax({
@@ -65,7 +65,7 @@ export async function callLMStudio(system_content, user_content) {
                         { role: 'user', content: user_content }
                     ],
                     temperature: 0.7,
-                    max_tokens: -1,
+                    max_tokens: max_tokens,
                     stream: false
                 }),
                 success: function (response) {

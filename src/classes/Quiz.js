@@ -1,5 +1,5 @@
-// import { getElement } from '../src/getElement';
 import { BatchSWQG } from '../text-generation/quiz-generation.js';
+import { checkAnswer } from '../text-generation/question-verification.js';
 
 /**
  * Represents a Quiz object.

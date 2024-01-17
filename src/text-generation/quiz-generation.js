@@ -13,14 +13,14 @@ import { callLMStudio } from './LM-studio-helper.js';
  * @throws {Error} - If there is an error while generating the question.
  */
 export async function generateQuestion(context, existing_questions = []) {
-    let system_content = `Generate one short answer question relating to the following context.`;
-    system_content += `\nThe question must be answerable by a single word or phrase.`;
-    system_content += `\nOnly write the question, do not state the answer or any examples.`;
+    let system_content = `Generate one short answer question relating to the following context. `;
+    system_content += `The question must be answerable by a single word or phrase. `;
+    system_content += `Only write the question, do not state the answer or any examples. `;
 
-    let user_content = `Context: ${context}.`;
+    let user_content = `Context: ${context}. `;
 
     if (existing_questions.length > 0) {
-        system_content += '\nThe question must be different to the following questions: ';
+        system_content += 'The question must be different to the following questions: ';
 
         for (let i = 0; i < existing_questions.length; i++) {
             system_content += `"${i}: ${existing_questions[i].question}"`;
@@ -28,7 +28,7 @@ export async function generateQuestion(context, existing_questions = []) {
             if (i < existing_questions.length - 1) {
                 system_content += `, `;
             } else {
-                system_content += `.`;
+                system_content += `. `;
             }
         }
     }
@@ -56,17 +56,18 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     let system_content = ``;
 
     if (number_of_questions > 1) {
-        system_content += `Generate ${number_of_questions} different short answer question relating to the following context.`;
+        system_content += `Generate ${number_of_questions} different short answer question relating to the following context. `;
     } else {
-        system_content += `Generate a short answer question relating to the following context.`;
+        system_content += `Generate a short answer question relating to the following context. `;
     }
 
-    system_content += `\nThe question must be answerable by a single word or phrase.`;
-    system_content += `\nOnly write the question, do not state the answer or any examples.`;
-    system_content += `\n`;
-    system_content += `\nStart and end each question with a | character.`;
+    system_content += `The question must be answerable by a single word or phrase. `;
+    system_content += `Only write the question, do not state the answer or any examples. `;
+    
+    system_content += `Start and end each question with a | character. `;
+    system_content += `For example, | 1. What is the capital of France? | 2. What is the capital of Spain? | ... | n. What is the capital of Italy? |`;
 
-    let user_content = `Context: ${context}.`;
+    let user_content = `Context: ${context}. `;
 
     try {
         let questions = [];
@@ -97,11 +98,11 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
  */
 export async function generateAnswer(context, question) {
     let system_content = `Given the context, what is the TRUE answer to the following question?`;
-    system_content += `\nDo not state in any way that the answer is true, or that it is the answer.`;
-    system_content += `\nOnly write the answer, do not write any examples or other possible answers.`;
+    system_content += `Do not state in any way that the answer is true, or that it is the answer. `;
+    system_content += `Only write the answer, do not write any examples or other possible answers. `;
 
-    let user_content = `Context: ${context}.`;
-    user_content += `\nQuestion: ${question}.`;
+    let user_content = `Context: ${context}. `;
+    user_content += `Question: ${question}. `;
 
     try {
         let response = await callLMStudio(system_content, user_content);
@@ -125,13 +126,13 @@ export async function generateAnswer(context, question) {
  */
 export async function generateDistractors(context, question, options = []) {
     let system_content = `Given the context, what is a FALSE distractor answer to the following question?`;
-    system_content += `\nDo not state in any way that the answer is false, or that it is a distractor.`;
+    system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
 
-    let user_content = `Context: ${context}.`;
-    user_content += `\nQuestion: ${question}.`;
+    let user_content = `Context: ${context}. `;
+    user_content += `Question: ${question}. `;
 
     if (options.length > 0) {
-        system_content += `\nThe distractor must be different from the following options: ${options}.`;
+        system_content += `The distractor must be different from the following options: ${options}. `;
     }
 
     try {
@@ -156,16 +157,17 @@ export async function generateDistractors(context, question, options = []) {
  */
 export async function generateManyDistractors(number_of_distractors, context, question, answer) {
     let system_content = `Given the context, give ${number_of_distractors} FALSE distractor answers to the following question?`;
-    system_content += `\nThe true answer is "${answer}", and distractors should be similar in format to it.`;
-    system_content += `\nDo not state in any way that the answer is false, or that it is a distractor.`;
-    system_content += `\nDo not number the distractors.`;
-    system_content += `\nOnly generate ${number_of_distractors} distractors, do not generate more.`;
-    system_content += `\n`;
-    system_content += `\nEach distractor answer should have the following format:`;
-    system_content += `\nStart and end each question with a | character.`;
+    system_content += `The true answer is "${answer}", and distractors should be similar in format to it. `;
+    system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
+    system_content += `Do not number the distractors. `;
+    system_content += `Only generate ${number_of_distractors} distractors, do not generate more. `;
 
-    let user_content = `Context: ${context}.`;
-    user_content += `\nQuestion: ${question}.`;
+    system_content += `Each distractor answer should have the following format:`;
+    system_content += `Start and end each question with a | character. `;
+    system_content += `For example, | 1. London | 2. Paris | ... | n. Rome |`;
+
+    let user_content = `Context: ${context}. `;
+    user_content += `Question: ${question}. `;
 
     try {
         let distractors = [];

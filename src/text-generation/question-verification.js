@@ -22,12 +22,12 @@ export async function checkAnswer(question, expected_answer, given_answer) {
         let response = '';
         let i = 1;
 
-        while (generating) {
-            response = await callLMStudio(system_content, user_content, 10);
+        while (true) {
+            response = await callLMStudio(system_content, user_content, 2);
 
-            if (response.toLowerCase().includes('yes ')) {
+            if (response.toLowerCase().includes('yes')) {
                 return true;
-            } else if (response.toLowerCase().includes('no ')) {
+            } else if (response.toLowerCase().includes('no')) {
                 return false;
             }
 

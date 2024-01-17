@@ -22,6 +22,8 @@ const spinnerHTML = `<div class="spinner-border text-primary" role="status"><spa
 function createQuizCard(quiz) {
     console.log('createQuizCard: Creating quiz card:', quiz.id);
 
+    const quiz_JSON = JSON.stringify(quiz);
+
     /* Get the location to insert into */
     const row = document.getElementById('row_of_quizzes');
 
@@ -60,7 +62,7 @@ function createQuizCard(quiz) {
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                ${quiz.description}
+                                ${quiz_JSON}
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -132,20 +134,20 @@ function createAddNewQuizCard() {
                             <div class="mb-3">
                                 <label for="quiz_title" class="form-label">Title</label>
                                 <input type="text" class="form-control" id="quiz_title" required 
-                                    pattern="([A-Za-z0-9À-ž (),.]){2,}" placeholder="Enter quiz title">
+                                    pattern="[A-Za-z0-9 (),.]{2,}" placeholder="Enter quiz title">
                             </div>
 
                             <!-- Quiz Description -->
                             <div class="mb-3">
                                 <div class="info-group">
                                     <label for="quiz_description" class="form-label">Description</label>
-                                    <span class="badge text-bg-info fs-6 fw-bold" data-bs-toggle="tooltip" 
+                                    <span class="badge text-bg-info fs-6 fw-bold" data-bs-toggle="tooltip" row="3"
                                         data-bs-placement="right" title="${tooltip_text}">
                                         ⓘ
                                     </span>
                                 </div>
                                 <input type="text" class="form-control" id="quiz_description" rows="3" 
-                                    pattern="([A-Za-z0-9À-ž (),.]){2,}" placeholder="Enter quiz description"></input>
+                                    pattern="[A-Za-z0-9 (),.]{2,}" placeholder="Enter quiz description"></input>
                             </div>
 
                             <!-- Number of Questions -->
@@ -287,6 +289,9 @@ function deleteQuiz(quiz, index_to_delete) {
     /* Remove the quiz card from the page */
     const card_container = document.getElementById(index_to_delete);
     card_container.remove();
+
+    /* Refresh the page */
+    location.reload();
 }
 
 /**
