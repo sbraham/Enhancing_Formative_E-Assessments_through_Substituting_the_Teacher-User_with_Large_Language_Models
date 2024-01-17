@@ -2,6 +2,7 @@ console.log('Loading: LM-studio-helper.js');
 
 /* Imports */
 import { callLMStudio } from './LM-studio-helper.js';
+import { callLMStudio } from './LM-studio-helper.js';
 
 
 /**
@@ -20,9 +21,8 @@ export async function checkAnswer(question, expected_answer, given_answer) {
 
     try {
         let response = '';
-        let i = 1;
 
-        while (true) {
+        for (let i = 1; i <= 10; i++) {
             response = await callLMStudio(system_content, user_content, 2);
 
             if (response.toLowerCase().includes('yes')) {
@@ -30,14 +30,10 @@ export async function checkAnswer(question, expected_answer, given_answer) {
             } else if (response.toLowerCase().includes('no')) {
                 return false;
             }
-
-            i++;
-
-            if (i > 10) {
-                console.error(`checkAnswer: To many failed attempts. Return false.`);
-                return false;
-            }
         }
+
+        console.error(`checkAnswer: Too many failed attempts. Return false.`);
+        return false;
     } 
             
     catch (error) {
