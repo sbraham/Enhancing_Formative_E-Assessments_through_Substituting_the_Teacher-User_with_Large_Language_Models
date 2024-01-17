@@ -86,21 +86,34 @@ const given_answers_string = new URLSearchParams(window.location.search).get('gi
 /* Turn the given_answers into an array of answers objects */
 const given_answers = given_answers_string ? JSON.parse(given_answers_string) : [];
 
+/* Set index to 1 */
+let index = 1;
+
 /* For each answer */
-given_answers.forEach((answer, index) => {
+given_answers.forEach((answer) => {
     /* Create a card */
-    createCard(answer, index + 1);
+    createCard(answer, index);
 
     /* If the answer is incorrect, add it to the wrong_answers array */
     if (answer.isCorrect === false) {
-        wrong_answers.push(answer);
+        wrong_answers.push(answer, index);
     }
+
+    /* Increment index */
+    index++;
 });
 
 /* Generate feedback for incorrect answers */
-wrong_answers.forEach(async (answer, index) => {
-    let feedback = await generateFeedback(answer);
 
-    let feedback_element = document.getElementById(`feedback-${index + 1}`);
-    feedback_element.innerHTML = `<p>${feedback}</p>`;
-});
+// TO DO - make sure that the the right question is handed to the generateFeedback function and are inserted into the right card
+
+try {
+    wrong_answers.forEach(async (answer, index) => {
+        let feedback = await generateFeedback(answer);
+
+        let feedback_element = document.getElementById(`feedback-${index}`);
+        feedback_element.innerHTML = `<p>${feedback}</p>`;
+    });
+} catch (error) {
+    throw new Error(error);
+}

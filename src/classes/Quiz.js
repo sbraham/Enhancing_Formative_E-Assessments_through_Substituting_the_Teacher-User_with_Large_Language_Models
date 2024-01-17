@@ -139,7 +139,7 @@ export class Quiz {
     }
 
     createAnswerElements() {
-        answer_container = document.getElementById('answer_container');
+        const answer_container = document.getElementById('answer_container');
 
         /* If the quiz is multiple choice */
         if(this.quiz_type == 'multiple_choice') {
@@ -248,13 +248,13 @@ export class Quiz {
         /* Get loading wheel */
         try { 
             const loading_wheel = document.getElementById('loading_wheel');
+
+            /* Remove loading wheel from the DOM, if it was found */
+            if (loading_wheel) {
+                loading_wheel.remove();
+            }
         } catch (error) {
             return;
-        }
-
-        /* Remove loading wheel from the DOM, if it was found */
-        if (loading_wheel) {
-            loading_wheel.remove();
         }
     }
 

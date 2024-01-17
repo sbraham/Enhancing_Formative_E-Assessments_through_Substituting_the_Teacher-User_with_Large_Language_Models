@@ -6,6 +6,18 @@ import { Quiz } from "../../classes/Quiz.js";
 /* Get DOM elements */
 const quiz_form = document.getElementById('quiz_form');
 
+/* Set return_button listener */
+return_button.addEventListener('click', () => {
+    /* Return to dashboard */
+
+    console.log('Redirecting to dashboard page...');
+    console.log('--------------------------------------------------');
+
+    const url = `../dashboard/dashboard.html`;
+
+    window.location.href = url;
+});
+
 /* Get quiz_id from URL */
 const quiz_id = new URLSearchParams(window.location.search).get('quiz_id');
 
@@ -70,8 +82,3 @@ quiz.startQuiz();
  * when the final quiz has been submitted
  * the window will be redirected to the feedback page
 */
-
-console.log('Redirecting to feedback page...');
-console.log('--------------------------------------------------');
-
-const url = `../feedback/feedback.html?given_answers=${quiz._given_answers}`;

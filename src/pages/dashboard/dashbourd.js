@@ -119,20 +119,20 @@ function createAddNewQuizCard() {
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
-                    <form id="create_quiz_form">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="new_quiz_modal_label">Create New Quiz</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="new_quiz_modal_label">Create New Quiz</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
 
-                        <!-- Form for creating a new quiz -->
-                        <div class="modal-body">
+                    <!-- Form for creating a new quiz -->
+                    <div class="modal-body">
+                        <form id="create_quiz_form">
                             <!-- Quiz Title -->
                             <div class="mb-3">
                                 <label for="quiz_title" class="form-label">Title</label>
                                 <input type="text" class="form-control" id="quiz_title" required 
-                                    pattern="[a-zA-Z]+" placeholder="Enter quiz title">
+                                    pattern="([A-Za-z0-9À-ž (),.]){2,}" placeholder="Enter quiz title">
                             </div>
 
                             <!-- Quiz Description -->
@@ -145,7 +145,7 @@ function createAddNewQuizCard() {
                                     </span>
                                 </div>
                                 <input type="text" class="form-control" id="quiz_description" rows="3" 
-                                    pattern="[a-zA-Z]+" placeholder="Enter quiz description"></input>
+                                    pattern="([A-Za-z0-9À-ž (),.]){2,}" placeholder="Enter quiz description"></input>
                             </div>
 
                             <!-- Number of Questions -->
@@ -168,18 +168,18 @@ function createAddNewQuizCard() {
                                     <option value="short_answer">Short Answer</option>
                                 </select>
                             </div>
-                        </div>
+                        </form>
+                    </div>
 
-                        <div class="modal-footer">
-                            <!-- Button to close the modal -->
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <div class="modal-footer">
+                        <!-- Button to close the modal -->
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
-                            <!-- Another button to take the quiz -->
-                            <button id="createQuizButton" type="submit" class="btn btn-success card-button">
-                                <div class="cut-text-1">Create Quiz</div>
-                            </button>
-                        </div>
-                    </form>
+                        <!-- Another button to take the quiz -->
+                        <button id="createQuizButton" type="submit" class="btn btn-success card-button" form="create_quiz_form">
+                            <div class="cut-text-1">Create Quiz</div>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -199,7 +199,6 @@ function createAddNewQuizCard() {
     const tooltip_trigger_list = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltip_list = [...tooltip_trigger_list].map(tooltip_trigger_element => new bootstrap.Tooltip(tooltip_trigger_element))
 }
-
 
 /**
  * Adds a new quiz to the dashboard.
@@ -264,8 +263,8 @@ async function addNewQuiz() {
     take_quiz_button_modal_container.innerHTML = take_quiz_button_modal_container_innerHTML;
 
     /* Re-add event listeners to the buttons */
-    document.getElementById(`${index}`).addEventListener('click', () => takeQuiz(quiz));
-    document.getElementById(`${index}_model`).addEventListener('click', () => takeQuiz(quiz));
+    document.getElementById(`take_quiz_${index}_container`).addEventListener('click', () => takeQuiz(quiz));
+    document.getElementById(`take_quiz_${index}_model_container`).addEventListener('click', () => takeQuiz(quiz));
 
     /* Increment the index */
     index++;
@@ -298,8 +297,8 @@ function deleteQuiz(quiz, index_to_delete) {
 function takeQuiz(quiz) {
     console.log('Redirecting to quiz page:', quiz.id);
 
-    /* Construct the URL with the quiz_id as a query parameter */
-    const url = `../quiz/quiz.html?quiz_id=${quiz_id}`;
+    /* Construct the URL with the quiz.id as a query parameter */
+    const url = `../quiz/quiz.html?quiz_id=${quiz.id}`;
 
     console.log('Redirecting to quiz...');
     console.log('--------------------------------------------------');
