@@ -14,28 +14,29 @@ import { callLMStudio } from './LM-studio-helper.js';
  * @returns {Promise<boolean>} - A promise that resolves to true if the given answer is close to the expected answer, false otherwise.
  * @throws {Error} - If an error occurs during the process.
  */
-export async function checkAnswer(question, expected_answer, given_answer) {
-    
-    // TO DO : Make this better
-    
+export async function checkAnswer(question, expected_answer, given_answer) {    
     let system_content = `Outputting YES or NO. Consider the question and expected_answer. Is the given_answer close to the expected_answer?`;
     let user_content = `question: ${question}, expected_answer: ${expected_answer}, given_answer: ${given_answer}. `;
 
     try {
-        let valid_answers = ['YES', 'NO'];
         let response = '';
+        let i = 1;
 
-        while (!valid_answers.includes(response.trim())) {
-            response = await callLMStudio(system_content, user_content, 2);
-        }
+        while (generating) {
+            response = await callLMStudio(system_content, user_content, 10);
 
-        if (response.trim() === 'YES') {
-            return true;
-        } else if (response.trim() === 'NO') {
-            return false;
-        } else {
-            console.error(`LM-studio-helper.js: checkAnswer: Invalid response: ${response}`);
-            return false;
+            if (response.toLowerCase().includes('yes ')) {
+                return true;
+            } else if (response.toLowerCase().includes('no ')) {
+                return false;
+            }
+
+            i++;
+
+            if (i > 10) {
+                console.error(`checkAnswer: To many failed attempts. Return false.`);
+                return false;
+            }
         }
     } 
             
