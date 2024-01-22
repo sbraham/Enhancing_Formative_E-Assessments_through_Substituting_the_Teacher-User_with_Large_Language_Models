@@ -119,8 +119,10 @@ export async function updateQuizAttempts(quiz) {
             throw new Error(`User is not logged in. Cannot update quiz attempts.`);
         }
 
+        const quiz_ref = doc(db, user, quiz.id);
+
         /* Update the quiz in the database */
-        await updateDoc(quiz.id, {
+        await updateDoc(quiz_ref, {
             attempts: quiz.attempts
         });
     } 

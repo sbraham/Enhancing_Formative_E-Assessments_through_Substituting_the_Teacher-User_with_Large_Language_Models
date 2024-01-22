@@ -90,6 +90,8 @@ user_quizzes.sort((a, b) => {
     return 0;
 });
 
+console.log("user_quizzes:", user_quizzes);
+
 /* Creating new Accordion Elements */
 
 // ---------- TEST ----------

@@ -38,6 +38,8 @@ export class Quiz {
         this._current_question = null;
         
         this._given_answers = [];
+
+        this._quiz_start_time = null;
     }
 
     /**
@@ -87,6 +89,10 @@ export class Quiz {
             });
         }
 
+        /* Start timer */
+        this._quiz_start_time = new Date().getTime();
+
+        /* Display the quiz */
         this.displayQuiz();
         this.createAnswerElements();
 
@@ -394,10 +400,12 @@ export class Quiz {
         /* Save this attempt */
         const score = this._given_answers.filter(answer => answer.isCorrect).length;
 
+        const attempt_duration = ( new Date().getTime() ) - this._quiz_start_time;
+
         const attempt = {
             "index": this.attempts.length + 1,
             "date_time": new Date(),
-            "duration": "TODO",
+            "duration": attempt_duration,
             "score": score,
             "given_answers": this._given_answers,
         }
@@ -430,6 +438,7 @@ export class Quiz {
             object.quiz_type,
             object.id,
             object.questions,
+            object.attempts,
         );
         return quiz;
     }
