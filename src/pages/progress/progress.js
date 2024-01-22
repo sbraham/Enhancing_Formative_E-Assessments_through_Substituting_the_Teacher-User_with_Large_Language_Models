@@ -49,7 +49,11 @@ function createGraph(index, quiz) {
 }
 
 function createAccordionElement(index, quiz) {
+    if (quiz.attempts.length === 0) {
+        return;
+    }
 
+    const accordion = document.getElementById(`accordion`);
 }
 
 

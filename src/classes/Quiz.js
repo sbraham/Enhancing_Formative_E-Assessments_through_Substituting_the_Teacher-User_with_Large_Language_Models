@@ -1,5 +1,6 @@
 import { BatchSWQG } from '../text-generation/quiz-generation.js';
 import { checkAnswer } from '../text-generation/question-verification.js';
+import { updateQuizAttempts } from '../firebase/database-helper.js';
 
 /**
  * Represents a Quiz object.
@@ -402,6 +403,9 @@ export class Quiz {
         }
 
         this.attempts.push(attempt);
+
+        /* Update the quiz in the database */
+        updateQuizAttempts(this);
 
         /* save given_answers as raw JSON */
         const given_answers = JSON.stringify(this._given_answers);

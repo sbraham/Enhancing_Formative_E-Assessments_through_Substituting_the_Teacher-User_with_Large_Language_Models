@@ -1,7 +1,7 @@
 console.log('Loading: firebase/database-helper.js');
 
 /* Importing Firebase features */
-import { doc, getDoc, getDocs, setDoc, addDoc, deleteDoc, query, where, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
+import { doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, query, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
 
 /* Importing Firebase config */
 import { auth, db } from './config.js';
@@ -91,6 +91,38 @@ export async function addQuizToDB(quiz) {
         });
         console.debug(`setDoc: received`);
 
+    } 
+            
+    catch (error) {
+        throw error;
+    }
+}
+
+export async function updateQuizAttempts(quiz) {
+    console.log(`updateQuizAttempts: Updating the attempts of a quiz in the database:`, quiz.id);
+
+    /* Check if the quiz is valid */
+    if (quiz.id == null) {
+        throw new Error(`Quiz does not have an ID. Cannot update quiz attempts.`);
+    }
+
+    if (quiz.attempts.length === 0) {
+        console.warn(`updateQuizAttempts: Quiz has no attempts. Cannot update quiz attempts.`);
+        return;
+    }
+
+    try {
+        /* Get the user's id token */
+        const user = await checkLogin();
+        
+        if (user == null) {
+            throw new Error(`User is not logged in. Cannot update quiz attempts.`);
+        }
+
+        /* Update the quiz in the database */
+        await updateDoc(quiz.id, {
+            attempts: quiz.attempts
+        });
     } 
             
     catch (error) {
