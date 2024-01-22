@@ -37,7 +37,7 @@ function responseCleaning(response) {
     const specialCharactersRegex = /[<>[\]\n]|SYS|INST|:|QUESTION|Question|ANSWER|Answer|Option|Distractor/g;
 
     // Remove special characters and keywords
-    response = response.replace(specialCharactersRegex, '');
+    response = response.replace(specialCharactersRegex, ' ');
 
     return response;
 }

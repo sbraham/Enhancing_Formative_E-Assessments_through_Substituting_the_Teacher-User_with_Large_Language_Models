@@ -6,6 +6,7 @@ import { logout, checkLoginOnFrame } from "./firebase/auth-helper.js";
 /* Fetching elements front HTML */
 const main = document.getElementById('main');
 const dashboard_button = document.getElementById('dashboard');
+const progress_button = document.getElementById('progress');
 const account_button = document.getElementById('account');
 
 await checkLoginOnFrame(main);
@@ -18,6 +19,15 @@ dashboard_button.addEventListener("click", async () => {
     console.log('--------------------------------------------------');
 
     main.src = "./pages/dashboard/dashboard.html";
+});
+
+progress_button.addEventListener("click", async () => {
+    console.log('progress_button clicked');
+
+    console.log('Redirecting to progress...');
+    console.log('--------------------------------------------------');
+
+    main.src = "./pages/progress/progress.html";
 });
 
 account_button.addEventListener("click", async () => {

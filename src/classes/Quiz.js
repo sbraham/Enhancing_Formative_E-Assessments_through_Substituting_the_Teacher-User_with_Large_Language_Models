@@ -11,9 +11,10 @@ import { checkAnswer } from '../text-generation/question-verification.js';
  * @param {string} quiz_type - The type of the quiz (multiple_choice, short_answer).
  * @param {number|null} [id=null] - The ID of the quiz (null if not in the database).
  * @param {Array} [questions=[]] - The array of questions in the quiz.
+ * @param {Array} [attempts=[]] - The array of attempts of the quiz.
  */
 export class Quiz {
-    constructor(title, description = '', number_of_questions, quiz_type, id = null, questions = []) {
+    constructor(title, description = '', number_of_questions, quiz_type, id = null, questions = [], attempts = []) {
         /* Core variables */
 
         this.id = id; // id is null if the quiz is not in the database
@@ -24,7 +25,9 @@ export class Quiz {
 
         this.quiz_type = quiz_type; // quiz_type: multiple_choice, short_answer
 
-        this.questions = questions;
+        this.questions = questions; // questions: array of question objects
+
+        this.attempts = attempts; // attempts: array of attempt objects
 
         /* Varaiables for running the quiz */
 
@@ -387,6 +390,19 @@ export class Quiz {
     /** End quiz */
 
     endQuiz() {
+        /* Save this attempt */
+        const score = this._given_answers.filter(answer => answer.isCorrect).length;
+
+        const attempt = {
+            "index": this.attempts.length + 1,
+            "date_time": new Date(),
+            "duration": "TODO",
+            "score": score,
+            "given_answers": this._given_answers,
+        }
+
+        this.attempts.push(attempt);
+
         /* save given_answers as raw JSON */
         const given_answers = JSON.stringify(this._given_answers);
 

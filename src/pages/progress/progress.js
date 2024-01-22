@@ -1,4 +1,4 @@
-console.log('Loading: dashbourd.js');
+console.log('Loading: progress.js');
 
 /* Importing Firebase helper functions from setup file */
 import { checkLogin } from "../../firebase/auth-helper.js";
@@ -210,6 +210,7 @@ function createAddNewQuizCard() {
                             <div class="mb-3">
                                 <label for="question_type" class="form-label">Question Type</label>
                                 <select class="form-select" id="question_type" required>
+                                    <option value="null" disabled selected hidden>Please Choose...</option>
                                     <option value="multiple_choice">Multiple Choice</option>
                                     <option value="short_answer">Short Answer</option>
                                 </select>
@@ -276,7 +277,7 @@ async function addNewQuiz() {
     document.getElementById('quiz_title').value = '';
     document.getElementById('quiz_description').value = '';
     document.getElementById('number_of_questions').value = '';
-    document.getElementById('question_type').value = 'multiple_choice';
+    document.getElementById('question_type').value = 'null';
 
     /* Creating the quiz */
     const quiz = new Quiz(quiz_title, quiz_description, number_of_questions, question_type);   
@@ -337,7 +338,7 @@ function deleteQuiz(quiz, index_to_delete) {
     card_container.remove();
 
     /* Refresh the page */
-    window.location.href = window.location.href;
+    location.reload();
 }
 
 /**
