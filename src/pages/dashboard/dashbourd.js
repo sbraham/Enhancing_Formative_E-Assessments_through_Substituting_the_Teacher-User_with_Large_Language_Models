@@ -186,8 +186,20 @@ function createAddNewQuizCard() {
                             <div class="mb-3">
                                 <label for="quiz_topic" class="form-label">Topic</label>
                                 <select class="form-select" id="quiz_topic" required>
-                                    <option value="multiple_choice">Beans</option>
-                                    <option value="short_answer">Dogs and Cats</option>
+                                    <option>English</option>
+                                    <option>Maths</option>
+                                    <option>Science</option>
+                                    <option>Computing</option>
+                                    <option>Geography</option>
+                                    <option>History</option>
+                                    <option>RE</option>
+                                    <option>Art</option>
+                                    <option>Music</option>
+                                    <option>Drama</option>
+                                    <option>French</option>
+                                    <option>Spanish</option>
+                                    <option>German</option>
+                                    <option>Other</option>
                                 </select>
                             </div>
 
@@ -277,15 +289,21 @@ async function addNewQuiz() {
 
     /* Getting the values from the form */
     const quiz_title = document.getElementById('quiz_title').value.replace(specialCharactersRegex, ' ');
+    const quiz_topic = document.getElementById('quiz_topic').value;
     const quiz_description = document.getElementById('quiz_description').value.replace(specialCharactersRegex, ' ');
     const number_of_questions = document.getElementById('number_of_questions').value;
     const question_type = document.getElementById('question_type').value;
 
     /* Clearning the form */
     document.getElementById('quiz_title').value = '';
+    document.getElementById('quiz_topic').value = 'Other';
     document.getElementById('quiz_description').value = '';
     document.getElementById('number_of_questions').value = '';
     document.getElementById('question_type').value = 'multiple_choice';
+
+    if (quiz_topic !== 'Other') {
+        quiz_title = `${quiz_topic} - ${quiz_title}`;
+    }
 
     /* Creating the quiz */
     const quiz = new Quiz(quiz_title, quiz_description, number_of_questions, question_type);   
