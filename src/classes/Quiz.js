@@ -302,7 +302,7 @@ export class Quiz {
         }
 
         /* Wait 500ms before moving on */
-        setTimeout(() => {
+        setTimeout(async () => {
             /* Reset quiz */
             this.enableQuizForm();
             this.removeWheel();
@@ -313,7 +313,7 @@ export class Quiz {
                 const result = confirm("Quiz completed. Are you happy with all your answers?");
                 if (result) {
                     // If yes, End quiz
-                    this.endQuiz();
+                    await this.endQuiz();
                 } else {
                     // If no, Wait for next input
                 }
@@ -390,7 +390,7 @@ export class Quiz {
     
     /** End quiz */
 
-    endQuiz() {
+    async endQuiz() {
         /* Save this attempt */
         const score = this._given_answers.filter(answer => answer.isCorrect).length;
 
@@ -405,7 +405,7 @@ export class Quiz {
         this.attempts.push(attempt);
 
         /* Update the quiz in the database */
-        updateQuizAttempts(this);
+        await updateQuizAttempts(this);
 
         /* save given_answers as raw JSON */
         const given_answers = JSON.stringify(this._given_answers);
