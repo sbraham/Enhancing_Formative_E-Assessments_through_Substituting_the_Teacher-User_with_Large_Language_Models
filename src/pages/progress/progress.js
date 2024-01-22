@@ -1,11 +1,12 @@
 console.log('Loading: progress.js');
 
+
 /* Importing Firebase helper functions from setup file */
-import { checkLogin } from `../../firebase/auth-helper.js`;
-import { getUserQuizzes, addQuizToDB, removeQuizFromDB } from `../../firebase/database-helper.js`;
+import { checkLogin } from "../../firebase/auth-helper.js";
+import { getUserQuizzes } from "../../firebase/database-helper.js";
 
 /* Importing Quiz class */
-import { Quiz } from `../../classes/Quiz.js`;
+import { Quiz } from "../../classes/Quiz.js";
 
 /* Assigning variables */
 
@@ -19,7 +20,10 @@ function createGraph(index, quiz) {
     const x_values = [];
     const y_values = [];
 
+    console.log("attempts:", attempts);
+
     for (let i = 0; i < attempts.length; i++) {
+        console.log(attempts[i]);
         x_values.push(`Attempt ${i + 1}`);
         y_values.push(attempts[i].score);
     }
@@ -43,6 +47,11 @@ function createGraph(index, quiz) {
         }
     });
 }
+
+function createAccordionElement(index, quiz) {
+
+}
+
 
 /* Assigning functions to event listeners */
 
@@ -80,3 +89,5 @@ user_quizzes.sort((a, b) => {
 /* Creating new Accordion Elements */
 
 // ---------- TEST ----------
+
+createGraph(1, user_quizzes[0]);
