@@ -44,6 +44,8 @@ export async function getUserQuizzes() {
             quizzes_data.push(doc.data());
         });
 
+        console.log(`getUserQuizzes: Returning quizzes:`, quizzes_data);
+
         return quizzes_data;
     } 
             
@@ -98,17 +100,12 @@ export async function addQuizToDB(quiz) {
     }
 }
 
-export async function updateQuizAttempts(quiz) {
-    console.log(`updateQuizAttempts: Updating the attempts of a quiz in the database:`, quiz.id);
+export async function updateQuiz(quiz) {
+    console.log(`updateQuiz: Updating the quiz in the database:`, quiz.id);
 
     /* Check if the quiz is valid */
     if (quiz.id == null) {
         throw new Error(`Quiz does not have an ID. Cannot update quiz attempts.`);
-    }
-
-    if (quiz.attempts.length === 0) {
-        console.warn(`updateQuizAttempts: Quiz has no attempts. Cannot update quiz attempts.`);
-        return;
     }
 
     try {
@@ -119,12 +116,20 @@ export async function updateQuizAttempts(quiz) {
             throw new Error(`User is not logged in. Cannot update quiz attempts.`);
         }
 
+        /* Get the quiz reference */
+        console.debug(`doc: awaiting response...`);
         const quiz_ref = doc(db, user, quiz.id);
+        console.debug(`doc: received`);
+
+        /* Make an unattached copy of the quiz, so changes to quiz don't effect this object */
+        const quiz_copy = JSON.parse(JSON.stringify(quiz));
 
         /* Update the quiz in the database */
+        console.debug(`updateDoc: awaiting response...`);
         await updateDoc(quiz_ref, {
-            attempts: quiz.attempts
+            quiz: quiz_copy
         });
+        console.debug(`updateDoc: received`);
     } 
             
     catch (error) {

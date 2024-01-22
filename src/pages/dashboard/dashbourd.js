@@ -182,6 +182,15 @@ function createAddNewQuizCard() {
                                     placeholder="Enter quiz title">
                             </div>
 
+                            <!-- Question Topic -->
+                            <div class="mb-3">
+                                <label for="quiz_topic" class="form-label">Topic</label>
+                                <select class="form-select" id="quiz_topic" required>
+                                    <option value="multiple_choice">Beans</option>
+                                    <option value="short_answer">Dogs and Cats</option>
+                                </select>
+                            </div>
+
                             <!-- Quiz Description -->
                             <div class="mb-3">
                                 <div class="info-group">

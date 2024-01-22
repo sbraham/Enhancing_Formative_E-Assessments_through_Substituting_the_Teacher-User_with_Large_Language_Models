@@ -8,19 +8,32 @@ import { getUserQuizzes } from "../../firebase/database-helper.js";
 /* Importing Quiz class */
 import { Quiz } from "../../classes/Quiz.js";
 
-/* Assigning variables */
-
 /* Assigning DOM elements */
-
-/* Assigning event listeners */
+const quiz_accordion = document.getElementById(`quiz_accordion`);
 
 /* Assigning functions */
+function formatDateTime(date_time) {
+    const date = new Date(date_time);
+
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    return `${day}/${month}/${year}`;
+}
+
+function formatDuration(duration) {
+    const hours = Math.floor(duration / 3600);
+    const minutes = Math.floor((duration % 3600) / 60);
+    const seconds = duration % 60;
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+}
+
 function createGraph(index, quiz) {
     const attempts = quiz.attempts;
     const x_values = [];
     const y_values = [];
-
-    console.log("attempts:", attempts);
 
     for (let i = 0; i < attempts.length; i++) {
         console.log(attempts[i]);
@@ -43,21 +56,137 @@ function createGraph(index, quiz) {
             title: {
                 display: true,
                 text: `${quiz.title} Progress`
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        stepSize: 1
+                    }
+                }]
             }
         }
     });
 }
 
-function createAccordionElement(index, quiz) {
+function addQuizToAccordion(index, quiz) {
     if (quiz.attempts.length === 0) {
         return;
     }
 
-    const accordion = document.getElementById(`accordion`);
+    const quiz_accordion_item = document.createElement(`div`);
+    quiz_accordion_item.classList.add(`accordion-item`);
+
+    quiz_accordion_item.innerHTML = `
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapse_${index}" aria-expanded="true" aria-controls="collapse_${index}">
+                ${quiz.title}
+            </button>
+        </h2>
+
+        <div id="collapse_${index}" class="accordion-collapse collapse">
+            <div class="accordion-body">
+                <div class="d-flex">
+                    <div style="width: 70%;">
+                        <canvas id="chart_${index}"></canvas>
+                    </div>
+
+                    <div style="width: 30%;">
+                        <label for="attempt_select_${index}" class="form-label">Attempts</label>
+                        <select class="form-select" id="attempt_select_${index}" required>
+                            ${quiz.attempts.map((attempt, index) => {
+                                return `<option value="${index}">Attempt ${index + 1}</option>`;
+                            })}
+                        </select>
+
+                        <div class="m-2" id="attempt_view_${index}">
+                            <!-- Attempt Info -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Given Answers Accordion -->
+                <div class="accordion m-3">
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse_given_answers_${index}" aria-expanded="true" aria-controls="collapse_given_answers_${index}">
+                                    Given Answers
+                                </button>
+                            </h2>
+
+                            <div id="collapse_given_answers_${index}" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Question</th>
+                                                <th scope="col">Answer Given</th>
+                                                <th scope="col">Result</th>
+                                            </tr>
+                                        </thead>
+                    
+                                        <tbody id="given_answer_table_body_${index}">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    quiz_accordion.append(quiz_accordion_item);
+
+    createGraph(index, quiz);
+
+    /* Add event listener to the attempt select */
+    const attempt_select_element = document.getElementById(`attempt_select_${index}`);
+    attempt_select_element.addEventListener(`change`, () => {
+        const attempt_view = document.getElementById(`attempt_view_${index}`);
+
+        if (!attempt_view) {
+            console.warn(`Attempt view not found.`);
+            return;
+        }
+
+        const attempt_index = attempt_select_element.value;
+        const attempt = quiz.attempts[attempt_index];
+
+
+
+        attempt_view.innerHTML = `
+            <h5>Date:</h5>
+            <p>${formatDateTime(attempt.date_time)}</p>
+
+            <h5>Duration:</h5>
+            <p>${formatDuration(attempt.duration)}</p>
+
+            <h5>Score:</h5>
+            <p>${attempt.score} / ${attempt.given_answers.length}</p>
+        `;
+
+        /* Update the given answers table */
+        const given_answer_table = document.getElementById(`given_answer_table_body_${index}`);
+        const given_answers = attempt.given_answers;
+
+        given_answer_table.innerHTML = `
+            ${given_answers.map((given_answer, index) => {
+                const result = given_answer.isCorrect ? '✅' : '❌';
+                return `
+                        <tr>
+                            <td>${given_answer.question}</td>
+                            <td>${given_answer.given_answer}</td>
+                            <td>${result}</td>
+                        </tr>
+                    `;
+            }).join('')}
+        `;
+    });
 }
-
-
-/* Assigning functions to event listeners */
 
 /********************* *
  * Start of the script *
@@ -93,7 +222,7 @@ user_quizzes.sort((a, b) => {
 console.log("user_quizzes:", user_quizzes);
 
 /* Creating new Accordion Elements */
-
-// ---------- TEST ----------
-
-createGraph(1, user_quizzes[0]);
+for (let i = 0; i < user_quizzes.length; i++) {
+    const quiz = user_quizzes[i];
+    addQuizToAccordion(i, quiz);
+}
