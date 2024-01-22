@@ -288,11 +288,11 @@ async function addNewQuiz() {
     const specialCharactersRegex = /[<>[\]]/g;
 
     /* Getting the values from the form */
-    const quiz_title = document.getElementById('quiz_title').value.replace(specialCharactersRegex, ' ');
-    const quiz_topic = document.getElementById('quiz_topic').value;
-    const quiz_description = document.getElementById('quiz_description').value.replace(specialCharactersRegex, ' ');
-    const number_of_questions = document.getElementById('number_of_questions').value;
-    const question_type = document.getElementById('question_type').value;
+    let quiz_title = document.getElementById('quiz_title').value.replace(specialCharactersRegex, ' ');
+    let quiz_topic = document.getElementById('quiz_topic').value;
+    let quiz_description = document.getElementById('quiz_description').value.replace(specialCharactersRegex, ' ');
+    let number_of_questions = document.getElementById('number_of_questions').value;
+    let question_type = document.getElementById('question_type').value;
 
     /* Clearning the form */
     document.getElementById('quiz_title').value = '';
