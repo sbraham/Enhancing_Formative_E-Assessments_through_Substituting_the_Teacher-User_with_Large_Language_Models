@@ -10,28 +10,26 @@ const number_of_questions = 10;
 const quiz = [];
 let data = ""
 
-let quiz_title = "Biology";
-let quiz_description = ``;
+let quiz_context_1 = "GCSE History - Russia 1894-1945 - Very Hard Questions";
+let quiz_context_2 = "GCSE History - Russia 1894-1945";
+let quiz_context_3 = "GCSE History - Russia 1894-1945 - Very Easy Questions";
 
 /* Functions */
 
 if (isBatch) {
 
     // Generate a quiz using your SWQG module
-    const short_answer = await BatchSWQG(number_of_questions, 'short_answer', `${quiz_title} (${quiz_description})`);
-    const multiple_choice = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_title} (${quiz_description})`);
-
-    // Store the quiz in the quizzes array
-    //quiz.push(...short_answer);
-    quiz.push(...multiple_choice);
+    const quiz_1 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_1}`);
+    const quiz_2 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_2}`);
+    const quiz_3 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_3}`);
 
     // Convert the quizzes array to a string
     let i = 1;
 
-    data += "Short Answer Questions: \n";
+    data += "Quiz One: \n";
     data += "\n";
 
-    quiz.forEach(question => {
+    quiz_1.forEach(question => {
         data += "Question : " + (i++) + "\n";
 
         data += "Question: " + question.question + "\n";
@@ -41,13 +39,40 @@ if (isBatch) {
         question.options.forEach(option => {
             data += "   - " + option + "\n";
         });
+    });
 
-        data += "\n";
+    data += "\n";
 
-        if (i == number_of_questions + 1) {
-            data += "Multiple Choice Questions: \n";
-            data += "\n";
-        }
+    data += "Quiz Two: \n";
+    data += "\n";
+
+    quiz_2.forEach(question => {
+        data += "Question : " + (i++) + "\n";
+
+        data += "Question: " + question.question + "\n";
+        data += "Answer: " + question.answer + "\n";
+
+        data += "Options: \n";
+        question.options.forEach(option => {
+            data += "   - " + option + "\n";
+        });
+    });
+
+    data += "\n";
+
+    data += "Quiz Three: \n";
+    data += "\n";
+
+    quiz_3.forEach(question => {
+        data += "Question : " + (i++) + "\n";
+
+        data += "Question: " + question.question + "\n";
+        data += "Answer: " + question.answer + "\n";
+
+        data += "Options: \n";
+        question.options.forEach(option => {
+            data += "   - " + option + "\n";
+        });
     });
 
     console.log(data);

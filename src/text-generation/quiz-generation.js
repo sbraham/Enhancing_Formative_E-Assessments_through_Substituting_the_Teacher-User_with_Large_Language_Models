@@ -56,7 +56,7 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     let system_content = ``;
 
     if (number_of_questions > 1) {
-        system_content += `Generate ${number_of_questions} different short answer question relating to the following context. `;
+        system_content += `Generate exactly ${number_of_questions} different short answer question relating to the following context. `;
     } else {
         system_content += `Generate a short answer question relating to the following context. `;
     }
@@ -156,7 +156,7 @@ export async function generateDistractors(context, question, options = []) {
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
 export async function generateManyDistractors(number_of_distractors, context, question, answer) {
-    let system_content = `Given the context, give ${number_of_distractors} FALSE distractor answers to the following question?`;
+    let system_content = `Given the context, generate exactly ${number_of_distractors} FALSE distractor answers to the following question?`;
     system_content += `The true answer is "${answer}", and distractors should be similar in format to it. `;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
     system_content += `Do not number the distractors. `;
@@ -164,7 +164,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
 
     system_content += `Each distractor answer should have the following format:`;
     system_content += `Start and end each question with a | character. `;
-    system_content += `For example, | London | Paris | ... | Rome |`;
+    system_content += `For example, | London | Paris | Madrid |`;
     system_content += `Do not include the true answer in the distractors. `;
     system_content += `Do not number the distracotrs. `;
 
