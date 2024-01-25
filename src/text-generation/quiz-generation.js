@@ -34,8 +34,8 @@ export async function generateQuestion(context, existing_questions = []) {
     }
 
     try {
-        let response = await callLMStudio(system_content, user_content);
-        return response;
+        let question = await callLMStudio(system_content, user_content);
+        return question.trim();
     } 
             
     catch (error) {
@@ -70,13 +70,20 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     let user_content = `Context: ${context}. `;
 
     try {
-        let questions = [];
-
         while (Number(questions.length) !== Number(number_of_questions)) {
-
-            let response = await callLMStudio(system_content, user_content);
+            let questions = await callLMStudio(system_content, user_content);
             
-            questions = response.split('|').filter(question => /[a-zA-Z0-9]/.test(question));
+            questions.split('|')
+            
+            questions.filter(question => /[a-zA-Z0-9]/.test(question));
+            
+            if (questions.length > number_of_questions) {
+                questions.slice(0, number_of_questions);   
+            }
+
+            questions.forEach(question => {
+                questions = question.trim();
+            });
         }
         
         return questions;
@@ -105,8 +112,9 @@ export async function generateAnswer(context, question) {
     user_content += `Question: ${question}. `;
 
     try {
-        let response = await callLMStudio(system_content, user_content);
-        return response;
+        let answer = await callLMStudio(system_content, user_content);
+
+        return answer.trim();
     } 
             
     catch (error) {
@@ -136,8 +144,8 @@ export async function generateDistractors(context, question, options = []) {
     }
 
     try {
-        let response = await callLMStudio(system_content, user_content);
-        return response;
+        let distractor = await callLMStudio(system_content, user_content);
+        return distractor.trim();
     } 
             
     catch (error) {
@@ -160,27 +168,31 @@ export async function generateManyDistractors(number_of_distractors, context, qu
     system_content += `The true answer is "${answer}", and distractors should be similar in format to it. `;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
     system_content += `Do not number the distractors. `;
-    system_content += `Only generate ${number_of_distractors} distractors, do not generate more. `;
 
     system_content += `Each distractor answer should have the following format:`;
     system_content += `Start and end each question with a | character. `;
-    system_content += `For example, | London | Paris | Madrid |`;
-    system_content += `Do not include the true answer in the distractors. `;
-    system_content += `Do not number the distracotrs. `;
+    system_content += `For example, | London | Paris | Madrid | .`;
 
     let user_content = `Context: ${context}. `;
     user_content += `Question: ${question}. `;
 
     try {
-        let distractors = [];
-
-        while (distractors.length !== number_of_distractors) {
-
-            let response = await callLMStudio(system_content, user_content);
+        while (Number(distractors.length) !== Number(number_of_distractors)) {
+            let distractors = await callLMStudio(system_content, user_content);
             
-            distractors = response.split('|')
+            distractors.split('|')
+            
+            distractors.filter(distractor => /[a-zA-Z0-9]/.test(distractor));
+            
+            distractors.filter(distractor => distractor.toLowerCase() !== answer.toLowerCase());
+            
+            if (distractors.length > number_of_distractors) {
+                distractors.slice(0, number_of_distractors);   
+            }
 
-            distractors = distractors.filter(distractor => distractor !== "");
+            distractors.forEach(distractor => {
+                distractor = distractor.trim();
+            });
         }
         
         return distractors;
