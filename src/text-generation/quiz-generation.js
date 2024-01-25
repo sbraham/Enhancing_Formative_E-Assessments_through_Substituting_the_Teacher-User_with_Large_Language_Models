@@ -77,8 +77,9 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
             let response = await callLMStudio(system_content, user_content);
             
             let potential_questions = response.split('|')
-                .filter(question => /[a-zA-Z0-9]/.test(question))
-                .map(question => question.trim());
+                .filter(question => /[a-zA-Z0-9]/.test(question)) // Remove empty strings
+                .map(question => question.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
+                .map(question => question.trim()); // Remove leading and trailing whitespace
 
             if (potential_questions.length > number_of_questions) {
                 potential_questions = potential_questions.slice(0, number_of_questions);   
@@ -184,9 +185,10 @@ export async function generateManyDistractors(number_of_distractors, context, qu
             let response = await callLMStudio(system_content, user_content);
             
             let potential_distractors = response.split('|')
-                .filter(distractor => /[a-zA-Z0-9]/.test(distractor))
-                .map(distractor => distractor.trim())
-                .filter(distractor => distractor.toLowerCase() !== answer.toLowerCase());
+                .filter(distractor => /[a-zA-Z0-9]/.test(distractor)) // Remove empty strings
+                .map(distractor => distractor.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
+                .map(distractor => distractor.trim()) // Remove leading and trailing whitespace
+                .filter(distractor => distractor.toLowerCase() !== answer.toLowerCase()); // Remove the answer
 
             if (potential_distractors.length > number_of_distractors) {
                 potential_distractors = potential_distractors.slice(0, number_of_distractors);   
