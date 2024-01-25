@@ -379,7 +379,7 @@ function takeQuiz(quiz) {
     const url = `../quiz/quiz.html?quiz_id=${quiz.id}`;
 
     console.log('Redirecting to quiz...');
-    console.log('--------------------------------------------------');
+    console.log('--------------------------------');
 
     window.location.href = url;
 }

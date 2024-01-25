@@ -70,24 +70,25 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     let user_content = `Context: ${context}. `;
 
     try {
-        while (Number(questions.length) !== Number(number_of_questions)) {
-            let questions = await callLMStudio(system_content, user_content);
+        let questions = [];
+        number_of_questions = Number(number_of_questions);
+
+        while (questions.length !== number_of_questions) {
+            let response = await callLMStudio(system_content, user_content);
             
-            questions.split('|')
-            
-            questions.filter(question => /[a-zA-Z0-9]/.test(question));
-            
-            if (questions.length > number_of_questions) {
-                questions.slice(0, number_of_questions);   
+            let potential_questions = response.split('|')
+                .filter(question => /[a-zA-Z0-9]/.test(question))
+                .map(question => question.trim());
+
+            if (potential_questions.length > number_of_questions) {
+                potential_questions = potential_questions.slice(0, number_of_questions);   
             }
 
-            questions.forEach(question => {
-                questions = question.trim();
-            });
+            questions = potential_questions;
         }
-        
+
         return questions;
-    } 
+    }
             
     catch (error) {
         throw error;
@@ -164,41 +165,42 @@ export async function generateDistractors(context, question, options = []) {
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
 export async function generateManyDistractors(number_of_distractors, context, question, answer) {
-    let system_content = `Given the context, generate exactly ${number_of_distractors} FALSE distractor answers to the following question?`;
-    system_content += `The true answer is "${answer}", and distractors should be similar in format to it. `;
+    let system_content = `Given the context, generate exactly ${number_of_distractors} FALSE distractor answers to the following question. `;
+    system_content += `The true answer is "${answer}". Each distractor must be different from the true answer and from each other. Distractors should look similar to the answer in form. `;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
     system_content += `Do not number the distractors. `;
 
     system_content += `Each distractor answer should have the following format:`;
     system_content += `Start and end each question with a | character. `;
-    system_content += `For example, | London | Paris | Madrid | .`;
+    system_content += `For example, | London | Paris | Madrid | . `;
 
     let user_content = `Context: ${context}. `;
     user_content += `Question: ${question}. `;
 
     try {
-        while (Number(distractors.length) !== Number(number_of_distractors)) {
-            let distractors = await callLMStudio(system_content, user_content);
+        let distractors = [];
+
+        while (distractors.length !== number_of_distractors) {
+            let response = await callLMStudio(system_content, user_content);
             
-            distractors.split('|')
-            
-            distractors.filter(distractor => /[a-zA-Z0-9]/.test(distractor));
-            
-            distractors.filter(distractor => distractor.toLowerCase() !== answer.toLowerCase());
-            
-            if (distractors.length > number_of_distractors) {
-                distractors.slice(0, number_of_distractors);   
+            let potential_distractors = response.split('|')
+                .filter(distractor => /[a-zA-Z0-9]/.test(distractor))
+                .map(distractor => distractor.trim())
+                .filter(distractor => distractor.toLowerCase() !== answer.toLowerCase());
+
+            if (potential_distractors.length > number_of_distractors) {
+                potential_distractors = potential_distractors.slice(0, number_of_distractors);   
             }
 
-            distractors.forEach(distractor => {
-                distractor = distractor.trim();
-            });
+            distractors = potential_distractors;
         }
-        
+
+        console.log(`Answer: ${answer}`);
+        console.log(`Distractors: ${distractors}`);
+
         return distractors;
-    } 
-            
-    catch (error) {
+
+    } catch (error) {
         throw error;
     }
 }

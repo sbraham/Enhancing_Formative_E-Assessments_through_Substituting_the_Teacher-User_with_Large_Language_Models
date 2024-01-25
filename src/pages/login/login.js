@@ -21,7 +21,7 @@ login_form.addEventListener("submit", async (event) => {
     if (responce === `successful-login`) {
         /* Redirect to dashboard */
         console.log(`Redirecting to dashboard...`);
-        console.log('--------------------------------------------------');
+        console.log('--------------------------------');
         
         window.location.href = "../dashboard/dashboard.html";
     } else {
@@ -45,7 +45,7 @@ create_account_link.addEventListener('click', function(event) {
 
     /* Redirect to create_account */
     console.log('Redirecting to create_account...');
-    console.log('--------------------------------------------------');
+    console.log('--------------------------------');
 
     window.location.href = "../create_account/create_account.html";
 });

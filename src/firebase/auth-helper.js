@@ -42,7 +42,7 @@ export async function checkLogin(pathToLogin = null) {
 
 			if (pathToLogin != null) {
 				console.log(`Redirecting to login page...`);
-				console.log('--------------------------------------------------');
+				console.log('--------------------------------');
 
 				/* Redirect to the login page */
 				window.location.href = pathToLogin;
@@ -88,7 +88,7 @@ export async function checkLoginOnFrame(iframe) {
 
 				/* Redirect to the dashboard */
 				console.log('Redirecting to dashboard...');
-				console.log('--------------------------------------------------');
+				console.log('--------------------------------');
 
 				iframe.src = `../pages/dashboard/dashboard.html`
 			} else {
@@ -101,7 +101,7 @@ export async function checkLoginOnFrame(iframe) {
 
 				/* Redirect to the login page */
 				console.log('Redirecting to login...');
-				console.log('--------------------------------------------------');
+				console.log('--------------------------------');
 
 				iframe.src = `../pages/login/login.html`
 			}

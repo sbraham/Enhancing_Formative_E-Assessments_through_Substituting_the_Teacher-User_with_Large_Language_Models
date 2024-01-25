@@ -423,7 +423,7 @@ export class Quiz {
         /* Move to feedback page */
 
         console.log('Redirecting to feedback page...');
-        console.log('--------------------------------------------------');
+        console.log('--------------------------------');
 
         const url = `../feedback/feedback.html?given_answers=${given_answers}`;
 

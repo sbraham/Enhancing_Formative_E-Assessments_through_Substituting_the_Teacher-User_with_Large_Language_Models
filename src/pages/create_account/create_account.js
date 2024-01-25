@@ -29,7 +29,7 @@ create_account_form.addEventListener("submit", async (event) => {
         
         /* Redirect to dashboard */
         console.log(`Redirecting to dashboard...`);
-        console.log('--------------------------------------------------');
+        console.log('--------------------------------');
         
         window.location.href = "../dashboard/dashboard.html";
     }
@@ -56,7 +56,7 @@ login_link.addEventListener('click', function(event) {
 
     /* Redirect to login */
     console.log('Redirecting to login...');
-    console.log('--------------------------------------------------');
+    console.log('--------------------------------');
 
     window.location.href = "../login/login.html";
 });

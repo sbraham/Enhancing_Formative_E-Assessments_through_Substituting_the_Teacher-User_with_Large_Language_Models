@@ -73,7 +73,7 @@ dashboard_button.addEventListener('click', function () {
 
     console.log('dashboard_button clicked');
     console.log('Redirecting to dashboard...');
-    console.log('--------------------------------------------------');
+    console.log('--------------------------------');
 
     const url = `../dashboard/dashboard.html`;
 

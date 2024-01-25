@@ -11,7 +11,7 @@ return_button.addEventListener('click', () => {
     /* Return to dashboard */
 
     console.log('Redirecting to dashboard page...');
-    console.log('--------------------------------------------------');
+    console.log('--------------------------------');
 
     const url = `../dashboard/dashboard.html`;
 
