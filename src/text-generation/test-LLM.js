@@ -20,8 +20,8 @@ if (isBatch) {
 
     // Generate a quiz using your SWQG module
     const quiz_1 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_1}`);
-    const quiz_2 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_2}`);
-    const quiz_3 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_3}`);
+    //const quiz_2 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_2}`);
+    //const quiz_3 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_3}`);
 
     // Convert the quizzes array to a string
     let i = 1;
@@ -48,39 +48,39 @@ if (isBatch) {
     data += "Quiz Two: \n";
     data += "\n";
 
-    quiz_2.forEach(question => {
-        data += "Question : " + (i++) + "\n";
+    // quiz_2.forEach(question => {
+    //     data += "Question : " + (i++) + "\n";
 
-        data += "Question: " + question.question + "\n";
-        data += "Answer: " + question.answer + "\n";
+    //     data += "Question: " + question.question + "\n";
+    //     data += "Answer: " + question.answer + "\n";
 
-        data += "Options: \n";
-        question.options.forEach(option => {
-            data += "   - " + option + "\n";
-        });
-    });
+    //     data += "Options: \n";
+    //     question.options.forEach(option => {
+    //         data += "   - " + option + "\n";
+    //     });
+    // });
 
-    data += "\n";
+    // data += "\n";
 
-    data += "-------------------------\n";
-    data += "Quiz Three: \n";
-    data += "\n";
+    // data += "-------------------------\n";
+    // data += "Quiz Three: \n";
+    // data += "\n";
 
-    quiz_3.forEach(question => {
-        data += "Question : " + (i++) + "\n";
+    // quiz_3.forEach(question => {
+    //     data += "Question : " + (i++) + "\n";
 
-        data += "Question: " + question.question + "\n";
-        data += "Answer: " + question.answer + "\n";
+    //     data += "Question: " + question.question + "\n";
+    //     data += "Answer: " + question.answer + "\n";
 
-        data += "Options: \n";
-        question.options.forEach(option => {
-            data += "   - " + option + "\n";
-        });
-    });
+    //     data += "Options: \n";
+    //     question.options.forEach(option => {
+    //         data += "   - " + option + "\n";
+    //     });
+    // });
 
-    data += "\n";
+    // data += "\n";
 
-    data += "-------------------------\n";
+    // data += "-------------------------\n";
 
     console.log(data);
 

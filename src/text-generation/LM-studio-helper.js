@@ -64,7 +64,7 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
                         { role: 'system', content: system_content },
                         { role: 'user', content: user_content }
                     ],
-                    temperature: 0.7,
+                    temperature: 0.7, //TO DO - make this a variable, investigate what changes the temperature (look for papers that talk about it) on the creation of question. see if lower temperature would be better for the Hallucination Mitigation
                     max_tokens: max_tokens,
                     stream: false
                 }),

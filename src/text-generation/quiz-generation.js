@@ -36,8 +36,8 @@ export async function generateQuestion(context, existing_questions = []) {
     try {
         let question = await callLMStudio(system_content, user_content, 500);
         return question.trim();
-    } 
-            
+    }
+
     catch (error) {
         throw error;
     }
@@ -66,7 +66,7 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
 
     system_content += `The question must be answerable by a single word or phrase. `;
     system_content += `Only write the question, do not state the answer or any examples. `;
-    
+
     system_content += `Start and end each question with a | character. `;
     system_content += `For example, "| 1. What is the capital of France? | 2. What is the capital of Spain? | ... | n. What is the capital of Italy? |"`;
 
@@ -78,14 +78,14 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
 
         while (questions.length !== number_of_questions) {
             let response = await callLMStudio(system_content, user_content, 1000);
-            
+
             let potential_questions = response.split('|')
                 .filter(question => /[a-zA-Z]/.test(question)) // Remove empty strings
                 .map(question => question.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
                 .map(question => question.trim()); // Remove leading and trailing whitespace
 
             if (potential_questions.length > number_of_questions) {
-                potential_questions = potential_questions.slice(0, number_of_questions);   
+                potential_questions = potential_questions.slice(0, number_of_questions);
             }
 
             questions = potential_questions;
@@ -93,7 +93,7 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
 
         return questions;
     }
-            
+
     catch (error) {
         throw error;
     }
@@ -113,17 +113,26 @@ export async function generateAnswer(context, question) {
     system_content += `Do not state in any way that the answer is true, or that it is the answer. `;
     system_content += `Only write the answer, do not write any examples or other possible answers. `;
 
+    system_content += `Start and end the answer with a | character. `;
+    system_content += `For example, for the question "What is the capital of France?",  `;
+    system_content += `The output would be, "| Paris |". `;
+
     let user_content = `Context: ${context}. `;
     user_content += `Question: ${question}. `;
 
     try {
-        let answer = await callLMStudio(system_content, user_content, 500);
-        
-        answer = answer.replace(/^[^\w\s]+|[^\w\s]+$/g, '').trim();
+        let response = await callLMStudio(system_content, user_content, 500);
+
+        let potential_ans = response.split('|')
+            .filter(ans => /[a-zA-Z]/.test(ans)) // Remove empty strings
+            .map(ans => ans.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
+            .map(ans => ans.trim()); // Remove leading and trailing whitespace
+
+        let answer = potential_ans[0];
 
         return answer;
-    } 
-            
+    }
+
     catch (error) {
         throw error;
     }
@@ -153,8 +162,8 @@ export async function generateDistractor(context, question, options = []) {
     try {
         let distractor = await callLMStudio(system_content, user_content, 500);
         return distractor.trim();
-    } 
-            
+    }
+
     catch (error) {
         throw error;
     }
@@ -171,7 +180,7 @@ export async function generateDistractor(context, question, options = []) {
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
 export async function generateManyDistractors(number_of_distractors, context, question, answer) {
-    let system_content = `Given the context, generate exactly ${number_of_distractors+2} FALSE distractor answers to the following question. `;
+    let system_content = `Given the context, generate exactly ${number_of_distractors + 2} FALSE distractor answers to the following question. `;
     system_content += `The true answer is "${answer}". Each distractor must be different from the true answer and from each other. Distractors should look similar to the answer in form. `;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
     system_content += `Do not number the distractors. `;
@@ -188,7 +197,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
 
         while (distractors.length !== number_of_distractors) {
             let response = await callLMStudio(system_content, user_content, 1000);
-            
+
             let potential_distractors = response.split('|')
                 .filter(distractor => /[a-zA-Z]/.test(distractor)) // Remove empty strings
                 .map(distractor => distractor.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
@@ -196,7 +205,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
                 .filter(distractor => distractor.toLowerCase() !== answer.toLowerCase()); // Remove the answer
 
             if (potential_distractors.length > number_of_distractors) {
-                potential_distractors = potential_distractors.slice(0, number_of_distractors);   
+                potential_distractors = potential_distractors.slice(0, number_of_distractors);
             }
 
             distractors = potential_distractors;
@@ -251,7 +260,7 @@ export async function SWQG(quiz_type, context, number_of_options = 4, existing_q
     const minutes = Math.floor(execution_time / 60000);
     const seconds = Math.floor((execution_time % 60000) / 1000);
     const milliseconds = Math.floor((execution_time % 1000));
-    
+
     console.debug(`LM-studio-helper.js: SWQG: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
 
     return { question: question, answer: answer, options: options };
@@ -280,7 +289,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
     /* Step 1: Generate a question */
     console.debug(`LM-studio-helper.js: BatchSWQG: Step 1: Generate all the questions`);
     array_of_questions = await generateManyQuestion(number_of_questions, context);
-    
+
     array_of_questions.forEach(question => {
         question_objects.push({ question: question, answer: ``, options: [] });
     });
@@ -295,7 +304,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
     if (quiz_type == `multiple_choice`) {
         /* Step 3: Generate the distractors */
         console.debug(`LM-studio-helper.js: BatchSWQG: Step 3: Generate the distractors for each question`);
-        
+
         for (const question of question_objects) {
             question.options.push(question.answer);
 
@@ -313,7 +322,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
     const minutes = Math.floor(execution_time / 60000);
     const seconds = Math.floor((execution_time % 60000) / 1000);
     const milliseconds = Math.floor((execution_time % 1000));
-    
+
     console.debug(`LM-studio-helper.js: BatchSWQG: Execution time: ${minutes} minutes, ${seconds} seconds, ${milliseconds} milliseconds`);
 
     return question_objects;

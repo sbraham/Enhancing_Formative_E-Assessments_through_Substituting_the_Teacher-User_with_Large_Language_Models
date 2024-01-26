@@ -42,7 +42,7 @@ function createGraph(index, quiz) {
     }
 
     new Chart(`chart_${index}`, {
-        type: `line`,
+        type: `bar`, // TO DO : Give the bar a colour
         data: {
             labels: x_values,
             datasets: [{
