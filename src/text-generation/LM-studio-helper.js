@@ -69,6 +69,10 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
                     stream: false
                 }),
                 success: function (response) {
+                    if (response.choices[0].finish_reason == 'hit_max_tokens') {
+                        console.warn('callLMStudio: hit max tokens.')
+                    }
+
                     resolve(response.choices[0].message.content);
                 },
                 error: function (error) {

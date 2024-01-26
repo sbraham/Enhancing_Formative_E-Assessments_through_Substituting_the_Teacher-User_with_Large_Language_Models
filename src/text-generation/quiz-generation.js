@@ -34,7 +34,7 @@ export async function generateQuestion(context, existing_questions = []) {
     }
 
     try {
-        let question = await callLMStudio(system_content, user_content);
+        let question = await callLMStudio(system_content, user_content, 500);
         return question.trim();
     } 
             
@@ -55,8 +55,11 @@ export async function generateQuestion(context, existing_questions = []) {
 export async function generateManyQuestion(number_of_questions, context = ``) {
     let system_content = ``;
 
+    // TO DO - check with Wendy to see if a failed feature is worth talking about
+    // TO DO - if so, add proper attempt to get difficulty level working
+
     if (number_of_questions > 1) {
-        system_content += `Generate exactly ${number_of_questions} different short answer question relating to the following context. `;
+        system_content += `Generate exactly ${number_of_questions+2} different short answer question relating to the following context. `;
     } else {
         system_content += `Generate a short answer question relating to the following context. `;
     }
@@ -74,7 +77,7 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
         number_of_questions = Number(number_of_questions);
 
         while (questions.length !== number_of_questions) {
-            let response = await callLMStudio(system_content, user_content);
+            let response = await callLMStudio(system_content, user_content, 1000);
             
             let potential_questions = response.split('|')
                 .filter(question => /[a-zA-Z0-9]/.test(question)) // Remove empty strings
@@ -114,9 +117,11 @@ export async function generateAnswer(context, question) {
     user_content += `Question: ${question}. `;
 
     try {
-        let answer = await callLMStudio(system_content, user_content);
+        let answer = await callLMStudio(system_content, user_content, 500);
+        
+        answer = answer.replace(/^[^\w\s]+|[^\w\s]+$/g, '').trim();
 
-        return answer.trim();
+        return answer;
     } 
             
     catch (error) {
@@ -130,11 +135,11 @@ export async function generateAnswer(context, question) {
  * @async
  * @param {string} context - The context in which the question is asked.
  * @param {string} question - The question for which distractors need to be generated.
- * @param {Array<string>} distractors - An optional array of existing distractors to avoid generating duplicates.
+ * @param {Array<string>} options - An optional array of existing distractors to avoid generating duplicates.
  * @returns {Promise<string>} - A promise that resolves to the generated distractors.
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
-export async function generateDistractors(context, question, options = []) {
+export async function generateDistractor(context, question, options = []) {
     let system_content = `Given the context, what is a FALSE distractor answer to the following question?`;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
 
@@ -146,7 +151,7 @@ export async function generateDistractors(context, question, options = []) {
     }
 
     try {
-        let distractor = await callLMStudio(system_content, user_content);
+        let distractor = await callLMStudio(system_content, user_content, 500);
         return distractor.trim();
     } 
             
@@ -182,7 +187,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
         let distractors = [];
 
         while (distractors.length !== number_of_distractors) {
-            let response = await callLMStudio(system_content, user_content);
+            let response = await callLMStudio(system_content, user_content, 1000);
             
             let potential_distractors = response.split('|')
                 .filter(distractor => /[a-zA-Z0-9]/.test(distractor)) // Remove empty strings
@@ -238,7 +243,7 @@ export async function SWQG(quiz_type, context, number_of_options = 4, existing_q
         options.push(answer)
 
         for (let i = 0; i < number_of_options - 1; i++) {
-            let distractor = await generateDistractors(context, question, options);
+            let distractor = await generateDistractor(context, question, options);
             options.push(distractor);
         }
     }
