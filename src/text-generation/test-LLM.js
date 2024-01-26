@@ -6,13 +6,13 @@ import { SWQG, BatchSWQG } from "./quiz-generation.js";
 const isBatch = true;
 
 /* Variables */
-const number_of_questions = 10;
+const number_of_questions = 5;
 const quiz = [];
 let data = ""
 
-let quiz_context_1 = "GCSE History - Russia 1894-1945 - Very Hard Questions";
-let quiz_context_2 = "GCSE History - Russia 1894-1945";
-let quiz_context_3 = "GCSE History - Russia 1894-1945 - Very Easy Questions";
+let quiz_context_1 = "History - Russia 1894-1945 - Difficulty: Very Hard Questions";
+let quiz_context_2 = "History - Russia 1894-1945 - Difficulty: Medium Questions";
+let quiz_context_3 = "History - Russia 1894-1945 - Difficulty: Very Easy Questions";
 
 /* Functions */
 
@@ -26,6 +26,7 @@ if (isBatch) {
     // Convert the quizzes array to a string
     let i = 1;
 
+    data += "-------------------------\n";
     data += "Quiz One: \n";
     data += "\n";
 
@@ -43,6 +44,7 @@ if (isBatch) {
 
     data += "\n";
 
+    data += "-------------------------\n";
     data += "Quiz Two: \n";
     data += "\n";
 
@@ -60,6 +62,7 @@ if (isBatch) {
 
     data += "\n";
 
+    data += "-------------------------\n";
     data += "Quiz Three: \n";
     data += "\n";
 
@@ -74,6 +77,10 @@ if (isBatch) {
             data += "   - " + option + "\n";
         });
     });
+
+    data += "\n";
+
+    data += "-------------------------\n";
 
     console.log(data);
 
