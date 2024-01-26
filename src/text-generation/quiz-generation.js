@@ -59,7 +59,7 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     // TO DO - if so, add proper attempt to get difficulty level working
 
     if (number_of_questions > 1) {
-        system_content += `Generate exactly ${number_of_questions+2} different short answer question relating to the following context. `;
+        system_content += `Generate exactly ${number_of_questions} different short answer question relating to the following context. `;
     } else {
         system_content += `Generate a short answer question relating to the following context. `;
     }
@@ -68,7 +68,7 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
     system_content += `Only write the question, do not state the answer or any examples. `;
     
     system_content += `Start and end each question with a | character. `;
-    system_content += `For example, | 1. What is the capital of France? | 2. What is the capital of Spain? | ... | n. What is the capital of Italy? |`;
+    system_content += `For example, "| 1. What is the capital of France? | 2. What is the capital of Spain? | ... | n. What is the capital of Italy? |"`;
 
     let user_content = `Context: ${context}. `;
 
@@ -80,7 +80,7 @@ export async function generateManyQuestion(number_of_questions, context = ``) {
             let response = await callLMStudio(system_content, user_content, 1000);
             
             let potential_questions = response.split('|')
-                .filter(question => /[a-zA-Z0-9]/.test(question)) // Remove empty strings
+                .filter(question => /[a-zA-Z]/.test(question)) // Remove empty strings
                 .map(question => question.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
                 .map(question => question.trim()); // Remove leading and trailing whitespace
 
@@ -190,7 +190,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
             let response = await callLMStudio(system_content, user_content, 1000);
             
             let potential_distractors = response.split('|')
-                .filter(distractor => /[a-zA-Z0-9]/.test(distractor)) // Remove empty strings
+                .filter(distractor => /[a-zA-Z]/.test(distractor)) // Remove empty strings
                 .map(distractor => distractor.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
                 .map(distractor => distractor.trim()) // Remove leading and trailing whitespace
                 .filter(distractor => distractor.toLowerCase() !== answer.toLowerCase()); // Remove the answer
@@ -201,9 +201,6 @@ export async function generateManyDistractors(number_of_distractors, context, qu
 
             distractors = potential_distractors;
         }
-
-        console.log(`Answer: ${answer}`);
-        console.log(`Distractors: ${distractors}`);
 
         return distractors;
 
@@ -297,7 +294,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
 
     if (quiz_type == `multiple_choice`) {
         /* Step 3: Generate the distractors */
-        console.debug(`LM-studio-helper.js: SWQG: Step 3: Generate the distractors`);
+        console.debug(`LM-studio-helper.js: BatchSWQG: Step 3: Generate the distractors for each question`);
         
         for (const question of question_objects) {
             question.options.push(question.answer);
