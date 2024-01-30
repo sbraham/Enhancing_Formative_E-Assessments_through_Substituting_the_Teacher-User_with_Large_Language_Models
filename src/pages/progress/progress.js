@@ -12,6 +12,13 @@ import { Quiz } from "../../classes/Quiz.js";
 const quiz_accordion = document.getElementById(`quiz_accordion`);
 
 /* Assigning functions */
+
+/**
+ * Formats a given date and time into a string representation.
+ *
+ * @param {string} date_time - The date and time to format.
+ * @returns {string} The formatted date in the format "day/month/year".
+ */
 function formatDateTime(date_time) {
     const date = new Date(date_time);
 
@@ -22,12 +29,21 @@ function formatDateTime(date_time) {
     return `${day}/${month}/${year}`;
 }
 
+/**
+ * Formats the duration in milliseconds into a human-readable string.
+ * 
+ * @param {number} duration - The duration in milliseconds.
+ * @returns {string} The formatted duration string.
+ */
 function formatDuration(duration) {
-    const hours = Math.floor(duration / 3600);
-    const minutes = Math.floor((duration % 3600) / 60);
-    const seconds = duration % 60;
+    const milliseconds = Math.floor(duration % 1000);
+    const seconds = Math.floor((duration / 1000) % 60);
+    const minutes = Math.floor((duration / (1000 * 60)) % 60);
+    const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-    return `${hours}h ${minutes}m ${seconds}s`;
+    const duration_string = `${hours}h ${minutes}m ${seconds}s (${milliseconds}ms)`;
+
+    return duration_string;
 }
 
 function createGraph(index, quiz) {
@@ -42,13 +58,14 @@ function createGraph(index, quiz) {
     }
 
     new Chart(`chart_${index}`, {
-        type: `bar`, // TO DO : Give the bar a colour
+        type: `bar`,
         data: {
             labels: x_values,
             datasets: [{
                 data: y_values,
-                borderColor: "blue",
-                fill: false
+                backgroundColor: `rgba(15, 50, 230, 0.5)`,
+                borderColor: `rgba(15, 50, 255, 1)`,
+                borderWidth: 1
             }]
         },
         options: {
@@ -60,6 +77,7 @@ function createGraph(index, quiz) {
             scales: {
                 yAxes: [{
                     ticks: {
+                        beginAtZero: true,
                         stepSize: 1
                     }
                 }]
@@ -94,6 +112,7 @@ function addQuizToAccordion(index, quiz) {
                     <div style="width: 30%;">
                         <label for="attempt_select_${index}" class="form-label">Attempts</label>
                         <select class="form-select" id="attempt_select_${index}" required>
+                            <option value="" disabled selected>Select an attempt</option>
                             ${quiz.attempts.map((attempt, index) => {
                                 return `<option value="${index}">Attempt ${index + 1}</option>`;
                             })}

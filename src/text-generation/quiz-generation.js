@@ -55,9 +55,6 @@ export async function generateQuestion(context, existing_questions = []) {
 export async function generateManyQuestion(number_of_questions, context = ``) {
     let system_content = ``;
 
-    // TO DO - check with Wendy to see if a failed feature is worth talking about
-    // TO DO - if so, add proper attempt to get difficulty level working
-
     if (number_of_questions > 1) {
         system_content += `Generate exactly ${number_of_questions} different short answer question relating to the following context. `;
     } else {
@@ -138,6 +135,58 @@ export async function generateAnswer(context, question) {
     }
 }
 
+/** 
+ * Generates one answer and multiple options for a given question and context.
+ * 
+ * @async
+ * @param {string} context - The context for the question.
+ * @param {string} question - The question for which the answer and options need to be generated.
+ * @param {number} number_of_options - The number of options to generate.
+ * @returns {Promise<Object>} - A promise that resolves to an object containing the generated answer and options.
+ * @throws {Error} - If an error occurs during the answer and option generation process.
+ */
+export async function generateManyOptions(context, question, number_of_options) {
+    let system_content = `Given the context, generate exactly ${number_of_options + 1} answers to the following question. `;
+    system_content += `The true answer is "${question}". Each answer must be different from the true answer and from each other. `;
+    system_content += `Do not state in any way that the answer is true, or that it is the answer. `;
+    system_content += `Do not number the answers. `;
+
+    system_content += `Each answer should have the following format: `;
+    system_content += `Start and end each answer with a | character. `;
+    system_content += `For example, for the question "What is the capital of France?",  `;
+    system_content += `The output would be, "| Paris | London | Madrid | Berlin |". `;
+
+    let user_content = `Context: ${context}. `;
+    user_content += `Question: ${question}. `;
+
+    try {
+        let options = [];
+
+        while (options.length !== number_of_options) {
+            let response = await callLMStudio(system_content, user_content, 1000);
+
+            let potential_options = response.split('|')
+                .filter(option => /[a-zA-Z]/.test(option)) // Remove empty strings
+                .map(option => option.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
+                .map(option => option.trim()) // Remove leading and trailing whitespace
+                .filter(option => option.toLowerCase() !== question.toLowerCase()); // Remove the answer
+
+            if (potential_options.length > number_of_options) {
+                potential_options = potential_options.slice(0, number_of_options);
+            }
+
+            options = potential_options;
+        }
+
+        return { answer: question, options: options };
+    }
+
+    catch (error) {
+        throw error;
+    }
+}
+
+
 /**
  * Generates distractors for a given question and context.
  * 
@@ -217,6 +266,10 @@ export async function generateManyDistractors(number_of_distractors, context, qu
         throw error;
     }
 }
+
+/***************************************/
+/* Stepwise Question Generation (SWQG) */
+/***************************************/
 
 /**
  * Generates a stepwise question for a quiz.
