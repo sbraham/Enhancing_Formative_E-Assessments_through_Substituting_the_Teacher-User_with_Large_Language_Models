@@ -42,10 +42,12 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @param {string} question - The question for which distractors need to be generated.
  * @param {string} answer - The true answer to the question.
  * @param {boolean} hallucination_detection - Whether or not to use hallucination detection. Default is true.
+ * @param {number} false_threshold - The threshold to determine the percentage of distractors that must be false (when hallucination_detection is true). Default is 1 (100%)
+ * @param {number} relevence_threshold - The threshold to determine the percentage of distractors that must be relevant (when hallucination_detection is true). Default is 1 (100%)
  * @returns {Promise<string[]|string>} - An array of distractor answers or an error message if an error occurs.
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
-export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection = true) {
+export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection = true, false_threshold = 1, relevence_threshold = 1) {
     let system_content = `Given the context, generate exactly ${number_of_distractors + 2} FALSE distractor answers to the following question. `;
     system_content += `The true answer is "${answer}". Each distractor must be different from the true answer and from each other. Distractors should look similar to the answer in form. `;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
@@ -97,7 +99,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
                     }
                 }
 
-                if (is_false_count === number_of_distractors && is_relevent_count === number_of_distractors) {
+                if (is_false_count / number_of_distractors >= false_threshold && is_relevent_count / number_of_distractors >= relevence_threshold) {
                     break;
                 }
 
