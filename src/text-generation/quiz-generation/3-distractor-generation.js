@@ -1,36 +1,37 @@
 /* Imports LM-Studio Helper */
 import { callLMStudio } from '../LM-studio-helper.js';
 
-/**
- * Options 1: Generates distractors for a given question and context.
- * 
- * @async
- * @param {string} context - The context in which the question is asked.
- * @param {string} question - The question for which distractors need to be generated.
- * @param {Array<string>} options - An optional array of existing distractors to avoid generating duplicates.
- * @returns {Promise<string>} - A promise that resolves to the generated distractors.
- * @throws {Error} - If an error occurs during the distractor generation process.
- */
-export async function generateDistractor(context, question, options = [], hallucination_detection = true) {
-    let system_content = `Given the context, what is a FALSE distractor answer to the following question?`;
-    system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
+// CODE NO LONGER IN USE
+// /**
+//  * Options 1: Generates distractors for a given question and context.
+//  * 
+//  * @async
+//  * @param {string} context - The context in which the question is asked.
+//  * @param {string} question - The question for which distractors need to be generated.
+//  * @param {Array<string>} options - An optional array of existing distractors to avoid generating duplicates.
+//  * @returns {Promise<string>} - A promise that resolves to the generated distractors.
+//  * @throws {Error} - If an error occurs during the distractor generation process.
+//  */
+// export async function generateDistractor(context, question, options = []) {
+//     let system_content = `Given the context, what is a FALSE distractor answer to the following question?`;
+//     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
 
-    let user_content = `Context: ${context}. `;
-    user_content += `Question: ${question}. `;
+//     let user_content = `Context: ${context}. `;
+//     user_content += `Question: ${question}. `;
 
-    if (options.length > 0) {
-        system_content += `The distractor must be different from the following options: ${options}. `;
-    }
+//     if (options.length > 0) {
+//         system_content += `The distractor must be different from the following options: ${options}. `;
+//     }
 
-    try {
-        let distractor = await callLMStudio(system_content, user_content, 500);
-        return distractor.trim();
-    }
+//     try {
+//         let distractor = await callLMStudio(system_content, user_content, 500);
+//         return distractor.trim();
+//     }
 
-    catch (error) {
-        throw error;
-    }
-}
+//     catch (error) {
+//         throw error;
+//     }
+// }
 
 /**
  * Option 2: Generates multiple distractor answers for a given question and context.
@@ -39,6 +40,8 @@ export async function generateDistractor(context, question, options = [], halluc
  * @param {number} number_of_distractors - The number of false distractor answers to generate.
  * @param {string} context - The context for the question.
  * @param {string} question - The question for which distractors need to be generated.
+ * @param {string} answer - The true answer to the question.
+ * @param {boolean} hallucination_detection - Whether or not to use hallucination detection. Default is true.
  * @returns {Promise<string[]|string>} - An array of distractor answers or an error message if an error occurs.
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
@@ -58,20 +61,49 @@ export async function generateManyDistractors(number_of_distractors, context, qu
     try {
         let distractors = [];
 
-        while (distractors.length !== number_of_distractors) {
-            let response = await callLMStudio(system_content, user_content, 1000);
+        for (let i = 0; i < 10; i++) {
 
-            let potential_distractors = response.split('|')
-                .filter(distractor => /[a-zA-Z]/.test(distractor)) // Remove empty strings
-                .map(distractor => distractor.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
-                .map(distractor => distractor.trim()) // Remove leading and trailing whitespace
-                .filter(distractor => distractor.toLowerCase() !== answer.toLowerCase()); // Remove the answer
+            /* Generate all distractors */
+            while (distractors.length !== number_of_distractors) {
+                let response = await callLMStudio(system_content, user_content, 1000);
 
-            if (potential_distractors.length > number_of_distractors) {
-                potential_distractors = potential_distractors.slice(0, number_of_distractors);
+                let potential_distractors = response.split('|')
+                    .filter(distractor => /[a-zA-Z]/.test(distractor)) // Remove empty strings
+                    .map(distractor => distractor.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
+                    .map(distractor => distractor.trim()) // Remove leading and trailing whitespace
+                    .filter(distractor => distractor.toLowerCase() !== answer.toLowerCase()); // Remove the answer
+
+                if (potential_distractors.length > number_of_distractors) {
+                    potential_distractors = potential_distractors.slice(0, number_of_distractors);
+                }
+
+                distractors = potential_distractors;
             }
 
-            distractors = potential_distractors;
+            /* Hallucination Detection */
+            if (!hallucination_detection) {
+                break;
+            } else {
+                let is_false_count = 0;
+                let is_relevent_count = 0;
+
+                for (let distractor of distractors) {
+                    if (await areDistractorsFalse(question, distractor)) {
+                        is_false_count++;
+                    }
+
+                    if (await areDistractorsRelevent(context, question, distractor)) {
+                        is_relevent_count++;
+                    }
+                }
+
+                if (is_false_count === number_of_distractors && is_relevent_count === number_of_distractors) {
+                    break;
+                }
+
+                /* Otherwise */
+                /* If the distractor is not correct, try again */
+            }
         }
 
         return distractors;

@@ -7,13 +7,18 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @async
  * @param {string} context - The context for the question.
  * @param {Array} existing_questions - An array of existing questions to avoid repetition.
+ * @param {boolean} hallucination_detection - Whether or not to use hallucination detection. Default is true.
  * @returns {Promise<string>} - A promise that resolves to the generated question.
  * @throws {Error} - If there is an error while generating the question.
  */
 export async function generateOneQuestion(context, existing_questions = [], hallucination_detection = true) {
-    let system_content = `Generate one short answer question relating to the following context. `;
+    system_content += `Generate a short answer question relating to the following context. `;
+
     system_content += `The question must be answerable by a single word or phrase. `;
     system_content += `Only write the question, do not state the answer or any examples. `;
+
+    system_content += `Start and end each question with a | character. `;
+    system_content += `For example, "| What is the capital of France? |". `;
 
     let user_content = `Context: ${context}. `;
 
@@ -32,8 +37,36 @@ export async function generateOneQuestion(context, existing_questions = [], hall
     }
 
     try {
-        let question = await callLMStudio(system_content, user_content, 500);
-        return question.trim();
+        for (let i = 0; i < 10; i++) {
+            /* Generate a question */   
+            let response = await callLMStudio(system_content, user_content, 500);
+            
+            /* Clean up output */
+            response = response.split('|')
+                .filter(question => /[a-zA-Z]/.test(question)) // Remove empty strings
+                .map(question => question.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
+                .map(question => question.trim()); // Remove leading and trailing whitespace
+
+            let question = response[0];
+
+            /* Hallucination Detection */
+            if (!hallucination_detection) {
+                break;
+            }
+
+            /* Otherwise */
+
+            if(await isQuestionRelevent(context, question)) {
+                break;
+            }
+
+            /* If the question is not relevant, try again */
+            if (i === 9) {
+                console.error(`generateOneQuestion: Too many failed attempts. Return empty string.`);
+            }
+        }
+
+        return question;
     }
 
     catch (error) {
@@ -47,6 +80,7 @@ export async function generateOneQuestion(context, existing_questions = [], hall
  * @async
  * @param {number} number_of_questions - The number of questions to generate.
  * @param {string} [context=''] - The context for the questions.
+ * @param {boolean} hallucination_detection - Whether or not to use hallucination detection. Default is true.
  * @returns {Promise<string[]>} - An array of generated questions.
  * @throws {Error} - If an error occurs during the question generation process.
  */
@@ -84,6 +118,15 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
             }
 
             questions = potential_questions;
+        }
+        
+        if (hallucination_detection) {
+            questions.forEach(question => {
+                if (!isQuestionRelevent(context, question)) {
+                    console.warn(`generateManyQuestions: Question is not relevant: ${question}`);
+                    question = generateOneQuestion(context, questions, hallucination_detection);
+                }
+            });
         }
 
         return questions;
