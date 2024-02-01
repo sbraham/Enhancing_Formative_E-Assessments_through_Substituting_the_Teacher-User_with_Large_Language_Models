@@ -10,7 +10,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string>} - A promise that resolves to the generated question.
  * @throws {Error} - If there is an error while generating the question.
  */
-export async function generateOneQuestion(context, existing_questions = []) {
+export async function generateOneQuestion(context, existing_questions = [], hallucination_detection = true) {
     let system_content = `Generate one short answer question relating to the following context. `;
     system_content += `The question must be answerable by a single word or phrase. `;
     system_content += `Only write the question, do not state the answer or any examples. `;
@@ -50,7 +50,7 @@ export async function generateOneQuestion(context, existing_questions = []) {
  * @returns {Promise<string[]>} - An array of generated questions.
  * @throws {Error} - If an error occurs during the question generation process.
  */
-export async function generateManyQuestions(number_of_questions, context = ``) {
+export async function generateManyQuestions(number_of_questions, context = ``, hallucination_detection = true) {
     let system_content = ``;
 
     if (number_of_questions > 1) {
@@ -87,6 +87,35 @@ export async function generateManyQuestions(number_of_questions, context = ``) {
         }
 
         return questions;
+    }
+
+    catch (error) {
+        throw error;
+    }
+}
+
+
+/***************************/
+/* Hallucination Detection */
+/***************************/
+
+export async function isQuestionRelevent(context, question) {
+    let system_content = `Is the given question relevant to the given context? `;
+    system_content += `Output output either YES or NO. `;
+
+    let user_content = `Given question: ${question}. `;
+    user_content += `Given context: ${context}. `;
+
+    try {
+        let response = await callLMStudio(system_content, user_content, 2);
+
+        if (response.toLowerCase().includes('yes')) {
+            console.log(`Hallucination Detection: Is Question Relevant? : YES`);
+            return true;
+        } else if (response.toLowerCase().includes('no')) {
+            console.warn(`Hallucination Detection: Is Question Relevant? : NO`);
+            return false;
+        }
     }
 
     catch (error) {

@@ -11,7 +11,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string>} - A promise that resolves to the generated distractors.
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
-export async function generateDistractor(context, question, options = []) {
+export async function generateDistractor(context, question, options = [], hallucination_detection = true) {
     let system_content = `Given the context, what is a FALSE distractor answer to the following question?`;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
 
@@ -42,7 +42,7 @@ export async function generateDistractor(context, question, options = []) {
  * @returns {Promise<string[]|string>} - An array of distractor answers or an error message if an error occurs.
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
-export async function generateManyDistractors(number_of_distractors, context, question, answer) {
+export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection = true) {
     let system_content = `Given the context, generate exactly ${number_of_distractors + 2} FALSE distractor answers to the following question. `;
     system_content += `The true answer is "${answer}". Each distractor must be different from the true answer and from each other. Distractors should look similar to the answer in form. `;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
@@ -77,6 +77,59 @@ export async function generateManyDistractors(number_of_distractors, context, qu
         return distractors;
 
     } catch (error) {
+        throw error;
+    }
+}
+
+/***************************/
+/* Hallucination Detection */
+/***************************/
+
+export async function areDistractorsFalse(question, distractor) {
+    let system_content = `Is the given answer a false distractor to the following question? `;
+    system_content += `Output either YES or NO. `;
+
+    let user_content = `Given answer: ${distractor}. `;
+    user_content += `Following question: ${question}. `;
+
+    try {
+        let response = await callLMStudio(system_content, user_content, 2);
+
+        if (response.toLowerCase().includes('yes')) {
+            console.log(`Hallucination Detection: Is Distractor False? : YES`);
+            return true;
+        } else if (response.toLowerCase().includes('no')) {
+            console.warn(`Hallucination Detection: Is Distractor False? : NO`);
+            return false;
+        }
+    }
+
+    catch (error) {
+        throw error;
+    }
+}
+
+export async function areDistractorsRelevent(context, question, distractor) {
+    let system_content = `Is the given distractor relevant to the given context and question? `;
+    system_content += `Output output either YES or NO. `;
+
+    let user_content = `Given distractor: ${distractor}. `;
+    user_content += `Given context: ${context}. `;
+    user_content += `Given question: ${question}. `;
+
+    try {
+        let response = await callLMStudio(system_content, user_content, 2);
+
+        if (response.toLowerCase().includes('yes')) {
+            console.log(`Hallucination Detection: Is Distractor Relevant? : YES`);
+            return true;
+        } else if (response.toLowerCase().includes('no')) {
+            console.warn(`Hallucination Detection: Is Distractor Relevant? : NO`);
+            return false;
+        }
+    }
+
+    catch (error) {
         throw error;
     }
 }

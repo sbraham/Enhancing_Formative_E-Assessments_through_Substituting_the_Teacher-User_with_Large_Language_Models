@@ -288,7 +288,11 @@ export class Quiz {
         }
 
         else if (this.quiz_type == 'short_answer') {
-            isCorrect = await checkAnswer(this._current_question.question, this._current_question.answer, given_answer);
+            isCorrect = await judgeGivenAnswer(
+                this._current_question.question, 
+                this._current_question.answer, 
+                given_answer, 
+                number_of_judges = 5)
         }
 
         /* Create an answer_object detailing the given answer */

@@ -42,11 +42,22 @@ export async function verifyGivenAnswer(question, expected_answer, given_answer,
     }
 }
 
+/**
+ * Judges the given answer based on the expected answer and the question.
+ * @param {string} question - The question being asked.
+ * @param {string} expected_answer - The expected answer to the question.
+ * @param {string} given_answer - The given answer to be judged.
+ * @param {number} number_of_judges - The number of judges to consult. Default is 1.
+ * @param {number} number_of_attempts - The number of attempts to verify the given answer. Default is 10.
+ * @returns {boolean} - Returns true if the given answer is judged to be correct, false otherwise.
+ */
 export async function judgeGivenAnswer(question, expected_answer, given_answer, number_of_judges = 1, number_of_attempts = 10) {    
     let rulings = 0;
     
     for (let i = 0; i < number_of_judges; i++) {
         let judge_response = await verifyGivenAnswer(question, expected_answer, given_answer, number_of_attempts);
+
+        console.debug(`judgeGivenAnswer: ruling_${i}: ${judge_response}`);
 
         if (judge_response) {
             rulings++;
@@ -54,8 +65,12 @@ export async function judgeGivenAnswer(question, expected_answer, given_answer, 
     }
 
     if (rulings >= Math.ceil(number_of_judges / 2)) {
-        return true;
+        const final_ruling = true;
     } else {
-        return false;
+        const final_ruling = false;
     }
+
+    console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);
+
+    return final_ruling;
 }

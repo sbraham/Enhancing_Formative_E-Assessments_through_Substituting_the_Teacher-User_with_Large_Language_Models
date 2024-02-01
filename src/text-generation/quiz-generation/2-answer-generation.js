@@ -10,7 +10,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string>} - The generated answer.
  * @throws {Error} - If an error occurs during the answer generation process.
  */
-export async function generateAnswer(context, question) {
+export async function generateAnswer(context, question, hallucination_detection = true) {
     let system_content = `Given the context, what is the TRUE answer to the following question?`;
     system_content += `Do not state in any way that the answer is true, or that it is the answer. `;
     system_content += `Only write the answer, do not write any examples or other possible answers. `;
@@ -50,7 +50,7 @@ export async function generateAnswer(context, question) {
  * @returns {Promise<Object>} - A promise that resolves to an object containing the generated answer and options.
  * @throws {Error} - If an error occurs during the answer and option generation process.
  */
-export async function generateManyOptions(context, question, number_of_options) {
+export async function generateManyOptions(context, question, number_of_options, hallucination_detection = true) {
     let system_content = `Given the context, generate exactly ${number_of_options + 1} answers to the following question. `;
     system_content += `The true answer is "${question}". Each answer must be different from the true answer and from each other. `;
     system_content += `Do not state in any way that the answer is true, or that it is the answer. `;
@@ -84,6 +84,34 @@ export async function generateManyOptions(context, question, number_of_options) 
         }
 
         return { answer: question, options: options };
+    }
+
+    catch (error) {
+        throw error;
+    }
+}
+
+/***************************/
+/* Hallucination Detection */
+/***************************/
+
+export async function isAnswerCorrect(question, answer) {
+    let system_content = `Is the given answer the right answer to the following question? `;
+    system_content += `Output either YES or NO. `;
+
+    let user_content = `Given answer: ${answer}. `;
+    user_content += `Following question: ${question}. `;
+
+    try {
+        let response = await callLMStudio(system_content, user_content, 2);
+
+        if (response.toLowerCase().includes('yes')) {
+            console.log(`Hallucination Detection: Is Answer Correct? : YES`);
+            return true;
+        } else if (response.toLowerCase().includes('no')) {
+            console.warn(`Hallucination Detection: Is Answer Correct? : NO`);
+            return false;
+        }
     }
 
     catch (error) {

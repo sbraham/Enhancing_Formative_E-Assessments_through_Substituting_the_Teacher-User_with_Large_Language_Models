@@ -1,5 +1,5 @@
 import { Timer } from "../classes/Timer.js";
-import { generateQuestion, generateManyQuestion } from "./1-question-generation.js";
+import { generateOneQuestion, generateManyQuestions } from "./1-question-generation.js";
 import { generateAnswer } from "./2-answer-generation.js";
 import { generateDistractor, generateManyDistractors } from "./3-distractor-generation.js";
 
@@ -24,7 +24,7 @@ export async function SWQG(quiz_type, context, number_of_options = 4, existing_q
 
     /* Step 1: Generate a question */
     console.debug(`LM-studio-helper.js: SWQG: Step 1: Generate a question`);
-    question = await generateQuestion(context, existing_questions);
+    question = await generateOneQuestion(context, existing_questions);
 
     /* Step 2: Generate the answer */
     console.debug(`LM-studio-helper.js: SWQG: Step 2: Generate the answer`);
@@ -72,7 +72,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
 
     /* Step 1: Generate a question */
     console.debug(`LM-studio-helper.js: BatchSWQG: Step 1: Generate all the questions`);
-    array_of_questions = await generateManyQuestion(number_of_questions, context);
+    array_of_questions = await generateManyQuestions(number_of_questions, context);
 
     array_of_questions.forEach(question => {
         question_objects.push({ question: question, answer: ``, options: [] });
