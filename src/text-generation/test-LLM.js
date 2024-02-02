@@ -6,7 +6,7 @@ import { BatchSWQG } from "../text-generation/quiz-generation/quiz-generation.js
 const is_batch = true;
 
 /* Variables */
-const number_of_questions = 20;
+const number_of_questions = 5;
 const quiz = [];
 let data = ""
 
