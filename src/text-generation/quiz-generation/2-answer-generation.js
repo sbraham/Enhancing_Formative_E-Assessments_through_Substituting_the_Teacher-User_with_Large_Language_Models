@@ -44,7 +44,7 @@ export async function generateAnswer(context, question, hallucination_detection 
             }
 
             /* Otherwise */
-            if (await isAnswerCorrect(question, answer)) {
+            if (await judgeQuestionRelevence(question, answer)) {
                 break;
             }
 
