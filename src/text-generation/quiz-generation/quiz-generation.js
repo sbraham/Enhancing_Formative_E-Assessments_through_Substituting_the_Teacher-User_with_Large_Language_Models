@@ -1,7 +1,9 @@
-import { Timer } from "../classes/Timer.js";
-import { generateOneQuestion, generateManyQuestions } from "./1-question-generation.js";
+import { Timer} from "../../classes/timer.js";
+import { generateManyQuestions } from "./1-question-generation.js";
 import { generateAnswer } from "./2-answer-generation.js";
-import { generateDistractor, generateManyDistractors } from "./3-distractor-generation.js";
+import { generateManyDistractors } from "./3-distractor-generation.js";
+
+const timer = new Timer();
 
 /**
  * Generates a stepwise question for a quiz.

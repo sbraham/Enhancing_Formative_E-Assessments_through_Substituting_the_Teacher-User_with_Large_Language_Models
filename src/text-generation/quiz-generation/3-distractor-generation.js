@@ -87,19 +87,19 @@ export async function generateManyDistractors(number_of_distractors, context, qu
                 break;
             } else {
                 let is_false_count = 0;
-                let is_relevent_count = 0;
+                // let is_relevent_count = 0;
 
                 for (let distractor of distractors) {
                     if (await areDistractorsFalse(question, distractor)) {
                         is_false_count++;
                     }
 
-                    if (await areDistractorsRelevent(context, question, distractor)) {
-                        is_relevent_count++;
-                    }
+                    // if (await areDistractorsRelevent(context, question, distractor)) {
+                    //     is_relevent_count++;
+                    // }
                 }
 
-                if (is_false_count / number_of_distractors >= false_threshold && is_relevent_count / number_of_distractors >= relevence_threshold) {
+                if (is_false_count / number_of_distractors >= false_threshold /* && is_relevent_count / number_of_distractors >= relevence_threshold */) {
                     break;
                 }
 
@@ -130,10 +130,12 @@ export async function areDistractorsFalse(question, distractor) {
         let response = await callLMStudio(system_content, user_content, 2);
 
         if (response.toLowerCase().includes('yes')) {
-            console.log(`Hallucination Detection: Is Distractor False? : YES`);
+            console.debug(`✅ Hallucination Detection: Is Distractor False? : YES`);
             return true;
         } else if (response.toLowerCase().includes('no')) {
-            console.warn(`Hallucination Detection: Is Distractor False? : NO`);
+            console.lodebugg(`❌ Hallucination Detection: Is Distractor False? : NO`);
+            console.debug(`Question: ${question}`);
+            console.debug(`Distractor: ${distractor}`);
             return false;
         }
     }
@@ -143,27 +145,30 @@ export async function areDistractorsFalse(question, distractor) {
     }
 }
 
-export async function areDistractorsRelevent(context, question, distractor) {
-    let system_content = `Is the given distractor relevant to the given context and question? `;
-    system_content += `Output output either YES or NO. `;
+// CODE NO LONGER IN USE
+// export async function areDistractorsRelevent(context, question, distractor) {
+//     let system_content = `Is the given distractor fall within to the given context and question? `;
+//     system_content += `i.e. Do the topics in the distractor relate to the topics in the context? `;
+//     system_content += `Output output either YES or NO. `;
 
-    let user_content = `Given distractor: ${distractor}. `;
-    user_content += `Given context: ${context}. `;
-    user_content += `Given question: ${question}. `;
+//     let user_content = `Given distractor: ${distractor}. `;
+//     user_content += `Given context: ${context}. `;
+//     user_content += `Given question: ${question}. `;
 
-    try {
-        let response = await callLMStudio(system_content, user_content, 2);
+//     try {
+//         let response = await callLMStudio(system_content, user_content, 2);
 
-        if (response.toLowerCase().includes('yes')) {
-            console.log(`Hallucination Detection: Is Distractor Relevant? : YES`);
-            return true;
-        } else if (response.toLowerCase().includes('no')) {
-            console.warn(`Hallucination Detection: Is Distractor Relevant? : NO`);
-            return false;
-        }
-    }
+//         if (response.toLowerCase().includes('yes')) {
+//             console.debug(`✅ Hallucination Detection: Is Distractor Relevant? : YES`);
+//             return true;
+//         } else if (response.toLowerCase().includes('no')) {
+//             console.debug(`❌ Hallucination Detection: Is Distractor Relevant? : NO`);
+//             console.debug(`Distractor: ${distractor}`);
+//             return false;
+//         }
+//     }
 
-    catch (error) {
-        throw error;
-    }
-}
+//     catch (error) {
+//         throw error;
+//     }
+// }

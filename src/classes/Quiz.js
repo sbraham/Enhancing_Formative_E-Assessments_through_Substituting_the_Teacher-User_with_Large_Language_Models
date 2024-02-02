@@ -1,5 +1,5 @@
-import { BatchSWQG } from '../text-generation/quiz-generation.js';
-import { checkAnswer } from '../text-generation/question-verification.js';
+import { BatchSWQG } from '../text-generation/quiz-generation/quiz-generation.js';
+import { judgeGivenAnswer } from '../text-generation/verify-given-answer.js';
 import { updateQuiz } from '../firebase/database-helper.js';
 
 /**

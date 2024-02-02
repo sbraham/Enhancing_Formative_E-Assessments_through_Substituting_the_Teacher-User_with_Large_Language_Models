@@ -48,6 +48,8 @@ function responseCleaning(response) {
  * @async
  * @param {string} system_content - The system input content.
  * @param {string} user_content - The user input content.
+ * @param {number} max_tokens - The maximum number of tokens to generate. Default is -1 (no limit).
+ * @param {number} temperature - The amount of variety in outputs. Default is 0.7. If temp = 0 the model will always generate the same output for the same input.
  * @returns {Promise<string>} - The generated text response.
  * @throws {Error} - If there is an error during the API call.
  */

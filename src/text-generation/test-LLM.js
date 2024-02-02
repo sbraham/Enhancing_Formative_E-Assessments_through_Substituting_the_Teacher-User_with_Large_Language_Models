@@ -1,35 +1,23 @@
 console.log('Loading: test-LLM.js');
 
 /* Imports */
-import { SWQG, BatchSWQG } from "./quiz-generation.js";
+import { BatchSWQG } from "../text-generation/quiz-generation/quiz-generation.js";
 
 const is_batch = true;
-const hallucination_mitigation = 5;
-    // 0 = no hallucination mitigation 
-    // 1 = in-context learning
-    // 2 = output cleaning
-    // 3 = hallucination detection
-    //
-    // 5 = everything (default)
-
 
 /* Variables */
-const number_of_questions = 5;
+const number_of_questions = 20;
 const quiz = [];
 let data = ""
 
-let quiz_context_1 = "History - Russia 1894-1945";
-let quiz_context_2 = "History - Russia 1894-1945";
-let quiz_context_3 = "History - Russia 1894-1945";
+let quiz_context = "History - Russia 1894-1945";
 
 /* Functions */
 
 if (is_batch) {
 
     // Generate a quiz using your SWQG module
-    const quiz_1 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_1}`);
-    const quiz_2 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_2}`);
-    const quiz_3 = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context_3}`);
+    const quiz = await BatchSWQG(number_of_questions, 'multiple_choice', `${quiz_context}`);
 
     // Convert the quizzes array to a string
     let i = 1;
@@ -38,7 +26,7 @@ if (is_batch) {
     data += "Quiz: \n";
     data += "\n";
 
-    quiz_1.forEach(question => {
+    quiz.forEach(question => {
         data += "Question : " + (i++) + "\n";
 
         data += "Question: " + question.question + "\n";

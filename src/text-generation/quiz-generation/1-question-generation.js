@@ -86,7 +86,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string[]>} - An array of generated questions.
  * @throws {Error} - If an error occurs during the question generation process.
  */
-export async function generateManyQuestions(number_of_questions, context = ``, hallucination_detection = true, relevence_threshold = 0.75) {
+export async function generateManyQuestions(number_of_questions, context = ``, hallucination_detection = false, relevence_threshold = 0.75) {
     let system_content = ``;
 
     if (number_of_questions > 1) {
@@ -126,64 +126,29 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
             }
 
             /* Hallucination Detection */
-            if (!hallucination_detection) {
+            if (true) {
                 break;
             } else {
-                let is_relevent_count = 0;
+                // let is_relevent_count = 0;
 
-                for (let question of questions) {
-                    if (await isQuestionRelevent(context, question)) {
-                        is_relevent_count++;
-                    }
-                }
+                // for (let question of questions) {
+                //     if (await isQuestionRelevent(context, question)) {
+                //         is_relevent_count++;
+                //     }
+                // }
 
-                if (is_relevent_count / number_of_questions >= relevence_threshold) {
-                    break;
-                }
+                // if (is_relevent_count / number_of_questions >= relevence_threshold) {
+                //     break;
+                // }
 
-                /* Otherwise */
-                /* If the question is not correct, try again */
+                // /* Otherwise */
+                // /* If the question is not correct, try again */
             }
         }
 
         return questions;
 
     } catch (error) {
-        throw error;
-    }
-
-    try {
-        let questions = [];
-        number_of_questions = Number(number_of_questions);
-
-        while (questions.length !== number_of_questions) {
-            let response = await callLMStudio(system_content, user_content, 1000);
-
-            let potential_questions = response.split('|')
-                .filter(question => /[a-zA-Z]/.test(question)) // Remove empty strings
-                .map(question => question.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
-                .map(question => question.trim()); // Remove leading and trailing whitespace
-
-            if (potential_questions.length > number_of_questions) {
-                potential_questions = potential_questions.slice(0, number_of_questions);
-            }
-
-            questions = potential_questions;
-        }
-        
-        if (hallucination_detection) {
-            questions.forEach(question => {
-                if (!isQuestionRelevent(context, question)) {
-                    console.warn(`generateManyQuestions: Question is not relevant: ${question}`);
-                    question = generateOneQuestion(context, questions, hallucination_detection);
-                }
-            });
-        }
-
-        return questions;
-    }
-
-    catch (error) {
         throw error;
     }
 }
@@ -193,26 +158,28 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
 /* Hallucination Detection */
 /***************************/
 
-export async function isQuestionRelevent(context, question) {
-    let system_content = `Is the given question relevant to the given context? `;
-    system_content += `Output output either YES or NO. `;
+// export async function isQuestionRelevent(context, question) {
+//     let system_content = `Is the given question fall within the given context? `;
+//     system_content += `i.e. Do the topics in the question relate to the topics in the context? `;
+//     system_content += `Output either YES or NO. `;
 
-    let user_content = `Given question: ${question}. `;
-    user_content += `Given context: ${context}. `;
+//     let user_content = `Given question: ${question}. `;
+//     user_content += `Given context: ${context}. `;
 
-    try {
-        let response = await callLMStudio(system_content, user_content, 2);
+//     try {
+//         let response = await callLMStudio(system_content, user_content, 2);
 
-        if (response.toLowerCase().includes('yes')) {
-            console.log(`Hallucination Detection: Is Question Relevant? : YES`);
-            return true;
-        } else if (response.toLowerCase().includes('no')) {
-            console.warn(`Hallucination Detection: Is Question Relevant? : NO`);
-            return false;
-        }
-    }
+//         if (response.toLowerCase().includes('yes')) {
+//             console.debug(`✅ Hallucination Detection: Is Question Relevant? : YES`);
+//             return true;
+//         } else if (response.toLowerCase().includes('no')) {
+//             console.debug(`❌ Hallucination Detection: Is Question Relevant? : NO`);
+//             console.debug(`Question: ${question}`);
+//             return false;
+//         }
+//     }
 
-    catch (error) {
-        throw error;
-    }
-}
+//     catch (error) {
+//         throw error;
+//     }
+// }

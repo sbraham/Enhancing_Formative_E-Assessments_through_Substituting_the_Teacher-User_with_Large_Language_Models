@@ -11,7 +11,7 @@ import { callLMStudio } from './LM-studio-helper.js';
  * @returns {Promise<boolean>} - A promise that resolves to true if the given answer is close to the expected answer, false otherwise.
  * @throws {Error} - If an error occurs during the process.
  */
-export async function verifyGivenAnswer(question, expected_answer, given_answer, number_of_attempts = 10) {    
+export async function isGivenQuestionCorrect(question, expected_answer, given_answer, number_of_attempts = 10, temperature = 0.2) {    
     let system_content = `Consider the given question. `;
     system_content += `Is the given answer close to the expected answer? `;
     system_content += `Output output either YES or NO. `;
@@ -24,7 +24,9 @@ export async function verifyGivenAnswer(question, expected_answer, given_answer,
         let response = '';
 
         for (let i = 1; i <= number_of_attempts; i++) {
-            response = await callLMStudio(system_content, user_content, 2);
+            response = await callLMStudio(system_content, user_content, 2, temperature);
+
+            console.debug(`judgeGivenAnswer: judge_response_${i}: ${judge_response}`);
 
             if (response.toLowerCase().includes('yes')) {
                 return true;
@@ -51,20 +53,23 @@ export async function verifyGivenAnswer(question, expected_answer, given_answer,
  * @param {number} number_of_attempts - The number of attempts to verify the given answer. Default is 10.
  * @returns {boolean} - Returns true if the given answer is judged to be correct, false otherwise.
  */
-export async function judgeGivenAnswer(question, expected_answer, given_answer, number_of_judges = 1, number_of_attempts = 10) {    
+export async function judgeGivenAnswer(question, expected_answer, given_answer, number_of_judges = 1, number_of_attempts = 10, temperature = 0.2) {    
     let rulings = 0;
+
+    console.debug(`judgeGivenAnswer: judging...`);
+    console.debug(`judgeGivenAnswer: question: ${question}`);
+    console.debug(`judgeGivenAnswer: expected_answer: ${expected_answer}`);
+    console.debug(`judgeGivenAnswer: given_answer: ${given_answer}`);
     
     for (let i = 0; i < number_of_judges; i++) {
-        let judge_response = await verifyGivenAnswer(question, expected_answer, given_answer, number_of_attempts);
-
-        console.debug(`judgeGivenAnswer: ruling_${i}: ${judge_response}`);
+        let judge_response = await isGivenQuestionCorrect(question, expected_answer, given_answer, number_of_attempts, temperature);
 
         if (judge_response) {
             rulings++;
         }
     }
 
-    if (rulings >= Math.ceil(number_of_judges / 2)) {
+    if (rulings > Math.ceil(number_of_judges / 2)) {
         const final_ruling = true;
     } else {
         const final_ruling = false;

@@ -24,6 +24,8 @@ export async function generateAnswer(context, question, hallucination_detection 
     user_content += `Question: ${question}. `;
 
     try {
+        let answer = '';
+
         for (let i = 0; i < 10; i++) {
             /* Generate an answer */
             let response = await callLMStudio(system_content, user_content, 500);
@@ -34,7 +36,7 @@ export async function generateAnswer(context, question, hallucination_detection 
                 .map(ans => ans.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
                 .map(ans => ans.trim()); // Remove leading and trailing whitespace
 
-            let answer = response[0];
+            answer = response[0];
 
             /* Hallucination Detection */
             if (!hallucination_detection) {
@@ -116,7 +118,7 @@ export async function generateAnswer(context, question, hallucination_detection 
 /* Hallucination Detection */
 /***************************/
 
-export async function isAnswerCorrect(question, answer) {
+export async function isAnswerCorrect(question, answer, temperature = 0.2) {
     let system_content = `Is the given answer the right answer to the following question? `;
     system_content += `Output either YES or NO. `;
 
@@ -124,13 +126,15 @@ export async function isAnswerCorrect(question, answer) {
     user_content += `Following question: ${question}. `;
 
     try {
-        let response = await callLMStudio(system_content, user_content, 2);
+        let response = await callLMStudio(system_content, user_content, 2, temperature);
 
         if (response.toLowerCase().includes('yes')) {
-            console.log(`Hallucination Detection: Is Answer Correct? : YES`);
+            // console.debug(`✅ Hallucination Detection: Is Answer Correct? : YES`);
             return true;
         } else if (response.toLowerCase().includes('no')) {
-            console.warn(`Hallucination Detection: Is Answer Correct? : NO`);
+            // console.debug(`❌ Hallucination Detection: Is Answer Correct? : NO`);
+            // console.debug(`Question: ${question}`);
+            // console.debug(`Answer: ${answer}`);
             return false;
         }
     }
@@ -138,4 +142,32 @@ export async function isAnswerCorrect(question, answer) {
     catch (error) {
         throw error;
     }
+}
+
+export async function judgeQuestionRelevence(context, question, number_of_judges = 10, temperature = 0.2) {
+    let rulings = 0;
+
+    console.debug(`judgeGivenAnswer: judging...`);
+    console.debug(`judgeGivenAnswer: context: ${context}`);
+    console.debug(`judgeGivenAnswer: question: ${question}`);
+    
+    for (let i = 0; i < number_of_judges; i++) {
+        let judge_response = await isAnswerCorrect(context, question, temperature);
+
+        console.debug(`judgeGivenAnswer: judge_response_${i}: ${judge_response}`);
+
+        if (judge_response) {
+            rulings++;
+        }
+    }
+
+    if (rulings > Math.ceil(number_of_judges / 2)) {
+        const final_ruling = true;
+    } else {
+        const final_ruling = false;
+    }
+
+    console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);
+
+    return final_ruling;
 }
