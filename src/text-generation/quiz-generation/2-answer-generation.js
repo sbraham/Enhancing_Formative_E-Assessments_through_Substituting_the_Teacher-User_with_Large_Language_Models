@@ -11,7 +11,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string>} - The generated answer.
  * @throws {Error} - If an error occurs during the answer generation process.
  */
-export async function generateAnswer(context, question, hallucination_detection = true) {
+export async function generateAnswer(context, question, hallucination_detection = false) {
     let system_content = `Given the context, what is the TRUE answer to the following question?`;
     system_content += `Do not state in any way that the answer is true, or that it is the answer. `;
     system_content += `Only write the answer, do not write any examples or other possible answers. `;
@@ -161,10 +161,10 @@ export async function judgeQuestionRelevence(context, question, number_of_judges
         }
     }
 
+    let final_ruling = false;
+
     if (rulings > Math.ceil(number_of_judges / 2)) {
-        const final_ruling = true;
-    } else {
-        const final_ruling = false;
+        final_ruling = true;
     }
 
     console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);

@@ -12,7 +12,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
 //  * @returns {Promise<string>} - A promise that resolves to the generated question.
 //  * @throws {Error} - If there is an error while generating the question.
 //  */
-// export async function generateOneQuestion(context, existing_questions = [], hallucination_detection = true) {
+// export async function generateOneQuestion(context, existing_questions = [], hallucination_detection = false) {
 //     system_content += `Generate a short answer question relating to the following context. `;
 
 //     system_content += `The question must be answerable by a single word or phrase. `;

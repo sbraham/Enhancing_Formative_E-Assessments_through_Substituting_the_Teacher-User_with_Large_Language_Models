@@ -47,7 +47,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string[]|string>} - An array of distractor answers or an error message if an error occurs.
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
-export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection = true, false_threshold = 1, relevence_threshold = 1) {
+export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection = false, false_threshold = 1, relevence_threshold = 1) {
     let system_content = `Given the context, generate exactly ${number_of_distractors + 2} FALSE distractor answers to the following question. `;
     system_content += `The true answer is "${answer}". Each distractor must be different from the true answer and from each other. Distractors should look similar to the answer in form. `;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
