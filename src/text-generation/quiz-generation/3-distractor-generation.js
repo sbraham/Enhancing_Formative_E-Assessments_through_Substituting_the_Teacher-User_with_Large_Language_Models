@@ -70,6 +70,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
                 let response = await callLMStudio(system_content, user_content, 1000);
 
                 let potential_distractors = response.split('|')
+                    .filter(Boolean) // Remove undefined elements
                     .filter(distractor => /[a-zA-Z]/.test(distractor)) // Remove empty strings
                     .map(distractor => distractor.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
                     .map(distractor => distractor.trim()) // Remove leading and trailing whitespace

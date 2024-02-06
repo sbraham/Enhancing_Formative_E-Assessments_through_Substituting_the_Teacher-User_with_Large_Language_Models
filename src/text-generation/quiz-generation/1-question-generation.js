@@ -44,6 +44,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
             
 //             /* Clean up output */
 //             response = response.split('|')
+//                 .filter(Boolean) // Remove undefined elements
 //                 .filter(question => /[a-zA-Z]/.test(question)) // Remove empty strings
 //                 .map(question => question.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
 //                 .map(question => question.trim()); // Remove leading and trailing whitespace
@@ -114,6 +115,7 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
                 let response = await callLMStudio(system_content, user_content, 1000);
 
                 let potential_questions = response.split('|')
+                    .filter(Boolean) // Remove undefined elements
                     .filter(question => /[a-zA-Z]/.test(question)) // Remove empty strings
                     .map(question => question.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
                     .map(question => question.trim()) // Remove leading and trailing whitespace

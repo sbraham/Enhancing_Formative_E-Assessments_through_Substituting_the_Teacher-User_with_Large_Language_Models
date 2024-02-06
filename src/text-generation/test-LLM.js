@@ -110,18 +110,25 @@ if (is_question_evaluation) {
     let quiz_1 = []
     let quiz_2 = []
 
+    let i = 1;
+
     for (const context of contexts_for_quiz_questions) {
         quiz_1 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`);
+        console.log(quiz_1);
         quiz_2 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`);
+        console.log(quiz_2);
 
-        merged_questions = quiz_1.concat(quiz_2);
+        let merged_questions = quiz_1.concat(quiz_2);
 
         for (const question of merged_questions) {
             question.context = context;
+            question.index = i++;
         }
 
         quiz = quiz.concat(merged_questions);
     }
+
+    console.log(quiz);
 
     quiz = shuffleArray(quiz);
 
@@ -139,14 +146,14 @@ if (is_question_evaluation) {
     console.log(quizzes);
 
     quizzes.forEach(quiz => {
-        let i = 1;
+        quiz.sort((a, b) => a.index - b.index);
 
         data += "-------------------------\n";
         data += "Quiz: \n";
         data += "\n";
 
         quiz.forEach(question => {
-            data += "Question : " + (i++) + "\n";
+            data += "Question : " + (question.index) + "\n";
 
             data += "Context: " + question.context + "\n";
             data += "\n";

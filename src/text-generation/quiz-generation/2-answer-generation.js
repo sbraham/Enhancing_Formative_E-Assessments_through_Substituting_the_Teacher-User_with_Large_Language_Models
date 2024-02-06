@@ -32,6 +32,7 @@ export async function generateAnswer(context, question, hallucination_detection 
 
             /* Clean up output */
             response = response.split('|')
+                .filter(Boolean) // Remove undefined elements
                 .filter(ans => /[a-zA-Z]/.test(ans)) // Remove empty strings
                 .map(ans => ans.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
                 .map(ans => ans.trim()); // Remove leading and trailing whitespace
@@ -94,6 +95,7 @@ export async function generateAnswer(context, question, hallucination_detection 
 //             let response = await callLMStudio(system_content, user_content, 1000);
 
 //             let potential_options = response.split('|')
+//                 .filter(Boolean) // Remove undefined elements
 //                 .filter(option => /[a-zA-Z]/.test(option)) // Remove empty strings
 //                 .map(option => option.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
 //                 .map(option => option.trim()) // Remove leading and trailing whitespace
