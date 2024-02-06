@@ -151,6 +151,7 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
         return questions;
 
     } catch (error) {
+        console.error(`generateManyQuestions: error:`, error);
         throw error;
     }
 }

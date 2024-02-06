@@ -59,6 +59,7 @@ export async function generateAnswer(context, question, hallucination_detection 
     }
 
     catch (error) {
+        console.error(`generateAnswer: error:`, error);
         throw error;
     }
 }
@@ -142,6 +143,7 @@ export async function isAnswerCorrect(question, answer, temperature = 0.2) {
     }
 
     catch (error) {
+        console.error(`isAnswerCorrect: error:`, error);
         throw error;
     }
 }

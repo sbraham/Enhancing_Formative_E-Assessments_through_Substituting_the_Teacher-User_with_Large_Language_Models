@@ -40,6 +40,7 @@ export async function isGivenQuestionCorrect(question, expected_answer, given_an
     } 
             
     catch (error) {
+        console.error(`isGivenQuestionCorrect: error:`, error);
         throw error;
     }
 }

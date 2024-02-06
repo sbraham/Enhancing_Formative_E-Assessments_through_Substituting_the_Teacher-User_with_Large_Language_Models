@@ -71,6 +71,7 @@ quiz_form.addEventListener('submit', async (event) => {
     } 
             
     catch (error) {
+        console.error(`quiz_form: error:`, error);
         throw error;
     }
 });

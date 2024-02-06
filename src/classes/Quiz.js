@@ -144,6 +144,7 @@ export class Quiz {
         } 
             
         catch (error) {
+            console.error(`Quiz.displayQuiz(): Error setting quiz title!`);
             throw error;
         }
     }
@@ -234,6 +235,7 @@ export class Quiz {
         } 
             
         catch (error) {
+            console.error(`Quiz.displayQuestion(): Error setting question!`);
             throw error;
         }
     }
@@ -354,6 +356,7 @@ export class Quiz {
         } 
             
         catch (error) {
+            console.error(`Quiz.disableQuizForm(): Error disabling quiz form!`);
             throw error;
         }
     }
@@ -374,6 +377,7 @@ export class Quiz {
         } 
             
         catch (error) {
+            console.error(`Quiz.enableQuizForm(): Error enabling quiz form!`);
             throw error;
         }
     }
@@ -394,6 +398,7 @@ export class Quiz {
         } 
             
         catch (error) {
+            console.error(`Quiz.resetQuizForm(): Error resetting quiz form!`);
             throw error;
         }
     }

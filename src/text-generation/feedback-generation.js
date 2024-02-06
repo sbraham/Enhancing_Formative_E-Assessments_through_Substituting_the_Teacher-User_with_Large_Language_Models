@@ -26,6 +26,7 @@ export async function generateFeedback(answer_object) {
     } 
             
     catch (error) {
+        console.error(`generateFeedback: error:`, error);
         throw error;
     }
 }

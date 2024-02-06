@@ -78,7 +78,7 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
                     resolve(response.choices[0].message.content);
                 },
                 error: function (error) {
-                    throw error;
+                    reject(error);
                 }
             });
         });
@@ -89,6 +89,8 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
     } 
             
     catch (error) {
+        // Handle the error here
+        console.error('Error occurred during API call:', error);
         throw error;
     }
 }

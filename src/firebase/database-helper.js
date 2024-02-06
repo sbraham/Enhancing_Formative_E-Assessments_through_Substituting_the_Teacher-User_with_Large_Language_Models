@@ -50,6 +50,7 @@ export async function getUserQuizzes() {
     } 
             
     catch (error) {
+        console.error(`getUserQuizzes: error:`, error);
         throw error;
     }
 }
@@ -96,6 +97,7 @@ export async function addQuizToDB(quiz) {
     } 
             
     catch (error) {
+        console.error(`addQuizToDB: error:`, error);
         throw error;
     }
 }
@@ -133,6 +135,7 @@ export async function updateQuiz(quiz) {
     } 
             
     catch (error) {
+        console.error(`updateQuiz: error:`, error);
         throw error;
     }
 }
@@ -164,6 +167,7 @@ export async function removeQuizFromDB(quiz) {
     } 
             
     catch (error) {
+        console.error(`removeQuizFromDB: error:`, error);
         throw error;
     }
 }
@@ -199,6 +203,7 @@ export async function getQuizById(quiz_id) {
     } 
             
     catch (error) {
+        console.error(`getQuizById: error:`, error);
         throw error;
     }
 }

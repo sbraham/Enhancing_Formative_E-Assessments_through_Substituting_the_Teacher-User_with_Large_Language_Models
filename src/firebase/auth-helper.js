@@ -55,7 +55,8 @@ export async function checkLogin(pathToLogin = null) {
 	} 
             
     catch (error) {
-        throw error;
+        console.error(`checkLogin: error:`, error);
+		throw error;
 	}
 }
 
@@ -109,7 +110,8 @@ export async function checkLoginOnFrame(iframe) {
 	} 
             
     catch (error) {
-        throw error;
+        console.error(`checkLoginOnFrame: error:`, error);
+		throw error;
 	}
 }
 
@@ -136,7 +138,8 @@ export async function createUser(email, password) {
 	} 
             
     catch (error) {
-        throw error;
+        console.error(`createUser: error:`, error);
+		throw error;
 	}
 }
 
@@ -165,6 +168,7 @@ export async function loginUser(email, password) {
 	} 
             
     catch (error) {
+		console.error(`loginUser: error:`, error);
 		throw error;
 	}
 }
@@ -185,6 +189,7 @@ export async function logout() {
 	}
 	
 	catch (error) {
-        throw error;
+        console.error(`logout: error:`, error);
+		throw error;
 	}
 }

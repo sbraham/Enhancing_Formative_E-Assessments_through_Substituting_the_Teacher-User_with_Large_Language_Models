@@ -112,7 +112,8 @@ export async function generateManyDistractors(number_of_distractors, context, qu
         return distractors;
 
     } catch (error) {
-        throw error;
+        // Handle the error here
+        console.error(error);
     }
 }
 
@@ -142,7 +143,7 @@ export async function areDistractorsFalse(question, distractor, temperature = 0.
     }
 
     catch (error) {
-        throw error;
+        console.error(error);
     }
 }
 
