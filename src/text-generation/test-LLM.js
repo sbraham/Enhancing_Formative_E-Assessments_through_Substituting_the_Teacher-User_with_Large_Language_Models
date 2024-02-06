@@ -12,19 +12,16 @@ let quiz = [];
 let data = ""
 
 function shuffleArray(array) {
-    let currentIndex = array.length;
-    let temporaryValue, randomIndex;
+    let random_array = [];
+    let array_length = array.length;
 
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
+    for (let i = 0; i < array_length; i++) {
+        let random_index = Math.floor(Math.random() * array.length);
+        random_array.push(array[random_index]);
+        array.splice(random_index, 1);
     }
 
-    return array;
+    return random_array;
 }
 
 // Topic with no title or context - 1
@@ -72,8 +69,8 @@ let contexts_for_quiz_questions = [
     
     Les lunettes de soleil sont indispensables. - Sunglasses are a necessity.`,
 
-    "Bands from the Seventies",
-    "The Premier League"
+    "Bands from the Seventies - Led Zeppelin, Pink Floyd, Queen, The Rolling Stones, The Who, The Eagles, The Doors, The Bee Gees, The Police, The Clash",
+    "The Premier League - The Premier League is the top tier of English football. It was founded in 1992 and has grown to become the most-watched sports league in the world. The league is made up of 20 teams, who play 38 games each season. The teams that finish in the bottom three places are relegated to the Championship, and the top four teams qualify for the UEFA Champions League. The league is known for its fast-paced, attacking football and has a global following. The Premier League has been won by six clubs: Manchester United, Manchester City, Chelsea, Arsenal, Blackburn Rovers, and Leicester City. The current champions are Manchester City, who won the 2020-21 season. The league has a number of rivalries, including the North West Derby between Manchester United and Liverpool, and the North London Derby between Arsenal and Tottenham Hotspur. The league has also been home to some of the world's best players, including Thierry Henry, Cristiano Ronaldo, and Alan Shearer.",
 ];
 
 /* Functions */
@@ -114,11 +111,16 @@ if (is_question_evaluation) {
     let quiz_2 = []
 
     for (const context of contexts_for_quiz_questions) {
-        quiz_1 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`, );
+        quiz_1 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`);
         quiz_2 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`);
 
-        quiz.push(quiz_1);
-        quiz.push(quiz_2);
+        merged_questions = quiz_1.concat(quiz_2);
+
+        for (const question of merged_questions) {
+            question.context = context;
+        }
+
+        quiz = quiz.concat(merged_questions);
     }
 
     quiz = shuffleArray(quiz);
@@ -134,6 +136,8 @@ if (is_question_evaluation) {
         quizzes.push(quiz_slice);
     }
 
+    console.log(quizzes);
+
     quizzes.forEach(quiz => {
         let i = 1;
 
@@ -143,6 +147,9 @@ if (is_question_evaluation) {
 
         quiz.forEach(question => {
             data += "Question : " + (i++) + "\n";
+
+            data += "Context: " + question.context + "\n";
+            data += "\n";
 
             data += "Question: " + question.question + "\n";
             data += "Answer: " + question.answer + "\n";
