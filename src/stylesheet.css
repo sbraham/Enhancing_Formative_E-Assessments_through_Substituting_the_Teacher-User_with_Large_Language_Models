@@ -101,14 +101,24 @@ td > div {
     height: 75px;
 } 
 
+/* Sidebars */
+
+.sidebar {
+    height: 100vh;
+}
+
 /* Quiz */
 
-@media only screen and (max-width: 767px) {
-    .sidebar {
+@media only screen and (max-width: 766.5px) {
+    .quiz-sidebar {
         display: none;
     }
 }
 
-.sidebar {
-    height: 100vh;
+/* Info */
+
+@media only screen and (max-width: 991.5px) {
+    .info-sidebar {
+        display: none;
+    }
 }

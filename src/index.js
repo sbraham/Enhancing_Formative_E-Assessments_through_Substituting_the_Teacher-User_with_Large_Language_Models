@@ -8,6 +8,7 @@ const main = document.getElementById('main');
 const dashboard_button = document.getElementById('dashboard');
 const progress_button = document.getElementById('progress');
 const account_button = document.getElementById('account');
+const info_button = document.getElementById('info');
 
 await checkLoginOnFrame(main);
 
@@ -40,4 +41,13 @@ account_button.addEventListener("click", async () => {
     console.log('--------------------------------');
     
     main.src = "./pages/login/login.html";
+});
+
+info_button.addEventListener("click", async () => {
+    console.log('info_button clicked');
+
+    console.log('Redirecting to info...');
+    console.log('--------------------------------');
+
+    main.src = "./pages/info/info.html";
 });

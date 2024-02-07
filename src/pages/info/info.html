@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SXB1567 - FormAtiveQuIz</title>
+
+    <!-- Ensures the web-page correctly interprets a wide range of characters -->
+    <meta charset="utf-8">
+
+    <!-- Ensures the page is scaled based on the devised scale -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Include bootstrap styling and functionality -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <!-- Include the email.js script -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script type="text/javascript">
+        emailjs.init({
+            publicKey: "PnMnyYWLSXTnTQaYx",
+        });
+
+        var templateParams = {
+            to_name: 'James',
+            from_name: 'Check this out!'
+        };
+
+        function sendEmail() {
+            event.preventDefault(); /* Prevents the default behaviour of the form */
+
+            let message = document.getElementById('feedback_textarea').value;
+            
+            if (message === '') {
+                alert('Please enter a message');
+                return;
+            }
+
+            emailjs.send('gmail', 'template_dgv5keo', templateParams).then(
+                (response) => {
+                    console.log('EMAIL SUCCESS!', response.status, response.text);
+                },
+                (error) => {
+                    console.log('EMAIL FAILED...', error);
+                },
+            );
+        }
+    </script>
+
+    <!-- Include the custom style sheet -->
+    <link rel="stylesheet" href="../../stylesheet.css">
+
+    <!-- Include the pages logic -->
+</head>
+
+<body>
+    <!-- Text -->
+    <div class="container">
+        <!-- Alert box to indicate what user is looking at -->
+        <div class="alert alert-primary">
+            <h2 class="cut-text-1"> Information </h2>
+        </div>
+
+        <h4>What is FormAtiveQuIz?</h4>
+
+        <p>
+            We, at the FormAtiveQuIz Team, understand the importance of educating our users about what our application
+            is
+            and, notably, what is isn’t. Artificial Intelligence is a complicated field with many misconceptions and
+            we want to use to page to detail what it is good for you to know.
+        </p>
+
+        <hr>
+
+        <p>
+            Our system create questions using a pre-trained general purpose Large Lanauge Model (LLM), similar to
+            products like ChatGPT. These models are trained on large amount of textual data collected of the
+            internet. They then find patterns in these data, most notably the probability that a word follows
+            another word in a sentence. <br>
+            <br>
+            If the LLM were to be given the sentence, <br>
+            <em>“The first colour in a rainbow is ”</em> <br>
+            Might out put <em></em>“red”</em>. This output can be added onto the end of the sentence, and the process
+            can repeat
+            to produce whole new sentences and paragraphs. <br>
+            <br>
+            <em>“The first colour in a rainbow is red. The second colour in a rainbow is orange. The third colour in a
+                rainbow is yellow.”</em> <br>
+            <br>
+            From this we can understand that, despite the complicated algorithms, the LLM is generating questions
+            through finding probabilistic patterns in existing text.<br>
+            <br>
+            This constroles randomness is why the same prompt can produce multiple different question, and also why
+            sometimes the prompts may be unusual. We work hard to ensure the best questlity questions regenerated
+            every time, but something this doesn’t work.
+        </p>
+
+        <hr>
+
+        <h6>Things to keep in mind.</h6>
+
+        <p>
+            The program doesn’t understand the topics it creates questions one so there is always a chance it gets
+            topics wrong.<br>
+            <br>
+            The system is “pre-trained” so none of the prompts you give us are used to train the model permanently,
+            although the models prompts do benefit from the information you give it. Note that the prompts are
+            stored on our database and so personal data should not be used in them.<br>
+            <br>
+            The information you give in the description of the prompts makes it more likely for outputs to be
+            generated with that specific topic in mind. The more you give it on a topic, the more questions it will
+            generate about that topic.
+        </p>
+
+        <!-- Give user feedback -->
+        <div class="alert alert-dark">
+            <h4>Feedback</h4>
+            <p>
+                We are trying to improve your understanding so if you have any further questions or feedback, please let
+                us know. We are always looking to improve our service.
+            </p>
+
+            <form onsubmit="sendEmail()">
+                <div class="mb-3">
+                    <label for="feedback_textarea" class="form-label">Feedback:</label>
+                    <textarea class="form-control" id="feedback_textarea" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+        </div>
+    </div>
+</body>
+
+</html>
