@@ -30,14 +30,24 @@ export async function generateAnswer(context, question, hallucination_detection 
             /* Generate an answer */
             let response = await callLMStudio(system_content, user_content, 500);
 
-            /* Clean up output */
-            response = response.split('|')
-                .filter(Boolean) // Remove undefined elements
-                .filter(ans => /[a-zA-Z]/.test(ans)) // Remove empty strings
-                .map(ans => ans.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
-                .map(ans => ans.trim()); // Remove leading and trailing whitespace
+            let potential_answers = response.split('|')
 
-            answer = response[0];
+            console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+
+            potential_answers = potential_answers.map(answer => String(answer)) // Convert to string
+            console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+
+            potential_answers = potential_answers.map(answer => answer.trim()) // Remove leading and trailing punctuation
+            console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+
+            potential_answers = potential_answers.filter(answer => /[a-zA-Z+\-*/^()]/.test(answer)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
+            console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+
+            potential_answers = potential_answers.map(answer => answer.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
+            potential_answers = potential_answers.map(answer => /[a-zA-Z]/.test(answer) ? answer + "." : answer); // Add a period to the end of each answer if it contains a text character
+            console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+
+            answer = potential_answers[0];
 
             /* Hallucination Detection */
             if (!hallucination_detection) {

@@ -170,4 +170,6 @@ if (is_question_evaluation) {
         data += "\n";
         data += "-------------------------\n";
     });
+
+    console.log(data);
 }

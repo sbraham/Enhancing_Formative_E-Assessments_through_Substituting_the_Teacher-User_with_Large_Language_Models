@@ -99,8 +99,10 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
     system_content += `The question must be answerable by a single word or phrase. `;
     system_content += `Only write the question, do not state the answer or any examples. `;
 
-    system_content += `Start and end each question with a | character. `;
-    system_content += `For example, "| 1. What is the capital of France? | 2. What is the capital of Spain? | ... | n. What is the capital of Italy? |"`;
+    system_content += `Format the questions as a list, separated by bars "|". `;
+    system_content += `For example, if the context was "The capital cities of Europe", `;
+    system_content += `"| What is the capital of France? | What is the capital of Spain? | ... | What is the capital of Italy? |"`;
+    system_content += `Do not number the questions. `;
 
     let user_content = `Context: ${context}. `;
 
@@ -115,10 +117,17 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
                 let response = await callLMStudio(system_content, user_content, 1000);
 
                 let potential_questions = response.split('|')
-                    .filter(Boolean) // Remove undefined elements
-                    .filter(question => /[a-zA-Z]/.test(question)) // Remove empty strings
-                    .map(question => question.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
-                    .map(question => question.trim()) // Remove leading and trailing whitespace
+
+                console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+
+                potential_questions = potential_questions.map(question => String(question)) // Convert to string
+                console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+
+                potential_questions = potential_questions.map(question => question.trim()) // Remove leading and trailing punctuation
+                console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);            
+                
+                potential_questions = potential_questions.filter(question => /[a-zA-Z]/.test(question)) // Remove strings that don't contain letters (including empty strings)
+                console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
                 if (potential_questions.length > number_of_questions) {
                     potential_questions = potential_questions.slice(0, number_of_questions);

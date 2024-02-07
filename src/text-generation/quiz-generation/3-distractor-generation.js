@@ -51,11 +51,11 @@ export async function generateManyDistractors(number_of_distractors, context, qu
     let system_content = `Given the context, generate exactly ${number_of_distractors + 2} FALSE distractor answers to the following question. `;
     system_content += `The true answer is "${answer}". Each distractor must be different from the true answer and from each other. Distractors should look similar to the answer in form. `;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
+    
+    system_content += `Format the distractors as a list, separated by bars "|". `;
+    system_content += `For example, if the question was "What is the capital of France?", `;
+    system_content += `a valid response might be "|Lyon|Berlin|London|Madrid|". `;
     system_content += `Do not number the distractors. `;
-
-    system_content += `Each distractor answer should have the following format:`;
-    system_content += `Start and end each question with a | character. `;
-    system_content += `For example, | London | Paris | Madrid | . `;
 
     let user_content = `Context: ${context}. `;
     user_content += `Question: ${question}. `;
@@ -69,12 +69,28 @@ export async function generateManyDistractors(number_of_distractors, context, qu
             while (distractors.length !== number_of_distractors) {
                 let response = await callLMStudio(system_content, user_content, 1000);
 
+                console.debug(`generateManyDistractors: response: ${response}`);
+
                 let potential_distractors = response.split('|')
-                    .filter(Boolean) // Remove undefined elements
-                    .filter(distractor => /[a-zA-Z]/.test(distractor)) // Remove empty strings
-                    .map(distractor => distractor.replace(/^[^\w\s]+|[^\w\s]+$/g, '')) // Remove leading and trailing punctuation
-                    .map(distractor => distractor.trim()) // Remove leading and trailing whitespace
-                    .filter(distractor => distractor.toLowerCase() !== answer.toLowerCase()); // Remove the answer
+                
+                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+
+                potential_distractors = potential_distractors.map(distractor => String(distractor)) // Convert to string
+                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+    
+                potential_distractors = potential_distractors.map(distractor => distractor.trim()) // Remove leading and trailing punctuation
+                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+    
+                potential_distractors = potential_distractors.filter(distractor => /[a-zA-Z+\-*/^()]/.test(distractor)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
+                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+    
+                potential_distractors = potential_distractors.map(distractor => distractor.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
+                potential_distractors = potential_distractors.map(distractor => /[a-zA-Z]/.test(distractor) ? distractor + "." : distractor); // Add a period to the end of each answer if it contains a text character
+                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+
+                potential_distractors = potential_distractors.filter(distractor => distractor !== answer); // Remove the true answer from the list of potential distractors
+                potential_distractors = potential_distractors.filter(distractor => !distractors.includes(distractor)); // Remove any distractors that have already been added to the list
+                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
                 if (potential_distractors.length > number_of_distractors) {
                     potential_distractors = potential_distractors.slice(0, number_of_distractors);
