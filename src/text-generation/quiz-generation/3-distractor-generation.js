@@ -47,7 +47,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string[]|string>} - An array of distractor answers or an error message if an error occurs.
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
-export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection = false, false_threshold = 1, relevence_threshold = 1) {
+export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection = false) {
     let system_content = `Given the context, generate exactly ${number_of_distractors + 2} FALSE distractor answers to the following question. `;
     system_content += `The true answer is "${answer}". Each distractor must be different from the true answer and from each other. Distractors should look similar to the answer in form. `;
     system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
@@ -104,7 +104,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
                 // let is_relevent_count = 0;
 
                 for (let distractor of distractors) {
-                    if (await judgeDistractorFalcity(question, distractor)) {
+                    if (await areDistractorsFalse(question, distractor)) {
                         is_false_count++;
                     }
 
@@ -113,7 +113,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
                     // }
                 }
 
-                if (is_false_count / number_of_distractors >= false_threshold /* && is_relevent_count / number_of_distractors >= relevence_threshold */) {
+                if (is_false_count = distractors.length() /* && is_false_count = distractors.length() */) {
                     break;
                 }
 
@@ -134,7 +134,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
 /* Hallucination Detection */
 /***************************/
 
-export async function areDistractorsFalse(question, distractor, temperature = 0.2) {
+export async function areDistractorsFalse(question, distractor) {
     let system_content = `Is the given answer a false distractor to the following question? `;
     system_content += `Output either YES or NO. `;
 
@@ -142,7 +142,7 @@ export async function areDistractorsFalse(question, distractor, temperature = 0.
     user_content += `Following question: ${question}. `;
 
     try {
-        let response = await callLMStudio(system_content, user_content, 2, temperature);
+        let response = await callLMStudio(system_content, user_content, 2, 0);
 
         if (response.toLowerCase().includes('yes')) {
             //console.debug(`✅ Hallucination Detection: Is Distractor False? : YES`);
@@ -160,33 +160,33 @@ export async function areDistractorsFalse(question, distractor, temperature = 0.
     }
 }
 
-export async function judgeDistractorFalcity(question, distractor, number_of_judges = 10, temperature = 0.2) {
-    let rulings = 0;
+// export async function judgeDistractorFalcity(question, distractor, number_of_judges = 10, temperature = 0.2) {
+//     let rulings = 0;
 
-    console.debug(`judgeDistractorFalcity: judging...`);
-    console.debug(`judgeDistractorFalcity: question: ${question}`);
-    console.debug(`judgeDistractorFalcity: distractor: ${distractor}`);
+//     console.debug(`judgeDistractorFalcity: judging...`);
+//     console.debug(`judgeDistractorFalcity: question: ${question}`);
+//     console.debug(`judgeDistractorFalcity: distractor: ${distractor}`);
 
-    for (let i = 0; i < number_of_judges; i++) {
-        let judge_response = await areDistractorsFalse(question, distractor, temperature);
+//     for (let i = 0; i < number_of_judges; i++) {
+//         let judge_response = await areDistractorsFalse(question, distractor, temperature);
 
-        console.debug(`judgeDistractorFalcity: judge_response_${i}: ${judge_response}`);
+//         console.debug(`judgeDistractorFalcity: judge_response_${i}: ${judge_response}`);
 
-        if (judge_response) {
-            rulings++;
-        }
-    }
+//         if (judge_response) {
+//             rulings++;
+//         }
+//     }
 
-    if (rulings > Math.ceil(number_of_judges / 2)) {
-        const final_ruling = true;
-    } else {
-        const final_ruling = false;
-    }
+//     if (rulings > Math.ceil(number_of_judges / 2)) {
+//         const final_ruling = true;
+//     } else {
+//         const final_ruling = false;
+//     }
 
-    console.debug(`judgeDistractorFalcity: final_ruling: ${final_ruling}`);
+//     console.debug(`judgeDistractorFalcity: final_ruling: ${final_ruling}`);
 
-    return final_ruling;
-}
+//     return final_ruling;
+// }
 
 // CODE NO LONGER IN USE
 // export async function areDistractorsRelevent(context, question, distractor) {

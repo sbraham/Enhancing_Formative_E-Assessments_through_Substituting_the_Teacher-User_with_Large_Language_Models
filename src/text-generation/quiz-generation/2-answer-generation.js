@@ -54,7 +54,7 @@ export async function generateAnswer(context, question, hallucination_detection 
             }
 
             /* Otherwise */
-            if (await judgeQuestionRelevence(question, answer)) {
+            if (await isAnswerCorrect(question, answer)) {
                 break;
             }
 
@@ -130,7 +130,7 @@ export async function generateAnswer(context, question, hallucination_detection 
 /* Hallucination Detection */
 /***************************/
 
-export async function isAnswerCorrect(question, answer, temperature = 0.2) {
+export async function isAnswerCorrect(question, answer) {
     let system_content = `Is the given answer the right answer to the following question? `;
     system_content += `Output either YES or NO. `;
 
@@ -138,7 +138,7 @@ export async function isAnswerCorrect(question, answer, temperature = 0.2) {
     user_content += `Following question: ${question}. `;
 
     try {
-        let response = await callLMStudio(system_content, user_content, 2, temperature);
+        let response = await callLMStudio(system_content, user_content, 2, 0);
 
         if (response.toLowerCase().includes('yes')) {
             // console.debug(`✅ Hallucination Detection: Is Answer Correct? : YES`);
@@ -157,30 +157,30 @@ export async function isAnswerCorrect(question, answer, temperature = 0.2) {
     }
 }
 
-export async function judgeQuestionRelevence(context, question, number_of_judges = 10, temperature = 0.2) {
-    let rulings = 0;
+// export async function judgeQuestionRelevence(context, question, number_of_judges = 10, temperature = 0.2) {
+//     let rulings = 0;
 
-    console.debug(`judgeGivenAnswer: judging...`);
-    console.debug(`judgeGivenAnswer: context: ${context}`);
-    console.debug(`judgeGivenAnswer: question: ${question}`);
+//     console.debug(`judgeGivenAnswer: judging...`);
+//     console.debug(`judgeGivenAnswer: context: ${context}`);
+//     console.debug(`judgeGivenAnswer: question: ${question}`);
     
-    for (let i = 0; i < number_of_judges; i++) {
-        let judge_response = await isAnswerCorrect(context, question, temperature);
+//     for (let i = 0; i < number_of_judges; i++) {
+//         let judge_response = await isAnswerCorrect(context, question, temperature);
 
-        console.debug(`judgeGivenAnswer: judge_response_${i}: ${judge_response}`);
+//         console.debug(`judgeGivenAnswer: judge_response_${i}: ${judge_response}`);
 
-        if (judge_response) {
-            rulings++;
-        }
-    }
+//         if (judge_response) {
+//             rulings++;
+//         }
+//     }
 
-    let final_ruling = false;
+//     let final_ruling = false;
 
-    if (rulings > Math.ceil(number_of_judges / 2)) {
-        final_ruling = true;
-    }
+//     if (rulings > Math.ceil(number_of_judges / 2)) {
+//         final_ruling = true;
+//     }
 
-    console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);
+//     console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);
 
-    return final_ruling;
-}
+//     return final_ruling;
+// }
