@@ -31,21 +31,20 @@ export async function generateAnswer(context, question, hallucination_detection 
             let response = await callLMStudio(system_content, user_content, 500);
 
             let potential_answers = response.split('|')
-
-            console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.map(answer => String(answer)) // Convert to string
-            console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.map(answer => answer.trim()) // Remove leading and trailing punctuation
-            console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.filter(answer => /[a-zA-Z+\-*/^()]/.test(answer)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
-            console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.map(answer => answer.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
             potential_answers = potential_answers.map(answer => /[a-zA-Z]/.test(answer) ? answer + "." : answer); // Add a period to the end of each answer if it contains a text character
-            console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             answer = potential_answers[0];
 

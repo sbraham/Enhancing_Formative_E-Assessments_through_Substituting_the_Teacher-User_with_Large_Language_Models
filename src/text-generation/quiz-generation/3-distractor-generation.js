@@ -69,28 +69,25 @@ export async function generateManyDistractors(number_of_distractors, context, qu
             while (distractors.length !== number_of_distractors) {
                 let response = await callLMStudio(system_content, user_content, 1000);
 
-                console.debug(`generateManyDistractors: response: ${response}`);
-
-                let potential_distractors = response.split('|')
-                
-                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                let potential_distractors = response.split('|');
+                //console.debug(`generateManyDistractors: response: ${response}`);
 
                 potential_distractors = potential_distractors.map(distractor => String(distractor)) // Convert to string
-                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
     
                 potential_distractors = potential_distractors.map(distractor => distractor.trim()) // Remove leading and trailing punctuation
-                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
     
                 potential_distractors = potential_distractors.filter(distractor => /[a-zA-Z+\-*/^()]/.test(distractor)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
-                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
     
                 potential_distractors = potential_distractors.map(distractor => distractor.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
                 potential_distractors = potential_distractors.map(distractor => /[a-zA-Z]/.test(distractor) ? distractor + "." : distractor); // Add a period to the end of each answer if it contains a text character
-                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
                 potential_distractors = potential_distractors.filter(distractor => distractor !== answer); // Remove the true answer from the list of potential distractors
                 potential_distractors = potential_distractors.filter(distractor => !distractors.includes(distractor)); // Remove any distractors that have already been added to the list
-                console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
                 if (potential_distractors.length > number_of_distractors) {
                     potential_distractors = potential_distractors.slice(0, number_of_distractors);

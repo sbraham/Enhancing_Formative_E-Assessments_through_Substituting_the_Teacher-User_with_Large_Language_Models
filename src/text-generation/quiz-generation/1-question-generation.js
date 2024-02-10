@@ -117,17 +117,16 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
                 let response = await callLMStudio(system_content, user_content, 1000);
 
                 let potential_questions = response.split('|')
-
-                console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+                //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
                 potential_questions = potential_questions.map(question => String(question)) // Convert to string
-                console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+                //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
                 potential_questions = potential_questions.map(question => question.trim()) // Remove leading and trailing punctuation
-                console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);            
+                //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);            
                 
                 potential_questions = potential_questions.filter(question => /[a-zA-Z]/.test(question)) // Remove strings that don't contain letters (including empty strings)
-                console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+                //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
                 if (potential_questions.length > number_of_questions) {
                     potential_questions = potential_questions.slice(0, number_of_questions);
