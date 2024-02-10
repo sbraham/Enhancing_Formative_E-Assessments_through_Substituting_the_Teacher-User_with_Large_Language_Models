@@ -25,15 +25,17 @@
             publicKey: "PnMnyYWLSXTnTQaYx",
         });
 
-        var templateParams = {
-            to_name: 'James',
-            from_name: 'Check this out!'
-        };
-
         function sendEmail() {
             event.preventDefault(); /* Prevents the default behaviour of the form */
 
             let message = document.getElementById('feedback_textarea').value;
+            let email = document.getElementById('email_input').value;
+
+            var templateParams = {
+                to_name: 'FormAtiveQuIz Team',
+                from_name: email,
+                message: message,
+            };
             
             if (message === '') {
                 alert('Please enter a message');
@@ -43,9 +45,13 @@
             emailjs.send('gmail', 'template_dgv5keo', templateParams).then(
                 (response) => {
                     console.log('EMAIL SUCCESS!', response.status, response.text);
+                    alert('Email sent successfully');
+                    document.getElementById('feedback_textarea').value = '';
+                    document.getElementById('email_input').value = '';
                 },
                 (error) => {
                     console.log('EMAIL FAILED...', error);
+                    alert('Email failed to send');
                 },
             );
         }
@@ -125,6 +131,14 @@
             </p>
 
             <form onsubmit="sendEmail()">
+                <!-- Email Input -->
+                <div class="mb-3">
+                    <label for="email_input" class="form-label">Email:</label>
+                    <input type="email" class="form-control" id="email_input" aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+
+                <!-- Feedback Text Area -->
                 <div class="mb-3">
                     <label for="feedback_textarea" class="form-label">Feedback:</label>
                     <textarea class="form-control" id="feedback_textarea" rows="3"></textarea>
