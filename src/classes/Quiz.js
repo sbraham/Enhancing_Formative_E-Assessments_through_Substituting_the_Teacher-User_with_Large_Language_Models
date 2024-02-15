@@ -1,5 +1,5 @@
 import { BatchSWQG } from '../text-generation/quiz-generation/quiz-generation.js';
-import { judgeGivenAnswer } from '../text-generation/verify-given-answer.js';
+import { isGivenQuestionCorrect } from '../text-generation/verify-given-answer.js';
 import { updateQuiz } from '../firebase/database-helper.js';
 
 /**
@@ -290,11 +290,11 @@ export class Quiz {
         }
 
         else if (this.quiz_type == 'short_answer') {
-            isCorrect = await judgeGivenAnswer(
+            isCorrect = await isGivenQuestionCorrect(
                 this._current_question.question, 
                 this._current_question.answer, 
                 given_answer, 
-                number_of_judges = 5)
+                number_of_attempts = 5)
         }
 
         /* Create an answer_object detailing the given answer */

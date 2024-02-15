@@ -11,7 +11,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string>} - The generated answer.
  * @throws {Error} - If an error occurs during the answer generation process.
  */
-export async function generateAnswer(context, question, hallucination_detection = false) {
+export async function generateAnswer(context, question, hallucination_detection = true) {
     let system_content = `Given the context, what is the TRUE answer to the following question?`;
     system_content += `Do not state in any way that the answer is true, or that it is the answer. `;
     system_content += `Only write the answer, do not write any examples or other possible answers. `;
@@ -61,6 +61,7 @@ export async function generateAnswer(context, question, hallucination_detection 
             /* If the answer is not correct, try again */
             if (i === 9) {
                 console.error(`generateAnswer: Too many failed attempts. Return empty string.`);
+                break;
             }
         }
 
