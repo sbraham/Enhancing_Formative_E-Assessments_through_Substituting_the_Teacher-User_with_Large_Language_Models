@@ -31,20 +31,20 @@ export async function generateAnswer(context, question, hallucination_detection 
             let response = await callLMStudio(system_content, user_content, 500);
 
             let potential_answers = response.split('|')
-            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.map(answer => String(answer)) // Convert to string
-            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.map(answer => answer.trim()) // Remove leading and trailing punctuation
-            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.filter(answer => /[a-zA-Z+\-*/^()]/.test(answer)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
-            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.map(answer => answer.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
             potential_answers = potential_answers.map(answer => /[a-zA-Z]/.test(answer) ? answer + "." : answer); // Add a period to the end of each answer if it contains a text character
-            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             answer = potential_answers[0];
 
@@ -60,7 +60,7 @@ export async function generateAnswer(context, question, hallucination_detection 
 
             /* If the answer is not correct, try again */
             if (i === 9) {
-                console.error(`generateAnswer: Too many failed attempts. Return empty string.`);
+                //build console.error(`generateAnswer: Too many failed attempts. Return empty string.`);
                 break;
             }
         }
@@ -69,7 +69,7 @@ export async function generateAnswer(context, question, hallucination_detection 
     }
 
     catch (error) {
-        console.error(`generateAnswer: error:`, error);
+        //build console.error(`generateAnswer: error:`, error);
         throw error;
     }
 }
@@ -142,18 +142,18 @@ export async function isAnswerCorrect(question, answer) {
         let response = await callLMStudio(system_content, user_content, 2, 0);
 
         if (response.toLowerCase().includes('yes')) {
-            // console.debug(`✅ Hallucination Detection: Is Answer Correct? : YES`);
+            // //build console.debug(`✅ Hallucination Detection: Is Answer Correct? : YES`);
             return true;
         } else if (response.toLowerCase().includes('no')) {
-            // console.debug(`❌ Hallucination Detection: Is Answer Correct? : NO`);
-            // console.debug(`Question: ${question}`);
-            // console.debug(`Answer: ${answer}`);
+            // //build console.debug(`❌ Hallucination Detection: Is Answer Correct? : NO`);
+            // //build console.debug(`Question: ${question}`);
+            // //build console.debug(`Answer: ${answer}`);
             return false;
         }
     }
 
     catch (error) {
-        console.error(`isAnswerCorrect: error:`, error);
+        //build console.error(`isAnswerCorrect: error:`, error);
         throw error;
     }
 }
@@ -161,14 +161,14 @@ export async function isAnswerCorrect(question, answer) {
 // export async function judgeQuestionRelevence(context, question, number_of_judges = 10, temperature = 0.2) {
 //     let rulings = 0;
 
-//     console.debug(`judgeGivenAnswer: judging...`);
-//     console.debug(`judgeGivenAnswer: context: ${context}`);
-//     console.debug(`judgeGivenAnswer: question: ${question}`);
+//     //build console.debug(`judgeGivenAnswer: judging...`);
+//     //build console.debug(`judgeGivenAnswer: context: ${context}`);
+//     //build console.debug(`judgeGivenAnswer: question: ${question}`);
     
 //     for (let i = 0; i < number_of_judges; i++) {
 //         let judge_response = await isAnswerCorrect(context, question, temperature);
 
-//         console.debug(`judgeGivenAnswer: judge_response_${i}: ${judge_response}`);
+//         //build console.debug(`judgeGivenAnswer: judge_response_${i}: ${judge_response}`);
 
 //         if (judge_response) {
 //             rulings++;
@@ -181,7 +181,7 @@ export async function isAnswerCorrect(question, answer) {
 //         final_ruling = true;
 //     }
 
-//     console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);
+//     //build console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);
 
 //     return final_ruling;
 // }

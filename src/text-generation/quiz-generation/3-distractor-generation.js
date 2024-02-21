@@ -70,24 +70,24 @@ export async function generateManyDistractors(number_of_distractors, context, qu
                 let response = await callLMStudio(system_content, user_content, 1000);
 
                 let potential_distractors = response.split('|');
-                //console.debug(`generateManyDistractors: response: ${response}`);
+                ////build console.debug(`generateManyDistractors: response: ${response}`);
 
                 potential_distractors = potential_distractors.map(distractor => String(distractor)) // Convert to string
-                //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
     
                 potential_distractors = potential_distractors.map(distractor => distractor.trim()) // Remove leading and trailing punctuation
-                //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
     
                 potential_distractors = potential_distractors.filter(distractor => /[a-zA-Z+\-*/^()]/.test(distractor)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
-                //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
     
                 potential_distractors = potential_distractors.map(distractor => distractor.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
                 potential_distractors = potential_distractors.map(distractor => /[a-zA-Z]/.test(distractor) ? distractor + "." : distractor); // Add a period to the end of each answer if it contains a text character
-                //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
                 potential_distractors = potential_distractors.filter(distractor => distractor !== answer); // Remove the true answer from the list of potential distractors
                 potential_distractors = potential_distractors.filter(distractor => !distractors.includes(distractor)); // Remove any distractors that have already been added to the list
-                //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+                ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
                 if (potential_distractors.length > number_of_distractors) {
                     potential_distractors = potential_distractors.slice(0, number_of_distractors);
@@ -126,7 +126,7 @@ export async function generateManyDistractors(number_of_distractors, context, qu
 
     } catch (error) {
         // Handle the error here
-        console.error(error);
+        //build console.error(error);
     }
 }
 
@@ -145,32 +145,32 @@ export async function areDistractorsFalse(question, distractor) {
         let response = await callLMStudio(system_content, user_content, 2, 0);
 
         if (response.toLowerCase().includes('yes')) {
-            //console.debug(`✅ Hallucination Detection: Is Distractor False? : YES`);
+            ////build console.debug(`✅ Hallucination Detection: Is Distractor False? : YES`);
             return true;
         } else if (response.toLowerCase().includes('no')) {
-            //console.debug(`❌ Hallucination Detection: Is Distractor False? : NO`);
-            //console.debug(`Question: ${question}`);
-            //console.debug(`Distractor: ${distractor}`);
+            ////build console.debug(`❌ Hallucination Detection: Is Distractor False? : NO`);
+            ////build console.debug(`Question: ${question}`);
+            ////build console.debug(`Distractor: ${distractor}`);
             return false;
         }
     }
 
     catch (error) {
-        console.error(error);
+        //build console.error(error);
     }
 }
 
 // export async function judgeDistractorFalcity(question, distractor, number_of_judges = 10, temperature = 0.2) {
 //     let rulings = 0;
 
-//     console.debug(`judgeDistractorFalcity: judging...`);
-//     console.debug(`judgeDistractorFalcity: question: ${question}`);
-//     console.debug(`judgeDistractorFalcity: distractor: ${distractor}`);
+//     //build console.debug(`judgeDistractorFalcity: judging...`);
+//     //build console.debug(`judgeDistractorFalcity: question: ${question}`);
+//     //build console.debug(`judgeDistractorFalcity: distractor: ${distractor}`);
 
 //     for (let i = 0; i < number_of_judges; i++) {
 //         let judge_response = await areDistractorsFalse(question, distractor, temperature);
 
-//         console.debug(`judgeDistractorFalcity: judge_response_${i}: ${judge_response}`);
+//         //build console.debug(`judgeDistractorFalcity: judge_response_${i}: ${judge_response}`);
 
 //         if (judge_response) {
 //             rulings++;
@@ -183,7 +183,7 @@ export async function areDistractorsFalse(question, distractor) {
 //         const final_ruling = false;
 //     }
 
-//     console.debug(`judgeDistractorFalcity: final_ruling: ${final_ruling}`);
+//     //build console.debug(`judgeDistractorFalcity: final_ruling: ${final_ruling}`);
 
 //     return final_ruling;
 // }
@@ -202,11 +202,11 @@ export async function areDistractorsFalse(question, distractor) {
 //         let response = await callLMStudio(system_content, user_content, 2);
 
 //         if (response.toLowerCase().includes('yes')) {
-//             console.debug(`✅ Hallucination Detection: Is Distractor Relevant? : YES`);
+//             //build console.debug(`✅ Hallucination Detection: Is Distractor Relevant? : YES`);
 //             return true;
 //         } else if (response.toLowerCase().includes('no')) {
-//             console.debug(`❌ Hallucination Detection: Is Distractor Relevant? : NO`);
-//             console.debug(`Distractor: ${distractor}`);
+//             //build console.debug(`❌ Hallucination Detection: Is Distractor Relevant? : NO`);
+//             //build console.debug(`Distractor: ${distractor}`);
 //             return false;
 //         }
 //     }

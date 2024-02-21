@@ -1,4 +1,4 @@
-console.log('Loading: firebase/database-helper.js');
+//build console.log('Loading: firebase/database-helper.js');
 
 /* Importing Firebase features */
 import { doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, query, collection } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js';
@@ -19,7 +19,7 @@ import { checkLogin } from './auth-helper.js';
  * @throws {Error} If there is an error retrieving the quizzes.
  */
 export async function getUserQuizzes() {
-    console.log(`getUserQuizzes: Retrieving the quizzes associated with the logged-in user from the database`);
+    //build console.log(`getUserQuizzes: Retrieving the quizzes associated with the logged-in user from the database`);
 
     const quizzes_data = [];
 
@@ -27,16 +27,16 @@ export async function getUserQuizzes() {
         const user = await checkLogin();
 
         if (user == null) {
-            console.warn(`getUserQuizzes: User is not logged in. Returning empty array.`);
+            //build console.warn(`getUserQuizzes: User is not logged in. Returning empty array.`);
             return quizzes_data;
         }
 
         /* Get all the quizzes associated with the user */
-        console.debug(`getDocs: awaiting response...`);
+        //build console.debug(`getDocs: awaiting response...`);
         const querySnapshot = await getDocs(query(
             collection(db, user)
         ));
-        console.log(`getDocs: received`);
+        //build console.log(`getDocs: received`);
 
         /* For each quiz, add it to the list of quizzes */
         querySnapshot.forEach((doc) => {
@@ -44,13 +44,13 @@ export async function getUserQuizzes() {
             quizzes_data.push(doc.data());
         });
 
-        console.log(`getUserQuizzes: Returning quizzes:`, quizzes_data);
+        //build console.log(`getUserQuizzes: Returning quizzes:`, quizzes_data);
 
         return quizzes_data;
     } 
             
     catch (error) {
-        console.error(`getUserQuizzes: error:`, error);
+        //build console.error(`getUserQuizzes: error:`, error);
         throw error;
     }
 }
@@ -64,7 +64,7 @@ export async function getUserQuizzes() {
  * @throws {Error} - If the user is not logged in, an error is thrown.
  */
 export async function addQuizToDB(quiz) {
-    console.log(`addQuizToDB: Adding a quiz to the database:`, quiz.title);
+    //build console.log(`addQuizToDB: Adding a quiz to the database:`, quiz.title);
 
     try {
         /* Get the user's id token */
@@ -75,11 +75,11 @@ export async function addQuizToDB(quiz) {
         }
 
         /* Save space in memory and save the docRef */
-        console.debug(`addDoc: awaiting response...`);
+        //build console.debug(`addDoc: awaiting response...`);
         const docRef = await addDoc(collection(db, user), {
             quiz: null
         });
-        console.debug(`addDoc: received`);
+        //build console.debug(`addDoc: received`);
 
         /* Add the quiz id to the quiz object */
         quiz.id = docRef.id;
@@ -88,22 +88,22 @@ export async function addQuizToDB(quiz) {
         const quiz_copy = JSON.parse(JSON.stringify(quiz));
 
         /* Add the quiz in the previous location in the Databse */
-        console.debug(`setDoc: awaiting response...`);
+        //build console.debug(`setDoc: awaiting response...`);
         await setDoc(doc(db, user, docRef.id), {
             quiz: quiz_copy
         });
-        console.debug(`setDoc: received`);
+        //build console.debug(`setDoc: received`);
 
     } 
             
     catch (error) {
-        console.error(`addQuizToDB: error:`, error);
+        //build console.error(`addQuizToDB: error:`, error);
         throw error;
     }
 }
 
 export async function updateQuiz(quiz) {
-    console.log(`updateQuiz: Updating the quiz in the database:`, quiz.id);
+    //build console.log(`updateQuiz: Updating the quiz in the database:`, quiz.id);
 
     /* Check if the quiz is valid */
     if (quiz.id == null) {
@@ -119,23 +119,23 @@ export async function updateQuiz(quiz) {
         }
 
         /* Get the quiz reference */
-        console.debug(`doc: awaiting response...`);
+        //build console.debug(`doc: awaiting response...`);
         const quiz_ref = doc(db, user, quiz.id);
-        console.debug(`doc: received`);
+        //build console.debug(`doc: received`);
 
         /* Make an unattached copy of the quiz, so changes to quiz don't effect this object */
         const quiz_copy = JSON.parse(JSON.stringify(quiz));
 
         /* Update the quiz in the database */
-        console.debug(`updateDoc: awaiting response...`);
+        //build console.debug(`updateDoc: awaiting response...`);
         await updateDoc(quiz_ref, {
             quiz: quiz_copy
         });
-        console.debug(`updateDoc: received`);
+        //build console.debug(`updateDoc: received`);
     } 
             
     catch (error) {
-        console.error(`updateQuiz: error:`, error);
+        //build console.error(`updateQuiz: error:`, error);
         throw error;
     }
 }
@@ -149,7 +149,7 @@ export async function updateQuiz(quiz) {
  * @throws {Error} - If the user is not logged in, an error is thrown.
  */
 export async function removeQuizFromDB(quiz) {
-    console.log(`removeQuizFromDB: Removing a quiz from the database:`, quiz.title);
+    //build console.log(`removeQuizFromDB: Removing a quiz from the database:`, quiz.title);
 
     try {
         /* Get the user's id token */
@@ -160,14 +160,14 @@ export async function removeQuizFromDB(quiz) {
         }
 
         /* Remove the quiz from the database */
-        console.debug(`deleteDoc: awaiting response...`);
+        //build console.debug(`deleteDoc: awaiting response...`);
         await deleteDoc(doc(db, user, quiz.id));
-        console.debug(`deleteDoc: received`);
+        //build console.debug(`deleteDoc: received`);
 
     } 
             
     catch (error) {
-        console.error(`removeQuizFromDB: error:`, error);
+        //build console.error(`removeQuizFromDB: error:`, error);
         throw error;
     }
 }
@@ -178,32 +178,32 @@ export async function removeQuizFromDB(quiz) {
  * @returns {Promise<Object|null>} - A promise that resolves to the quiz data if it exists, or null if it doesn't.
  */
 export async function getQuizById(quiz_id) {
-    console.log(`getQuizById: Retrieving a quiz by its ID from the Firebase database`);
+    //build console.log(`getQuizById: Retrieving a quiz by its ID from the Firebase database`);
 
     try {
         const user = await checkLogin();
 
         if (user == null) {
-            console.warn(`getQuizById: User is not logged in. Returning null.`);
+            //build console.warn(`getQuizById: User is not logged in. Returning null.`);
             return null;
         }
 
         /* Get all the quizzes associated with the user */
-        console.debug(`getDoc: awaiting response...`);
+        //build console.debug(`getDoc: awaiting response...`);
         const docSnap = await getDoc(doc(db, user, quiz_id));
-        console.debug(`getDoc: received`);
+        //build console.debug(`getDoc: received`);
 
         if (docSnap.exists()) {
             return docSnap.data();
         } else {
-            console.warn(`getQuizById: No such document. Returning null.`);
+            //build console.warn(`getQuizById: No such document. Returning null.`);
             return null;
         }
 
     } 
             
     catch (error) {
-        console.error(`getQuizById: error:`, error);
+        //build console.error(`getQuizById: error:`, error);
         throw error;
     }
 }

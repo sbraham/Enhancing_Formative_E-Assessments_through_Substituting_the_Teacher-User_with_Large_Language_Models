@@ -29,7 +29,7 @@ export async function isGivenQuestionCorrect(context, question, expected_answer,
         for (let i = 1; i <= number_of_attempts; i++) {
             response = await callLMStudio(system_content, user_content, 2, temperature);
 
-            //console.debug(`isGivenQuestionCorrect: response_${i}: ${response}`);
+            ////build console.debug(`isGivenQuestionCorrect: response_${i}: ${response}`);
 
             if (response.toLowerCase().includes('yes')) {
                 return true;
@@ -38,12 +38,12 @@ export async function isGivenQuestionCorrect(context, question, expected_answer,
             }
         }
 
-        console.error(`isGivenQuestionCorrect: Too many failed attempts. Return false.`);
+        //build console.error(`isGivenQuestionCorrect: Too many failed attempts. Return false.`);
         return false;
     } 
             
     catch (error) {
-        console.error(`isGivenQuestionCorrect: error:`, error);
+        //build console.error(`isGivenQuestionCorrect: error:`, error);
         throw error;
     }
 }
@@ -60,10 +60,10 @@ export async function isGivenQuestionCorrect(context, question, expected_answer,
 // export async function judgeGivenAnswer(question, expected_answer, given_answer, number_of_judges = 1, number_of_attempts = 10, temperature = 0.2) {    
 //     let rulings = 0;
 
-//     console.debug(`judgeGivenAnswer: judging...`);
-//     console.debug(`judgeGivenAnswer: question: ${question}`);
-//     console.debug(`judgeGivenAnswer: expected_answer: ${expected_answer}`);
-//     console.debug(`judgeGivenAnswer: given_answer: ${given_answer}`);
+//     //build console.debug(`judgeGivenAnswer: judging...`);
+//     //build console.debug(`judgeGivenAnswer: question: ${question}`);
+//     //build console.debug(`judgeGivenAnswer: expected_answer: ${expected_answer}`);
+//     //build console.debug(`judgeGivenAnswer: given_answer: ${given_answer}`);
     
 //     for (let i = 0; i < number_of_judges; i++) {
 //         let judge_response = await isGivenQuestionCorrect(question, expected_answer, given_answer, number_of_attempts, temperature);
@@ -79,7 +79,7 @@ export async function isGivenQuestionCorrect(context, question, expected_answer,
 //         const final_ruling = false;
 //     }
 
-//     console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);
+//     //build console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);
 
 //     return final_ruling;
 // }

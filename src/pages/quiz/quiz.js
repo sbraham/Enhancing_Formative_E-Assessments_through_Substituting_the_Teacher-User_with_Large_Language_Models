@@ -1,4 +1,4 @@
-console.log('Loading: quiz.js');
+//build console.log('Loading: quiz.js');
 
 import { getQuizById } from "../../firebase/database-helper.js";
 import { Quiz } from "../../classes/Quiz.js";
@@ -10,8 +10,8 @@ const quiz_form = document.getElementById('quiz_form');
 return_button.addEventListener('click', () => {
     /* Return to dashboard */
 
-    console.log('Redirecting to dashboard page...');
-    console.log('--------------------------------');
+    //build console.log('Redirecting to dashboard page...');
+    //build console.log('--------------------------------');
 
     const url = `../dashboard/dashboard.html`;
 
@@ -22,9 +22,9 @@ return_button.addEventListener('click', () => {
 const quiz_id = new URLSearchParams(window.location.search).get('quiz_id');
 
 /* Get quiz from database */
-console.debug(`getQuizById: awaiting...`);
+//build console.debug(`getQuizById: awaiting...`);
 const quiz_data = await getQuizById(quiz_id);
-console.debug(`quiz: getQuizById: returned`);
+//build console.debug(`quiz: getQuizById: returned`);
 
 /* Create quiz object */
 const quiz = Quiz.fromObject(quiz_data.quiz);
@@ -71,7 +71,7 @@ quiz_form.addEventListener('submit', async (event) => {
     } 
             
     catch (error) {
-        console.error(`quiz_form: error:`, error);
+        //build console.error(`quiz_form: error:`, error);
         throw error;
     }
 });

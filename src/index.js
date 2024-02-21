@@ -1,4 +1,4 @@
-console.log(`Loading: index.js`);
+//build console.log(`Loading: index.js`);
 
 /* Importing Firebase helper functions from setup file */
 import { logout, checkLoginOnFrame } from "./firebase/auth-helper.js";
@@ -14,40 +14,40 @@ await checkLoginOnFrame(main);
 
 /* Adding event listeners to buttons */
 dashboard_button.addEventListener("click", async () => {
-    console.log('dashboard_button clicked');
+    //build console.log('dashboard_button clicked');
 
-    console.log('Redirecting to dashboard...');
-    console.log('--------------------------------');
+    //build console.log('Redirecting to dashboard...');
+    //build console.log('--------------------------------');
 
     main.src = "./pages/dashboard/dashboard.html";
 });
 
 progress_button.addEventListener("click", async () => {
-    console.log('progress_button clicked');
+    //build console.log('progress_button clicked');
 
-    console.log('Redirecting to progress...');
-    console.log('--------------------------------');
+    //build console.log('Redirecting to progress...');
+    //build console.log('--------------------------------');
 
     main.src = "./pages/progress/progress.html";
 });
 
 account_button.addEventListener("click", async () => {
-    console.log(`account_button clicked`);
+    //build console.log(`account_button clicked`);
 
-    console.log(`Loggin out...`);
+    //build console.log(`Loggin out...`);
     await logout();
 
-    console.log('Redirecting to login...');
-    console.log('--------------------------------');
+    //build console.log('Redirecting to login...');
+    //build console.log('--------------------------------');
     
     main.src = "./pages/login/login.html";
 });
 
 info_button.addEventListener("click", async () => {
-    console.log('info_button clicked');
+    //build console.log('info_button clicked');
 
-    console.log('Redirecting to info...');
-    console.log('--------------------------------');
+    //build console.log('Redirecting to info...');
+    //build console.log('--------------------------------');
 
     main.src = "./pages/info/info.html";
 });

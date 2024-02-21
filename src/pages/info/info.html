@@ -44,13 +44,13 @@
 
             emailjs.send('gmail', 'template_dgv5keo', templateParams).then(
                 (response) => {
-                    console.log('EMAIL SUCCESS!', response.status, response.text);
+                    //build console.log('EMAIL SUCCESS!', response.status, response.text);
                     alert('Email sent successfully');
                     document.getElementById('feedback_textarea').value = '';
                     document.getElementById('email_input').value = '';
                 },
                 (error) => {
-                    console.log('EMAIL FAILED...', error);
+                    //build console.log('EMAIL FAILED...', error);
                     alert('Email failed to send');
                 },
             );

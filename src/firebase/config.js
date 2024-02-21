@@ -1,4 +1,4 @@
-console.log("Loading: firebase/config.js");
+//build console.log("Loading: firebase/config.js");
 
 /* Importing Firebase SDK from the CDN (Content Delivery Network) */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js';

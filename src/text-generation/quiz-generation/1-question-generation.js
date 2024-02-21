@@ -64,7 +64,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
 
 //             /* If the question is not relevant, try again */
 //             if (i === 9) {
-//                 console.error(`generateOneQuestion: Too many failed attempts. Return empty string.`);
+//                 //build console.error(`generateOneQuestion: Too many failed attempts. Return empty string.`);
 //             }
 //         }
 
@@ -117,16 +117,16 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
                 let response = await callLMStudio(system_content, user_content, 1000);
 
                 let potential_questions = response.split('|')
-                //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+                ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
                 potential_questions = potential_questions.map(question => String(question)) // Convert to string
-                //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+                ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
                 potential_questions = potential_questions.map(question => question.trim()) // Remove leading and trailing punctuation
-                //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);            
+                ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);            
                 
                 potential_questions = potential_questions.filter(question => /[a-zA-Z]/.test(question)) // Remove strings that don't contain letters (including empty strings)
-                //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+                ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
                 if (potential_questions.length > number_of_questions) {
                     potential_questions = potential_questions.slice(0, number_of_questions);
@@ -159,7 +159,7 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
         return questions;
 
     } catch (error) {
-        console.error(`generateManyQuestions: error:`, error);
+        //build console.error(`generateManyQuestions: error:`, error);
         throw error;
     }
 }
@@ -181,11 +181,11 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
 //         let response = await callLMStudio(system_content, user_content, 2);
 
 //         if (response.toLowerCase().includes('yes')) {
-//             console.debug(`✅ Hallucination Detection: Is Question Relevant? : YES`);
+//             //build console.debug(`✅ Hallucination Detection: Is Question Relevant? : YES`);
 //             return true;
 //         } else if (response.toLowerCase().includes('no')) {
-//             console.debug(`❌ Hallucination Detection: Is Question Relevant? : NO`);
-//             console.debug(`Question: ${question}`);
+//             //build console.debug(`❌ Hallucination Detection: Is Question Relevant? : NO`);
+//             //build console.debug(`Question: ${question}`);
 //             return false;
 //         }
 //     }

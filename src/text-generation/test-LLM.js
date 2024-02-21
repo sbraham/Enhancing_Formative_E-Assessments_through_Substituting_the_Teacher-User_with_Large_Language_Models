@@ -1,4 +1,4 @@
-console.log('Loading: test-LLM.js');
+//build console.log('Loading: test-LLM.js');
 
 /* Imports */
 import { BatchSWQG } from "../text-generation/quiz-generation/quiz-generation.js";
@@ -104,7 +104,7 @@ if (is_batch) {
     data += "\n";
     data += "-------------------------\n";
 
-    console.log(data);
+    //build console.log(data);
 
 }
 
@@ -116,9 +116,9 @@ if (is_question_evaluation) {
 
     for (const context of contexts_for_quiz_questions) {
         quiz_1 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`);
-        console.log(quiz_1);
+        //build console.log(quiz_1);
         quiz_2 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`);
-        console.log(quiz_2);
+        //build console.log(quiz_2);
 
         let merged_questions = quiz_1.concat(quiz_2);
 
@@ -130,7 +130,7 @@ if (is_question_evaluation) {
         quiz = quiz.concat(merged_questions);
     }
 
-    console.log(quiz);
+    //build console.log(quiz);
 
     quiz = shuffleArray(quiz);
 
@@ -145,7 +145,7 @@ if (is_question_evaluation) {
         quizzes.push(quiz_slice);
     }
 
-    console.log(quizzes);
+    //build console.log(quizzes);
 
     quizzes.forEach(quiz => {
         quiz.sort((a, b) => a.index - b.index);
@@ -173,7 +173,7 @@ if (is_question_evaluation) {
         data += "-------------------------\n";
     });
 
-    console.log(data);
+    //build console.log(data);
 }
 
 if (is_write_answer_evaluation) {
@@ -456,7 +456,7 @@ if (is_write_answer_evaluation) {
             given_answer_key++;        
         }
 
-        console.log(answer_results);
+        //build console.log(answer_results);
         question_results.push(answer_results);
     }
 
@@ -469,7 +469,7 @@ if (is_write_answer_evaluation) {
                 sum += result;
             }
             
-            console.log(`Question ${i}: ${a_results} : ${sum}`);
+            //build console.log(`Question ${i}: ${a_results} : ${sum}`);
         }
     }
 }
