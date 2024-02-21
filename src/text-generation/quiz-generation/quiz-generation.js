@@ -1,4 +1,4 @@
-import { Timer} from "../../classes/timer.js";
+import { Timer} from "./../../classes/Timer.js"
 import { generateManyQuestions } from "./1-question-generation.js";
 import { generateAnswer } from "./2-answer-generation.js";
 import { generateManyDistractors } from "./3-distractor-generation.js";
