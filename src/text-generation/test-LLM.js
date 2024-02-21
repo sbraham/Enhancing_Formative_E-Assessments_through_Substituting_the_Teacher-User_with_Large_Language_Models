@@ -186,9 +186,9 @@ if (is_write_answer_evaluation) {
             "answer": `A sequence of instructions written in a formal language that a computer can interpret and execute.`,
             "given_answers": [
                 "A sequence of instructions written in a formal language that a computer can interpret and execute.",
-                "A sequence of instructions written in an informal language that a computer can interpret and execute.",
-                "A collection of algorithms designed to solve specific problems.",
-                "A set of data types used in a programming language.",
+                "A formalised way of writing algorithms.",
+                "a programming language.",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
             ]
         },
         {
@@ -197,9 +197,9 @@ if (is_write_answer_evaluation) {
             "answer": `Pair Production.`,
             "given_answers": [
                 "Pair Production.",
-                "Pair Creation.",
+                "The process is called Pair Production.",
                 "Particle Transmutation.",
-                "Photon Emission.",
+                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
             ]
         },
         {
@@ -208,9 +208,9 @@ if (is_write_answer_evaluation) {
             "answer": `Compiler is a computer program that translates source code written in one programming language into another programming language or machine code.`,
             "given_answers": [
                 "Compiler is a computer program that translates source code written in one programming language into another programming language or machine code.",
-                "A computer program used to interpret source code directly without translation.",
+                "A program that compliles high level language into machine code.",
                 "An application for organizing and managing files on a computer system.",
-                "A tool that assists in debugging of programming codes.",
+                "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
             ]
         },
         {
@@ -219,9 +219,9 @@ if (is_write_answer_evaluation) {
             "answer": `Macbeth.`,
             "given_answers": [
                 "Macbeth.",
-                "MacDuff.",
+                "Lord Macbeth, the Thane of Glamis.",
                 "Lady Macbeth.",
-                "Banquo.",
+                "Kermit the Frog.",
             ]
         },
         {
@@ -230,9 +230,9 @@ if (is_write_answer_evaluation) {
             "answer": `Existentialist philosopher and writer.`,
             "given_answers": [
                 "Existentialist philosopher and writer.",
-                "Psychologist.",
-                "Mathematician.",
-                "Politician.",
+                "A French Philosopher.",
+                "A German Writer.",
+                "The tragedy begins amid a bloody civil war in Scotland."
             ]
         },
         {
@@ -241,9 +241,9 @@ if (is_write_answer_evaluation) {
             "answer": `English Premier League.`,
             "given_answers": [
                 "English Premier League.",
-                "National Football League (NFL).",
-                "La Liga.",
+                "The Premier League.",
                 "Bundesliga.",
+                "The Beatles.",
             ]
         },
         {
@@ -252,9 +252,9 @@ if (is_write_answer_evaluation) {
             "answer": `Queen.`,
             "given_answers": [
                 "Queen.",
-                "The Beatles.",
-                "Led Zeppelin.",
-                "Pink Floyd.",
+                "The Band, Queen.",
+                "An English rock band.",
+                "The British Parliamentary System.",
             ]
         },
        {
@@ -263,9 +263,9 @@ if (is_write_answer_evaluation) {
             "answer": `Queen.`,
             "given_answers": [
                 "Queen.",
-                "Led Zeppelin.",
-                "Pink Floyd.",
-                "The Rolling Stones.",
+                "The Band, Queen.",
+                "An English rock band.",
+                "qwertyuiopasdfghjklzxcvbnm.",
             ]
         },
        {
@@ -274,9 +274,9 @@ if (is_write_answer_evaluation) {
             "answer": `A collection of data items that are organized in a specific way to enable efficient access and manipulation.`,
             "given_answers": [
                 "A collection of data items that are organized in a specific way to enable efficient access and manipulation.",
-                "A collection of data items that are organized in an unspecified way.",
-                "A set of rules to manage data processing.",
-                "A method for storing and retrieving information.",
+                "A formalised way of storing data that assists in traveral and data manipulation.",
+                "A stack, queue or tree.",
+                "The fitness grand pacer test is a multi-stage aerobic capacity test that progressively gets more difficult as it continues.",
             ]
         },
        {
@@ -285,9 +285,9 @@ if (is_write_answer_evaluation) {
             "answer": `Thane of Glamis.`,
             "given_answers": [
                 "Thane of Glamis.",
-                "Thane of Fife.",
-                "Thane of Cawdor.",
-                "Duke of York.",
+                "He was the thane of glamis.",
+                "he was a soldier working for gladice.",
+                "Macbeth dies at the end.",
             ]
         },
        {
@@ -296,9 +296,9 @@ if (is_write_answer_evaluation) {
             "answer": `N_electron.`,
             "given_answers": [
                 "N_electron.",
-                "N_proton.",
-                "N_nucleon.",
-                "orbital_angular_momentum.",
+                "The quantum number that represents the energy level of an electron in a hydrogen atom is called the principal quantum number, often denoted by the symbol 'n'.",
+                "N",
+                "qwertyuiopasdfghjklzxcvbnm.",
             ]
         },
        {
@@ -317,9 +317,9 @@ if (is_write_answer_evaluation) {
             "answer": `Fortified towns.`,
             "given_answers": [
                 "Fortified towns.",
-                "Fortified towns in Roman Britain.",
+                "An Anglo-Saxon fortification.",
                 "Farming communities.",
-                "Stone walls.",
+                "qwertyuiopasdfghjklzxcvbnm.",
             ]
         },
        {
@@ -328,9 +328,9 @@ if (is_write_answer_evaluation) {
             "answer": `Rolling Stones.`,
             "given_answers": [
                 "Rolling Stones.",
-                "Led Zeppelin.",
-                "Pink Floyd.",
-                "Queen.",
+                "Rolling Stones",
+                "The Rocks in Motion.",
+                "poiuytrewqalkjuhygtfrdsamnbhgvfcxz.",
             ]
         },
        {
@@ -339,9 +339,9 @@ if (is_write_answer_evaluation) {
             "answer": `Manchester City.`,
             "given_answers": [
                 "Manchester City.",
-                "Brighton & Hove Albion.",
-                "Chelsea.",
-                "Liverpool.",
+                "Manchester City",
+                "Manchester.",
+                "qazwsxedcrfvtgbyuhnuijmikolp.",
             ]
         },
        {
@@ -350,9 +350,9 @@ if (is_write_answer_evaluation) {
             "answer": `A tool used to identify and fix errors in code.`,
             "given_answers": [
                 "A tool used to identify and fix errors in code.",
-                "A tool used to optimize code performance.",
-                "A type of software testing tool.",
-                "A method for designing algorithms.",
+                "Something that helps you fix code.",
+                "A fly swatter can remove bugs.",
+                "plokmoikjmnijuhnbuyhgbvtgfcrfdxeswasq.",
             ]
         },
        {
@@ -361,9 +361,9 @@ if (is_write_answer_evaluation) {
             "answer": `Søren Kierkegaard.`,
             "given_answers": [
                 "Søren Kierkegaard.",
-                "Jean-Paul Sartre.",
+                "Kierkegaard",
                 "Friedrich Nietzsche.",
-                "Simone de Beauvoir.",
+                "qewretrytuyiuoipadsfdgfhgjhkjlzxxccvvbbnnmm.",
             ]
         },
        {
@@ -380,9 +380,9 @@ if (is_write_answer_evaluation) {
             "answer": `Winter.`,
             "given_answers": [
                 "Winter.",
-                "Autumn.",
-                "Spring.",
-                "Summer.",
+                "winter holidays",
+                "Active Holidays.",
+                "1234567890.",
             ]
         },
         {
@@ -391,9 +391,9 @@ if (is_write_answer_evaluation) {
             "answer": `The Rolling Stones.`,
             "given_answers": [
                 "The Rolling Stones.",
-                "Led Zeppelin.",
+                "Rolling Stones",
                 "Pink Floyd.",
-                "Queen.",
+                "0987654321.",
             ]
         },
        {
@@ -402,9 +402,9 @@ if (is_write_answer_evaluation) {
             "answer": `The top tier of English football.`,
             "given_answers": [
                 "The top tier of English football.",
-                "The Championship.",
+                "It's the biggest football competition in England.",
                 "The FA Cup.",
-                "The UEFA Champions League.",
+                "564783929201.",
             ]
         },
        {
@@ -413,9 +413,9 @@ if (is_write_answer_evaluation) {
             "answer": `Scotland.`,
             "given_answers": [
                 "Scotland.",
-                "Ireland.",
-                "England.",
-                "Wales.",
+                "The Scottish Highlands.",
+                "The globe theater.",
+                "Under the sea.",
             ]
         },
     ]
@@ -433,25 +433,23 @@ if (is_write_answer_evaluation) {
         for (const given_answer of question.given_answers) {
 
             // Check it 5 times
-            for (let i = 1; i <= 5; i++) {
-                let response = await isGivenQuestionCorrect(question.context, question.question, question.answer, given_answer, 10, 0);
-                
-                if (given_answer_key === 1 || given_answer_key === 2) {
-                    if (response) {
-                        // True Positive
-                        answer_results.push(1);
-                    } else {
-                        // False Negative
-                        answer_results.push(0);
-                    }
+            let response = await isGivenQuestionCorrect(question.context, question.question, question.answer, given_answer, 10, 0);
+            
+            if (given_answer_key === 1 || given_answer_key === 2) {
+                if (response) {
+                    // True Positive
+                    answer_results.push(1);
                 } else {
-                    if (response) {
-                        // False Positive
-                        answer_results.push(0);
-                    } else {
-                        // True Negative
-                        answer_results.push(1);
-                    }
+                    // False Negative
+                    answer_results.push(0);
+                }
+            } else {
+                if (response) {
+                    // False Positive
+                    answer_results.push(0);
+                } else {
+                    // True Negative
+                    answer_results.push(1);
                 }
             }
 
