@@ -48,58 +48,22 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
 export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection = true) {
-    let system_content = `Given the context, generate exactly ${number_of_distractors + 2} FALSE distractor answers to the following question. `;
-    system_content += `The true answer is "${answer}". Each distractor must be different from the true answer and from each other. Distractors should look similar to the answer in form. `;
-    system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
-    
-    system_content += `Format the distractors as a list, separated by bars "|". `;
-    system_content += `For example, if the question was "What is the capital of France?", `;
-    system_content += `a valid response might be "|Lyon|Berlin|London|Madrid|". `;
-    system_content += `Do not number the distractors. `;
-
-    let user_content = `Context: ${context}. `;
-    user_content += `Question: ${question}. `;
-
     try {
+        let attempts = 5
         let distractors = [];
 
-        for (let i = 0; i < 10; i++) {
-
+        for (let i = 0; i < attempts; i++) {
             /* Generate all distractors */
-            while (distractors.length !== number_of_distractors) {
-                let response = await callLMStudio(system_content, user_content, 1000);
-
-                let potential_distractors = response.split('|');
-                ////build console.debug(`generateManyDistractors: response: ${response}`);
-
-                potential_distractors = potential_distractors.map(distractor => String(distractor)) // Convert to string
-                ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
-    
-                potential_distractors = potential_distractors.map(distractor => distractor.trim()) // Remove leading and trailing punctuation
-                ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
-    
-                potential_distractors = potential_distractors.filter(distractor => /[a-zA-Z+\-*/^()]/.test(distractor)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
-                ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
-    
-                potential_distractors = potential_distractors.map(distractor => distractor.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
-                potential_distractors = potential_distractors.map(distractor => /[a-zA-Z]/.test(distractor) ? distractor + "." : distractor); // Add a period to the end of each answer if it contains a text character
-                ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
-
-                potential_distractors = potential_distractors.filter(distractor => distractor !== answer); // Remove the true answer from the list of potential distractors
-                potential_distractors = potential_distractors.filter(distractor => !distractors.includes(distractor)); // Remove any distractors that have already been added to the list
-                ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
-
-                if (potential_distractors.length > number_of_distractors) {
-                    potential_distractors = potential_distractors.slice(0, number_of_distractors);
-                }
-
-                distractors = potential_distractors;
-            }
+            let response = await prompDistractors(number_of_distractors, context, question, answer);
+            distractors = response;
 
             /* Hallucination Detection */
             if (!hallucination_detection) {
                 break;
-            } else {
+            } 
+            
+            /* Otherwise */
+            else {
                 let is_false_count = 0;
                 // let is_relevent_count = 0;
 
@@ -126,7 +90,63 @@ export async function generateManyDistractors(number_of_distractors, context, qu
 
     } catch (error) {
         // Handle the error here
-        //build console.error(error);
+        console.error(error);
+    }
+}
+
+/*****************************/
+/* Currated LM Studio Prompt */
+/*****************************/
+
+export async function prompDistractors(number_of_distractors, context, question, answer) {
+    let system_content = `Given the context, generate exactly ${number_of_distractors + 2} FALSE distractor answers to the following question. `;
+    system_content += `The true answer is "${answer}". Each distractor must be different from the true answer and from each other. Distractors should look similar to the answer in form. `;
+    system_content += `Do not state in any way that the answer is false, or that it is a distractor. `;
+    
+    system_content += `Format the distractors as a list, separated by bars "|". `;
+    system_content += `For example, if the question was "What is the capital of France?", `;
+    system_content += `a valid response might be "|Lyon|Berlin|London|Madrid|". `;
+    system_content += `Do not number the distractors. `;
+
+    let user_content = `Context: ${context}. `;
+    user_content += `Question: ${question}. `;
+
+    try {
+        let distractors = [];
+
+        /* Generate all distractors */
+        while (distractors.length !== number_of_distractors) {
+            let response = await callLMStudio(system_content, user_content, 1000);
+
+            let potential_distractors = response.split('|');
+            ////build console.debug(`generateManyDistractors: response: ${response}`);
+
+            potential_distractors = potential_distractors.map(distractor => String(distractor)) // Convert to string
+            ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+
+            potential_distractors = potential_distractors.map(distractor => distractor.trim()) // Remove leading and trailing punctuation
+            ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+
+            potential_distractors = potential_distractors.filter(distractor => /[a-zA-Z+\-*/^()]/.test(distractor)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
+            ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+
+            potential_distractors = potential_distractors.map(distractor => distractor.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
+            potential_distractors = potential_distractors.map(distractor => /[a-zA-Z]/.test(distractor) ? distractor + "." : distractor); // Add a period to the end of each answer if it contains a text character
+            ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+
+            potential_distractors = potential_distractors.filter(distractor => distractor !== answer); // Remove the true answer from the list of potential distractors
+            potential_distractors = potential_distractors.filter(distractor => !distractors.includes(distractor)); // Remove any distractors that have already been added to the list
+            ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+
+            if (potential_distractors.length > number_of_distractors) {
+                potential_distractors = potential_distractors.slice(0, number_of_distractors);
+            }
+
+            distractors = potential_distractors;
+        }
+    } catch (error) {
+        // Handle the error here
+        console.error(error);
     }
 }
 
@@ -156,7 +176,7 @@ export async function areDistractorsFalse(question, distractor) {
     }
 
     catch (error) {
-        //build console.error(error);
+        console.error(error);
     }
 }
 

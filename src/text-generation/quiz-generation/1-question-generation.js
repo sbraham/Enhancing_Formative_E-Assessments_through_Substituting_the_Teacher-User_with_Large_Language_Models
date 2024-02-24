@@ -87,7 +87,49 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string[]>} - An array of generated questions.
  * @throws {Error} - If an error occurs during the question generation process.
  */
-export async function generateManyQuestions(number_of_questions, context = ``, hallucination_detection = false, relevence_threshold = 0.75) {
+export async function generateManyQuestions(number_of_questions, context, hallucination_detection = true, relevence_threshold = 0.80) {
+    try {
+        let attempts = 5;
+        let questions = [];
+
+        for (let i = 0; i < attempts; i++) {
+            /* Generate all questions */
+            let response = await promptQuestions(number_of_questions, context);
+            questions = response;
+
+            /* Hallucination Detection */
+            if (!hallucination_detection) {
+                break;
+            }
+
+            /* Otherwise */
+            let relevant_questions = 0;
+            for (let question of questions) {
+                if (await isQuestionRelevent(context, question)) {
+                    relevant_questions++;
+                }
+            }
+
+            if (relevant_questions / number_of_questions >= relevence_threshold) {
+                break;
+            }
+        }
+
+        return questions;
+    } 
+    
+    catch (error) {
+        console.error(error);
+    }
+
+}
+
+/*****************************/
+/* Currated LM Studio Prompt */
+/*****************************/
+
+export async function promptQuestions(number_of_questions, context) {
+    let number_of_questions = Number(number_of_questions);
     let system_content = ``;
 
     if (number_of_questions > 1) {
@@ -108,62 +150,36 @@ export async function generateManyQuestions(number_of_questions, context = ``, h
 
     try {
         let questions = [];
-        number_of_questions = Number(number_of_questions);
 
-        for (let i = 0; i < 10; i++) {
+        /* Generate all questions */
+        while (questions.length !== number_of_questions) {
+            let response = await callLMStudio(system_content, user_content, 1000);
 
-            /* Generate all questions */
-            while (questions.length !== number_of_questions) {
-                let response = await callLMStudio(system_content, user_content, 1000);
+            let potential_questions = response.split('|')
+            ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
-                let potential_questions = response.split('|')
-                ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+            potential_questions = potential_questions.map(question => String(question)) // Convert to string
+            ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
-                potential_questions = potential_questions.map(question => String(question)) // Convert to string
-                ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+            potential_questions = potential_questions.map(question => question.trim()) // Remove leading and trailing punctuation
+            ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);            
+            
+            potential_questions = potential_questions.filter(question => /[a-zA-Z]/.test(question)) // Remove strings that don't contain letters (including empty strings)
+            ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
-                potential_questions = potential_questions.map(question => question.trim()) // Remove leading and trailing punctuation
-                ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);            
-                
-                potential_questions = potential_questions.filter(question => /[a-zA-Z]/.test(question)) // Remove strings that don't contain letters (including empty strings)
-                ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
-
-                if (potential_questions.length > number_of_questions) {
-                    potential_questions = potential_questions.slice(0, number_of_questions);
-                }
-
-                questions = potential_questions;
+            if (potential_questions.length > number_of_questions) {
+                potential_questions = potential_questions.slice(0, number_of_questions);
             }
 
-            /* Hallucination Detection */
-            if (true) {
-                break;
-            } else {
-                // let is_relevent_count = 0;
-
-                // for (let question of questions) {
-                //     if (await isQuestionRelevent(context, question)) {
-                //         is_relevent_count++;
-                //     }
-                // }
-
-                // if (is_relevent_count / number_of_questions >= relevence_threshold) {
-                //     break;
-                // }
-
-                // /* Otherwise */
-                // /* If the question is not correct, try again */
-            }
+            questions = potential_questions;
         }
 
         return questions;
 
     } catch (error) {
-        //build console.error(`generateManyQuestions: error:`, error);
-        throw error;
+        console.error(`generateManyQuestions: error:`, error);
     }
 }
-
 
 /***************************/
 /* Hallucination Detection */

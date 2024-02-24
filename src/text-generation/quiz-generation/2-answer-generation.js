@@ -12,41 +12,14 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @throws {Error} - If an error occurs during the answer generation process.
  */
 export async function generateAnswer(context, question, hallucination_detection = true) {
-    let system_content = `Given the context, what is the TRUE answer to the following question?`;
-    system_content += `Do not state in any way that the answer is true, or that it is the answer. `;
-    system_content += `Only write the answer, do not write any examples or other possible answers. `;
-
-    system_content += `Start and end the answer with a | character. `;
-    system_content += `For example, for the question "What is the capital of France?",  `;
-    system_content += `The output would be, "| Paris |". `;
-
-    let user_content = `Context: ${context}. `;
-    user_content += `Question: ${question}. `;
-
     try {
+        let attempts = 5;
         let answer = '';
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < attempts; i++) {
             /* Generate an answer */
-            let response = await callLMStudio(system_content, user_content, 500);
-
-            let potential_answers = response.split('|')
-            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
-
-            potential_answers = potential_answers.map(answer => String(answer)) // Convert to string
-            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
-
-            potential_answers = potential_answers.map(answer => answer.trim()) // Remove leading and trailing punctuation
-            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
-
-            potential_answers = potential_answers.filter(answer => /[a-zA-Z+\-*/^()]/.test(answer)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
-            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
-
-            potential_answers = potential_answers.map(answer => answer.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
-            potential_answers = potential_answers.map(answer => /[a-zA-Z]/.test(answer) ? answer + "." : answer); // Add a period to the end of each answer if it contains a text character
-            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
-
-            answer = potential_answers[0];
+            let response = await promptAnswers(context, question);
+            answer = response;
 
             /* Hallucination Detection */
             if (!hallucination_detection) {
@@ -57,20 +30,14 @@ export async function generateAnswer(context, question, hallucination_detection 
             if (await isAnswerCorrect(question, answer)) {
                 break;
             }
-
-            /* If the answer is not correct, try again */
-            if (i === 9) {
-                //build console.error(`generateAnswer: Too many failed attempts. Return empty string.`);
-                break;
-            }
         }
 
         return answer;
     }
 
     catch (error) {
-        //build console.error(`generateAnswer: error:`, error);
-        throw error;
+        // Express error
+        console.error(error);
     }
 }
 
@@ -126,6 +93,58 @@ export async function generateAnswer(context, question, hallucination_detection 
 //         throw error;
 //     }
 // }
+
+/*****************************/
+/* Currated LM Studio Prompt */
+/*****************************/
+
+export async function promptAnswers(context, question) {
+    let system_content = `Given the context, what is the TRUE answer to the following question?`;
+    system_content += `Do not state in any way that the answer is true, or that it is the answer. `;
+    system_content += `Only write the answer, do not write any examples or other possible answers. `;
+
+    system_content += `Start and end the answer with a | character. `;
+    system_content += `For example, for the question "What is the capital of France?",  `;
+    system_content += `The output would be, "| Paris |". `;
+
+    let user_content = `Context: ${context}. `;
+    user_content += `Question: ${question}. `;
+
+    try {
+        let answer = '';
+
+        for (let i = 0; i < 10; i++) {
+            /* Generate an answer */
+            let response = await callLMStudio(system_content, user_content, 500);
+
+            let potential_answers = response.split('|')
+            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+
+            potential_answers = potential_answers.map(answer => String(answer)) // Convert to string
+            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+
+            potential_answers = potential_answers.map(answer => answer.trim()) // Remove leading and trailing punctuation
+            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+
+            potential_answers = potential_answers.filter(answer => /[a-zA-Z+\-*/^()]/.test(answer)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
+            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+
+            potential_answers = potential_answers.map(answer => answer.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
+            potential_answers = potential_answers.map(answer => /[a-zA-Z]/.test(answer) ? answer + "." : answer); // Add a period to the end of each answer if it contains a text character
+            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+
+            answer = potential_answers[0];
+        }
+
+        return answer;
+    }
+
+    catch (error) {
+        //build console.error(`generateAnswer: error:`, error);
+        console.error(error);
+    }
+}
+
 
 /***************************/
 /* Hallucination Detection */
