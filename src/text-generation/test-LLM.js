@@ -116,9 +116,9 @@ if (is_question_evaluation) {
     let i = 1;
 
     for (const context of contexts_for_quiz_questions) {
-        quiz_1 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`, 4, false);
+        quiz_1 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`, 4, true);
         console.log(quiz_1);
-        quiz_2 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`, 4, false);
+        quiz_2 = await BatchSWQG(number_of_questions, 'multiple_choice', `${context}`, 4, true);
         console.log(quiz_2);
 
         let merged_questions = quiz_1.concat(quiz_2);

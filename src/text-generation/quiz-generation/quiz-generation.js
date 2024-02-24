@@ -1,9 +1,9 @@
-//import { Timer } from "./../../classes/Timer.js"
+import { Timer } from "./../../classes/Timer.js"
 import { generateManyQuestions } from "./1-question-generation.js";
 import { generateAnswer } from "./2-answer-generation.js";
 import { generateManyDistractors } from "./3-distractor-generation.js";
 
-//const timer = new Timer();
+const timer = new Timer();
 
 // /**
 //  * Generates a stepwise question for a quiz.
@@ -65,8 +65,8 @@ import { generateManyDistractors } from "./3-distractor-generation.js";
  */
 export async function BatchSWQG(number_of_questions, quiz_type, context, number_of_options = 4, hallucination_detection = true) {
     // Start the timer
-    //timer.reset();
-    //timer.start();
+    timer.reset();
+    timer.start();
 
     let question_objects = [];
     let array_of_questions = [];
@@ -104,7 +104,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
     }
 
     // Stop the timer
-    //const time = timer.stop();
+    const time = timer.stop();
     console.debug(`LM-studio-helper.js: SWQG: ${time}`);
 
     return question_objects;

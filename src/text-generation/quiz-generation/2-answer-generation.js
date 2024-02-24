@@ -12,33 +12,33 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @throws {Error} - If an error occurs during the answer generation process.
  */
 export async function generateAnswer(context, question, hallucination_detection) {
-    try {
-        let attempts = 5;
-        let answer = '';
+    let attempts = 5;
+    let answer = '';
 
-        for (let i = 0; i < attempts; i++) {
-            /* Generate an answer */
-            let response = await promptAnswers(context, question);
-            answer = response;
+    for (let i = 0; i < attempts; i++) {
+        console.debug(`generateAnswer: Attempt ${i + 1} of ${attempts}`);
 
-            /* Hallucination Detection */
-            if (!hallucination_detection) {
-                break;
-            }
+        /* Generate an answer */
+        let response = await promptAnswers(context, question);
+        answer = response;
 
-            /* Otherwise */
-            if (await isAnswerCorrect(question, answer)) {
-                break;
-            }
+        /* Hallucination Detection */
+        if (!hallucination_detection) {
+            console.debug(`generateAnswer: Hallucination Detection: OFF`);
+            break;
         }
 
-        return answer;
-    }
+        /* Otherwise */
+        console.debug(`generateAnswer: Hallucination Detection: ON`);
+        if (await isAnswerCorrect(question, answer)) {
+            console.debug(`generateAnswer: Answers are relevant`);
+            break;
+        }
 
-    catch (error) {
-        // Express error
-        console.error(error);
+        console.debug(`generateAnswer: Questions are not relevant`);
     }
+    
+    return answer;
 }
 
 // CODE NO LONGER IN USE
@@ -113,28 +113,26 @@ export async function promptAnswers(context, question) {
     try {
         let answer = '';
 
-        for (let i = 0; i < 10; i++) {
-            /* Generate an answer */
-            let response = await callLMStudio(system_content, user_content, 500);
+        /* Generate an answer */
+        let response = await callLMStudio(system_content, user_content, 500);
 
-            let potential_answers = response.split('|')
-            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+        let potential_answers = response.split('|')
+        //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
-            potential_answers = potential_answers.map(answer => String(answer)) // Convert to string
-            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+        potential_answers = potential_answers.map(answer => String(answer)) // Convert to string
+        //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
-            potential_answers = potential_answers.map(answer => answer.trim()) // Remove leading and trailing punctuation
-            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+        potential_answers = potential_answers.map(answer => answer.trim()) // Remove leading and trailing punctuation
+        //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
-            potential_answers = potential_answers.filter(answer => /[a-zA-Z+\-*/^()]/.test(answer)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
-            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+        potential_answers = potential_answers.filter(answer => /[a-zA-Z+\-*/^()]/.test(answer)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
+        //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
-            potential_answers = potential_answers.map(answer => answer.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
-            potential_answers = potential_answers.map(answer => /[a-zA-Z]/.test(answer) ? answer + "." : answer); // Add a period to the end of each answer if it contains a text character
-            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+        potential_answers = potential_answers.map(answer => answer.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
+        potential_answers = potential_answers.map(answer => /[a-zA-Z]/.test(answer) ? answer + "." : answer); // Add a period to the end of each answer if it contains a text character
+        //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
-            answer = potential_answers[0];
-        }
+        answer = potential_answers[0];
 
         return answer;
     }

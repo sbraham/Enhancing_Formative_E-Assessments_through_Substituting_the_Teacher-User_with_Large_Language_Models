@@ -88,40 +88,41 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @throws {Error} - If an error occurs during the question generation process.
  */
 export async function generateManyQuestions(number_of_questions, context, hallucination_detection, relevence_threshold = 0.80) {
-    try {
-        let attempts = 5;
-        let questions = [];
+    let attempts = 5;
+    let questions = [];
+    hallucination_detection = false;
 
-        for (let i = 0; i < attempts; i++) {
-            /* Generate all questions */
-            let response = await promptQuestions(number_of_questions, context);
-            questions = response;
+    for (let i = 0; i < attempts; i++) {
+        console.debug(`generateManyQuestions: Attempt ${i + 1} of ${attempts}`);
 
-            /* Hallucination Detection */
-            if (!hallucination_detection) {
-                break;
-            }
+        /* Generate all questions */
+        let response = await promptQuestions(number_of_questions, context);
+        questions = response;
 
-            /* Otherwise */
-            let relevant_questions = 0;
-            for (let question of questions) {
-                if (await isQuestionRelevent(context, question)) {
-                    relevant_questions++;
-                }
-            }
+        /* Hallucination Detection */
+        if (!hallucination_detection) {
+            console.debug(`generateManyQuestions: Hallucination Detection: OFF`);
+            break;
+        }
 
-            if (relevant_questions / number_of_questions >= relevence_threshold) {
-                break;
+        /* Otherwise */
+        console.debug(`generateManyQuestions: Hallucination Detection: ON`);
+        let relevant_questions = 0;
+        for (let question of questions) {
+            if (await isQuestionRelevent(context, question)) {
+                relevant_questions++;
             }
         }
 
-        return questions;
-    } 
-    
-    catch (error) {
-        console.error(error);
+        if (relevant_questions / number_of_questions >= relevence_threshold) {
+            console.debug(`generateManyQuestions: Questions are relevant`);
+            break;
+        }
+
+        console.debug(`generateManyQuestions: Questions are not relevant`);
     }
 
+    return questions;
 }
 
 /*****************************/

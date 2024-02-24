@@ -48,50 +48,48 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
 export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection) {
-    try {
-        let attempts = 5
-        let distractors = [];
+    let attempts = 5
+    let distractors = [];
 
-        for (let i = 0; i < attempts; i++) {
-            /* Generate all distractors */
-            let response = await prompDistractors(number_of_distractors, context, question, answer);
-            distractors = response;
+    for (let i = 0; i < attempts; i++) {
+        console.debug(`generateManyDistractors: Attempt ${i + 1} of ${attempts}`);
 
-            /* Hallucination Detection */
-            if (!hallucination_detection) {
-                break;
-            } 
-            
-            /* Otherwise */
-            else {
-                let is_false_count = 0;
-                // let is_relevent_count = 0;
+        /* Generate all distractors */
+        let response = await prompDistractors(number_of_distractors, context, question, answer);
+        distractors = response;
 
-                for (let distractor of distractors) {
-                    if (await areDistractorsFalse(question, distractor)) {
-                        is_false_count++;
-                    }
+        /* Hallucination Detection */
+        if (!hallucination_detection) {
+            console.debug(`generateManyDistractors: Hallucination Detection: OFF`);
+            break;
+        } 
+        
+        /* Otherwise */
+        console.debug(`generateManyDistractors: Hallucination Detection: ON`);
+        let is_false_count = 0;
+        // let is_relevent_count = 0;
 
-                    // if (await areDistractorsRelevent(context, question, distractor)) {
-                    //     is_relevent_count++;
-                    // }
-                }
-
-                if (is_false_count = distractors.length() /* && is_false_count = distractors.length() */) {
-                    break;
-                }
-
-                /* Otherwise */
-                /* If the distractor is not correct, try again */
+        for (let distractor of distractors) {
+            if (await areDistractorsFalse(question, distractor)) {
+                is_false_count++;
             }
+
+            // if (await areDistractorsRelevent(context, question, distractor)) {
+            //     is_relevent_count++;
+            // }
         }
 
-        return distractors;
+        if (is_false_count = number_of_distractors /* && is_false_count = number_of_distractors */) {
+            console.debug(`generateManyDistractors: Distractors are relevant`);
+            break;
+        }
 
-    } catch (error) {
-        // Handle the error here
-        console.error(error);
+        /* Otherwise */
+        /* If the distractor is not correct, try again */
+        console.debug(`generateManyDistractors: Distractors are not relevant`);
     }
+
+    return distractors;
 }
 
 /*****************************/
@@ -143,6 +141,8 @@ export async function prompDistractors(number_of_distractors, context, question,
             }
 
             distractors = potential_distractors;
+
+            return distractors;
         }
     } catch (error) {
         // Handle the error here
