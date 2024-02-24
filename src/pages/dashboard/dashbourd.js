@@ -1,4 +1,4 @@
-//build console.log('Loading: dashbourd.js');
+console.log('Loading: dashbourd.js');
 
 /* Importing Firebase helper functions from setup file */
 import { checkLogin } from "../../firebase/auth-helper.js";
@@ -20,7 +20,7 @@ const spinnerHTML = `<div class="spinner-border text-primary" role="status"><spa
  * @param {Object} quiz - The quiz object containing the quiz details.
  */
 function createQuizCard(quiz) {
-    //build console.log('createQuizCard: Creating quiz card:', quiz.id);
+    console.log('createQuizCard: Creating quiz card:', quiz.id);
 
     /* Create the details table */
     const max_score = Math.max(...quiz.attempts.map(attempt => attempt.score));
@@ -145,7 +145,7 @@ function createQuizCard(quiz) {
  * @async
  */
 function createAddNewQuizCard() {
-    //build console.log('createAddNewQuizCard: Creating add_new_quiz card');
+    console.log('createAddNewQuizCard: Creating add_new_quiz card');
 
     /* Create the tooltip text */
     let tooltip_text = `The description will help you specify exactly what topics you want the quiz to cover. It will also help you remember what the quiz is about when you come back to it later. You can leave it blank for a broud quiz, give it a specific topic area to focus on, or give it a large piece of text to make the questions from. It's up to you!`;
@@ -274,11 +274,11 @@ function createAddNewQuizCard() {
  * @returns {Promise<void>} A promise that resolves when the quiz has been added.
  */
 async function addNewQuiz() {
-    //build console.log('addNewQuiz: Creating quiz');
+    console.log('addNewQuiz: Creating quiz');
 
     /* Check if a quiz is already being generated */
     if (isGenerating) {
-        //build console.log('addNewQuiz: Already generating quiz');
+        console.log('addNewQuiz: Already generating quiz');
 
         alert('You cannot create a new quiz while another quiz is being created. Please wait until the current quiz has finished generating.');
 
@@ -327,9 +327,9 @@ async function addNewQuiz() {
     await quiz.generateQuestions();
 
     // Add quiz to database
-    //build console.log('addNewQuiz: Adding quiz to database...');
+    console.log('addNewQuiz: Adding quiz to database...');
     await addQuizToDB(quiz);
-    //build console.log('addNewQuiz: Quiz added to database');
+    console.log('addNewQuiz: Quiz added to database');
 
     isGenerating = false;
 
@@ -354,7 +354,7 @@ async function addNewQuiz() {
  * @param {number} index_to_delete - The index of the quiz card to delete.
  */
 function deleteQuiz(quiz, index_to_delete) {
-    //build console.log('deleteQuiz: Deleting quiz:', quiz.id);
+    console.log('deleteQuiz: Deleting quiz:', quiz.id);
 
     /* Remove the quiz from the database */
     removeQuizFromDB(quiz);
@@ -373,13 +373,13 @@ function deleteQuiz(quiz, index_to_delete) {
  * @param {Object} quiz - The quiz object containing the quiz ID.
  */
 function takeQuiz(quiz) {
-    //build console.log('Redirecting to quiz page:', quiz.id);
+    console.log('Redirecting to quiz page:', quiz.id);
 
     /* Construct the URL with the quiz.id as a query parameter */
     const url = `../quiz/quiz.html?quiz_id=${quiz.id}`;
 
-    //build console.log('Redirecting to quiz...');
-    //build console.log('--------------------------------');
+    console.log('Redirecting to quiz...');
+    console.log('--------------------------------');
 
     window.location.href = url;
 }

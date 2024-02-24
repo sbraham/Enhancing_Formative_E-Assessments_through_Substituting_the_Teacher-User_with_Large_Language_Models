@@ -49,7 +49,7 @@ export class Quiz {
      * @returns {Promise<void>} A promise that resolves when the questions are generated.
      */
     async generateQuestions() {
-        //build console.log(`Quiz: generateQuestions`);
+        console.log(`Quiz: generateQuestions`);
 
         /* Example question object */
         const example_question_object = {
@@ -61,7 +61,7 @@ export class Quiz {
         /* If the questions have already been generated */
         if (this.questions.length > 0) {
             /* Log and do nothing */
-            //build console.warn(`Quiz: generateQuestions: questions already generated`);
+            console.warn(`Quiz: generateQuestions: questions already generated`);
             return;
         } 
 
@@ -122,7 +122,7 @@ export class Quiz {
         /* if the quiz is on the first question */
         if (this._question_index === 1) {
             /* log and do nothing */
-            //build console.warn(`Quiz.getPreviousQuestion(): Cannot go back any further!`);
+            console.warn(`Quiz.getPreviousQuestion(): Cannot go back any further!`);
             return;
         }
 
@@ -144,7 +144,7 @@ export class Quiz {
         } 
             
         catch (error) {
-            //build console.error(`Quiz.displayQuiz(): Error setting quiz title!`);
+            console.error(`Quiz.displayQuiz(): Error setting quiz title!`);
             throw error;
         }
     }
@@ -235,7 +235,7 @@ export class Quiz {
         } 
             
         catch (error) {
-            //build console.error(`Quiz.displayQuestion(): Error setting question!`);
+            console.error(`Quiz.displayQuestion(): Error setting question!`);
             throw error;
         }
     }
@@ -356,7 +356,7 @@ export class Quiz {
         } 
             
         catch (error) {
-            //build console.error(`Quiz.disableQuizForm(): Error disabling quiz form!`);
+            console.error(`Quiz.disableQuizForm(): Error disabling quiz form!`);
             throw error;
         }
     }
@@ -370,14 +370,14 @@ export class Quiz {
                     document.getElementById(`option_${i}`).disabled = false;
                 }
             } else if (this.quiz_type == 'true_or_false') {
-                //build console.warn(`Quiz.enableQuizForm(): true_or_false is not implemented!`);
+                console.warn(`Quiz.enableQuizForm(): true_or_false is not implemented!`);
             } else if (this.quiz_type == 'short_answer') {
                 document.getElementById(`short_answer`).disabled = false;
             }
         } 
             
         catch (error) {
-            //build console.error(`Quiz.enableQuizForm(): Error enabling quiz form!`);
+            console.error(`Quiz.enableQuizForm(): Error enabling quiz form!`);
             throw error;
         }
     }
@@ -398,7 +398,7 @@ export class Quiz {
         } 
             
         catch (error) {
-            //build console.error(`Quiz.resetQuizForm(): Error resetting quiz form!`);
+            console.error(`Quiz.resetQuizForm(): Error resetting quiz form!`);
             throw error;
         }
     }
@@ -421,7 +421,7 @@ export class Quiz {
 
         this.attempts.push(attempt);
 
-        //build console.log(`Quiz.endQuiz(): Attempt:`, attempt);
+        console.log(`Quiz.endQuiz(): Attempt:`, attempt);
 
         /* Update the quiz in the database */
         await updateQuiz(this);
@@ -431,8 +431,8 @@ export class Quiz {
 
         /* Move to feedback page */
 
-        //build console.log('Redirecting to feedback page...');
-        //build console.log('--------------------------------');
+        console.log('Redirecting to feedback page...');
+        console.log('--------------------------------');
 
         const url = `../feedback/feedback.html?given_answers=${given_answers}`;
 

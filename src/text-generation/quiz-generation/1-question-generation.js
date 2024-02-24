@@ -64,7 +64,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
 
 //             /* If the question is not relevant, try again */
 //             if (i === 9) {
-//                 //build console.error(`generateOneQuestion: Too many failed attempts. Return empty string.`);
+//                 console.error(`generateOneQuestion: Too many failed attempts. Return empty string.`);
 //             }
 //         }
 
@@ -129,7 +129,7 @@ export async function generateManyQuestions(number_of_questions, context, halluc
 /*****************************/
 
 export async function promptQuestions(number_of_questions, context) {
-    let number_of_questions = Number(number_of_questions);
+    number_of_questions = Number(number_of_questions);
     let system_content = ``;
 
     if (number_of_questions > 1) {
@@ -156,16 +156,16 @@ export async function promptQuestions(number_of_questions, context) {
             let response = await callLMStudio(system_content, user_content, 1000);
 
             let potential_questions = response.split('|')
-            ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+            //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
             potential_questions = potential_questions.map(question => String(question)) // Convert to string
-            ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+            //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
             potential_questions = potential_questions.map(question => question.trim()) // Remove leading and trailing punctuation
-            ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);            
+            //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);            
             
             potential_questions = potential_questions.filter(question => /[a-zA-Z]/.test(question)) // Remove strings that don't contain letters (including empty strings)
-            ////build console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+            //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
             if (potential_questions.length > number_of_questions) {
                 potential_questions = potential_questions.slice(0, number_of_questions);
@@ -197,11 +197,11 @@ export async function promptQuestions(number_of_questions, context) {
 //         let response = await callLMStudio(system_content, user_content, 2);
 
 //         if (response.toLowerCase().includes('yes')) {
-//             //build console.debug(`✅ Hallucination Detection: Is Question Relevant? : YES`);
+//             console.debug(`✅ Hallucination Detection: Is Question Relevant? : YES`);
 //             return true;
 //         } else if (response.toLowerCase().includes('no')) {
-//             //build console.debug(`❌ Hallucination Detection: Is Question Relevant? : NO`);
-//             //build console.debug(`Question: ${question}`);
+//             console.debug(`❌ Hallucination Detection: Is Question Relevant? : NO`);
+//             console.debug(`Question: ${question}`);
 //             return false;
 //         }
 //     }

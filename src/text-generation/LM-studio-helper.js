@@ -1,4 +1,4 @@
-//build console.log('Loading: LM-studio-helper.js');
+console.log('Loading: LM-studio-helper.js');
 
 /* Imports */
 import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
@@ -72,7 +72,7 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
                 }),
                 success: function (response) {
                     if (response.choices[0].finish_reason == 'hit_max_tokens') {
-                        //build console.warn('callLMStudio: hit max tokens.')
+                        console.warn('callLMStudio: hit max tokens.')
                     }
 
                     resolve(response.choices[0].message.content);
@@ -90,7 +90,7 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
             
     catch (error) {
         // Handle the error here
-        //build console.error('Error occurred during API call:', error);
+        console.error('Error occurred during API call:', error);
         throw error;
     }
 }

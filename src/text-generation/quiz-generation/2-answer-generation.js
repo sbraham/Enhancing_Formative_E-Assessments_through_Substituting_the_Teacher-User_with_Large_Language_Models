@@ -118,20 +118,20 @@ export async function promptAnswers(context, question) {
             let response = await callLMStudio(system_content, user_content, 500);
 
             let potential_answers = response.split('|')
-            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.map(answer => String(answer)) // Convert to string
-            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.map(answer => answer.trim()) // Remove leading and trailing punctuation
-            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.filter(answer => /[a-zA-Z+\-*/^()]/.test(answer)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
-            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             potential_answers = potential_answers.map(answer => answer.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
             potential_answers = potential_answers.map(answer => /[a-zA-Z]/.test(answer) ? answer + "." : answer); // Add a period to the end of each answer if it contains a text character
-            ////build console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
+            //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
             answer = potential_answers[0];
         }
@@ -140,7 +140,7 @@ export async function promptAnswers(context, question) {
     }
 
     catch (error) {
-        //build console.error(`generateAnswer: error:`, error);
+        console.error(`generateAnswer: error:`, error);
         console.error(error);
     }
 }
@@ -161,18 +161,18 @@ export async function isAnswerCorrect(question, answer) {
         let response = await callLMStudio(system_content, user_content, 2, 0);
 
         if (response.toLowerCase().includes('yes')) {
-            // //build console.debug(`✅ Hallucination Detection: Is Answer Correct? : YES`);
+            // console.debug(`✅ Hallucination Detection: Is Answer Correct? : YES`);
             return true;
         } else if (response.toLowerCase().includes('no')) {
-            // //build console.debug(`❌ Hallucination Detection: Is Answer Correct? : NO`);
-            // //build console.debug(`Question: ${question}`);
-            // //build console.debug(`Answer: ${answer}`);
+            // console.debug(`❌ Hallucination Detection: Is Answer Correct? : NO`);
+            // console.debug(`Question: ${question}`);
+            // console.debug(`Answer: ${answer}`);
             return false;
         }
     }
 
     catch (error) {
-        //build console.error(`isAnswerCorrect: error:`, error);
+        console.error(`isAnswerCorrect: error:`, error);
         throw error;
     }
 }
@@ -180,14 +180,14 @@ export async function isAnswerCorrect(question, answer) {
 // export async function judgeQuestionRelevence(context, question, number_of_judges = 10, temperature = 0.2) {
 //     let rulings = 0;
 
-//     //build console.debug(`judgeGivenAnswer: judging...`);
-//     //build console.debug(`judgeGivenAnswer: context: ${context}`);
-//     //build console.debug(`judgeGivenAnswer: question: ${question}`);
+//     console.debug(`judgeGivenAnswer: judging...`);
+//     console.debug(`judgeGivenAnswer: context: ${context}`);
+//     console.debug(`judgeGivenAnswer: question: ${question}`);
     
 //     for (let i = 0; i < number_of_judges; i++) {
 //         let judge_response = await isAnswerCorrect(context, question, temperature);
 
-//         //build console.debug(`judgeGivenAnswer: judge_response_${i}: ${judge_response}`);
+//         console.debug(`judgeGivenAnswer: judge_response_${i}: ${judge_response}`);
 
 //         if (judge_response) {
 //             rulings++;
@@ -200,7 +200,7 @@ export async function isAnswerCorrect(question, answer) {
 //         final_ruling = true;
 //     }
 
-//     //build console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);
+//     console.debug(`judgeGivenAnswer: final_ruling: ${final_ruling}`);
 
 //     return final_ruling;
 // }

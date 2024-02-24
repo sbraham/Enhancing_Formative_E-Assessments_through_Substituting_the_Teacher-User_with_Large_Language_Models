@@ -1,4 +1,4 @@
-//build console.log('Loading: feedback.js');
+console.log('Loading: feedback.js');
 
 import { generateFeedback } from "../../text-generation/feedback-generation.js";
 
@@ -71,9 +71,9 @@ function createCard(answer, index) {
 /* Event Listeners */   
 dashboard_button.addEventListener('click', function () {
 
-    //build console.log('dashboard_button clicked');
-    //build console.log('Redirecting to dashboard...');
-    //build console.log('--------------------------------');
+    console.log('dashboard_button clicked');
+    console.log('Redirecting to dashboard...');
+    console.log('--------------------------------');
 
     const url = `../dashboard/dashboard.html`;
 
@@ -94,8 +94,8 @@ given_answers.forEach((answer) => {
     /* Create a card */
     createCard(answer, index);
 
-    //build console.log("answer: ", answer);
-    //build console.log("index: ", index);
+    console.log("answer: ", answer);
+    console.log("index: ", index);
 
     /* If the answer is incorrect, add it to the wrong_answers array */
     if (answer.isCorrect === false) {
@@ -106,13 +106,13 @@ given_answers.forEach((answer) => {
     index++;
 });
 
-//build console.log("wrong_answers: ", wrong_answers);
+console.log("wrong_answers: ", wrong_answers);
 
 /* Generate feedback for incorrect answers */
 
 for (const [answer, index] of wrong_answers) {
-    //build console.log("answer: ", answer);
-    //build console.log("index: ", index);
+    console.log("answer: ", answer);
+    console.log("index: ", index);
 
     let feedback = await generateFeedback(answer);
 

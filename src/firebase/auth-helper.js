@@ -1,4 +1,4 @@
-//build console.log('Loading: firebase/auth-helper.js');
+console.log('Loading: firebase/auth-helper.js');
 
 /* Importing Firebase features */
 import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js';
@@ -17,37 +17,37 @@ import { auth } from './config.js';
  */
 export async function checkLogin(pathToLogin = null) {
 	if (pathToLogin == null) {
-		//build console.log(`checkLogin: checking login status`);
+		console.log(`checkLogin: checking login status`);
 	} else {
-		//build console.log(`checkLogin: checking login status (with redirect: ${pathToLogin})`);
+		console.log(`checkLogin: checking login status (with redirect: ${pathToLogin})`);
 	}
 
 	try {
-		//build console.debug(`checkLogin: awaiting response...`);
+		console.debug(`checkLogin: awaiting response...`);
 		let user = await new Promise(async (resolve, reject) => {
 			await onAuthStateChanged(auth, (user) => {
 				resolve(user);
 			});
 		});
-		//build console.log(`checkLogin: received`);
+		console.log(`checkLogin: received`);
 
 		if (user) {
 			/* User is signed in. */
-			//build console.log("checkLogin: User is logged in:", user.uid);
+			console.log("checkLogin: User is logged in:", user.uid);
 
 			return user.uid;
 		} else {
 			/* No user is signed in. */
-			//build console.log("checkLogin: User is not logged in");
+			console.log("checkLogin: User is not logged in");
 
 			if (pathToLogin != null) {
-				//build console.log(`Redirecting to login page...`);
-				//build console.log('--------------------------------');
+				console.log(`Redirecting to login page...`);
+				console.log('--------------------------------');
 
 				/* Redirect to the login page */
 				window.location.href = pathToLogin;
 			} else {
-				//build console.warn(`checkLogin: User is not logged in`);
+				console.warn(`checkLogin: User is not logged in`);
 			}
 
 			return null;
@@ -55,7 +55,7 @@ export async function checkLogin(pathToLogin = null) {
 	} 
             
     catch (error) {
-        //build console.error(`checkLogin: error:`, error);
+        console.error(`checkLogin: error:`, error);
 		throw error;
 	}
 }
@@ -70,7 +70,7 @@ export async function checkLogin(pathToLogin = null) {
  * @throws {Error} If there is an error checking the login status.
  */
 export async function checkLoginOnFrame(iframe) {
-	//build console.log(`checkLoginOnFrame: checking login status`);
+	console.log(`checkLoginOnFrame: checking login status`);
 
 	const account_button = document.getElementById('account');
 	const login_status = document.getElementById('login_status');
@@ -81,28 +81,28 @@ export async function checkLoginOnFrame(iframe) {
 
 			if (user) {
 				/* User is signed in. */
-				//build console.log("checkLoginOnFrame: User is logged in:", user.uid);
+				console.log("checkLoginOnFrame: User is logged in:", user.uid);
 
 				/* Update the UI */
 				account_button.innerText = `Log Out`;
 				login_status.innerText = `🟩: Logged in as ${user.email}`;
 
 				/* Redirect to the dashboard */
-				//build console.log('Redirecting to dashboard...');
-				//build console.log('--------------------------------');
+				console.log('Redirecting to dashboard...');
+				console.log('--------------------------------');
 
 				iframe.src = `../pages/dashboard/dashboard.html`
 			} else {
 				// No user is signed in.
-				//build console.log("checkLoginOnFrame: User is not logged in");
+				console.log("checkLoginOnFrame: User is not logged in");
 
 				/* Update the UI */
 				account_button.innerText = `Log In`;
 				login_status.innerText = `🟥: Not logged in`;
 
 				/* Redirect to the login page */
-				//build console.log('Redirecting to login...');
-				//build console.log('--------------------------------');
+				console.log('Redirecting to login...');
+				console.log('--------------------------------');
 
 				iframe.src = `../pages/login/login.html`
 			}
@@ -110,7 +110,7 @@ export async function checkLoginOnFrame(iframe) {
 	} 
             
     catch (error) {
-        //build console.error(`checkLoginOnFrame: error:`, error);
+        console.error(`checkLoginOnFrame: error:`, error);
 		throw error;
 	}
 }
@@ -125,20 +125,20 @@ export async function checkLoginOnFrame(iframe) {
  * @throws {Error} If there is an error during the user creation process.
  */
 export async function createUser(email, password) {
-	//build console.log(`createUser: creating user`);
+	console.log(`createUser: creating user`);
 
 	try {
-		//build console.debug(`createUserWithEmailAndPassword: awaiting response...`);
+		console.debug(`createUserWithEmailAndPassword: awaiting response...`);
 		let userCredential = await createUserWithEmailAndPassword(auth, email, password)
-		//build console.debug(`createUserWithEmailAndPassword: received`);
+		console.debug(`createUserWithEmailAndPassword: received`);
 
-		//build console.assert(userCredential.user.email != null && userCredential.user.email != undefined, `ERROR: userCredential.user.email is null or undefined`);
+		console.assert(userCredential.user.email != null && userCredential.user.email != undefined, `ERROR: userCredential.user.email is null or undefined`);
 
 		return `successful-sign-up`;
 	} 
             
     catch (error) {
-        //build console.error(`createUser: error:`, error);
+        console.error(`createUser: error:`, error);
 		throw error;
 	}
 }
@@ -153,22 +153,22 @@ export async function createUser(email, password) {
  * @throws {Error} - If an error occurs during the login process.
  */
 export async function loginUser(email, password) {
-	//build console.log(`loginUser: logging in user`);
-	// //build console.debug(`email:`, email);
+	console.log(`loginUser: logging in user`);
+	// console.debug(`email:`, email);
 
 	try {
-		//build console.debug(`signInWithEmailAndPassword: awaiting response...`);
+		console.debug(`signInWithEmailAndPassword: awaiting response...`);
 		let userCredential = await signInWithEmailAndPassword(auth, email, password);
-		//build console.debug(`signInWithEmailAndPassword: received`);
+		console.debug(`signInWithEmailAndPassword: received`);
 		/** @type {userCredential} */
 
-		//build console.assert(userCredential.user.email != null && userCredential.user.email != undefined, `ERROR: userCredential.user.email is null or undefined`);
+		console.assert(userCredential.user.email != null && userCredential.user.email != undefined, `ERROR: userCredential.user.email is null or undefined`);
 
 		return `successful-login`;
 	} 
             
     catch (error) {
-		//build console.error(`loginUser: error:`, error);
+		console.error(`loginUser: error:`, error);
 		throw error;
 	}
 }
@@ -180,16 +180,16 @@ export async function loginUser(email, password) {
  * @throws {Error} If an error occurs during the sign out process.
  */
 export async function logout() {
-	//build console.log(`logout: logging out user`);
+	console.log(`logout: logging out user`);
 
 	try {
-		//build console.debug(`signOut: awaiting response...`);
+		console.debug(`signOut: awaiting response...`);
 		await signOut(auth);
-		//build console.debug(`signOut: received`);
+		console.debug(`signOut: received`);
 	}
 	
 	catch (error) {
-        //build console.error(`logout: error:`, error);
+        console.error(`logout: error:`, error);
 		throw error;
 	}
 }

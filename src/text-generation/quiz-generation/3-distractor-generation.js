@@ -119,24 +119,24 @@ export async function prompDistractors(number_of_distractors, context, question,
             let response = await callLMStudio(system_content, user_content, 1000);
 
             let potential_distractors = response.split('|');
-            ////build console.debug(`generateManyDistractors: response: ${response}`);
+            //console.debug(`generateManyDistractors: response: ${response}`);
 
             potential_distractors = potential_distractors.map(distractor => String(distractor)) // Convert to string
-            ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+            //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
             potential_distractors = potential_distractors.map(distractor => distractor.trim()) // Remove leading and trailing punctuation
-            ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+            //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
             potential_distractors = potential_distractors.filter(distractor => /[a-zA-Z+\-*/^()]/.test(distractor)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
-            ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+            //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
             potential_distractors = potential_distractors.map(distractor => distractor.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
             potential_distractors = potential_distractors.map(distractor => /[a-zA-Z]/.test(distractor) ? distractor + "." : distractor); // Add a period to the end of each answer if it contains a text character
-            ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+            //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
             potential_distractors = potential_distractors.filter(distractor => distractor !== answer); // Remove the true answer from the list of potential distractors
             potential_distractors = potential_distractors.filter(distractor => !distractors.includes(distractor)); // Remove any distractors that have already been added to the list
-            ////build console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
+            //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
             if (potential_distractors.length > number_of_distractors) {
                 potential_distractors = potential_distractors.slice(0, number_of_distractors);
@@ -165,12 +165,12 @@ export async function areDistractorsFalse(question, distractor) {
         let response = await callLMStudio(system_content, user_content, 2, 0);
 
         if (response.toLowerCase().includes('yes')) {
-            ////build console.debug(`✅ Hallucination Detection: Is Distractor False? : YES`);
+            //console.debug(`✅ Hallucination Detection: Is Distractor False? : YES`);
             return true;
         } else if (response.toLowerCase().includes('no')) {
-            ////build console.debug(`❌ Hallucination Detection: Is Distractor False? : NO`);
-            ////build console.debug(`Question: ${question}`);
-            ////build console.debug(`Distractor: ${distractor}`);
+            //console.debug(`❌ Hallucination Detection: Is Distractor False? : NO`);
+            //console.debug(`Question: ${question}`);
+            //console.debug(`Distractor: ${distractor}`);
             return false;
         }
     }
@@ -183,14 +183,14 @@ export async function areDistractorsFalse(question, distractor) {
 // export async function judgeDistractorFalcity(question, distractor, number_of_judges = 10, temperature = 0.2) {
 //     let rulings = 0;
 
-//     //build console.debug(`judgeDistractorFalcity: judging...`);
-//     //build console.debug(`judgeDistractorFalcity: question: ${question}`);
-//     //build console.debug(`judgeDistractorFalcity: distractor: ${distractor}`);
+//     console.debug(`judgeDistractorFalcity: judging...`);
+//     console.debug(`judgeDistractorFalcity: question: ${question}`);
+//     console.debug(`judgeDistractorFalcity: distractor: ${distractor}`);
 
 //     for (let i = 0; i < number_of_judges; i++) {
 //         let judge_response = await areDistractorsFalse(question, distractor, temperature);
 
-//         //build console.debug(`judgeDistractorFalcity: judge_response_${i}: ${judge_response}`);
+//         console.debug(`judgeDistractorFalcity: judge_response_${i}: ${judge_response}`);
 
 //         if (judge_response) {
 //             rulings++;
@@ -203,7 +203,7 @@ export async function areDistractorsFalse(question, distractor) {
 //         const final_ruling = false;
 //     }
 
-//     //build console.debug(`judgeDistractorFalcity: final_ruling: ${final_ruling}`);
+//     console.debug(`judgeDistractorFalcity: final_ruling: ${final_ruling}`);
 
 //     return final_ruling;
 // }
@@ -222,11 +222,11 @@ export async function areDistractorsFalse(question, distractor) {
 //         let response = await callLMStudio(system_content, user_content, 2);
 
 //         if (response.toLowerCase().includes('yes')) {
-//             //build console.debug(`✅ Hallucination Detection: Is Distractor Relevant? : YES`);
+//             console.debug(`✅ Hallucination Detection: Is Distractor Relevant? : YES`);
 //             return true;
 //         } else if (response.toLowerCase().includes('no')) {
-//             //build console.debug(`❌ Hallucination Detection: Is Distractor Relevant? : NO`);
-//             //build console.debug(`Distractor: ${distractor}`);
+//             console.debug(`❌ Hallucination Detection: Is Distractor Relevant? : NO`);
+//             console.debug(`Distractor: ${distractor}`);
 //             return false;
 //         }
 //     }

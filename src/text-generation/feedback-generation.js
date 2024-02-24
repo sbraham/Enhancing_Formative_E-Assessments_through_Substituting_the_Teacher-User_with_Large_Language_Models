@@ -1,4 +1,4 @@
-//build console.log('Loading: feedback-generation.js');
+console.log('Loading: feedback-generation.js');
 
 /* Imports LM-Studio Helper */
 import { callLMStudio } from './LM-studio-helper.js';
@@ -26,7 +26,7 @@ export async function generateFeedback(answer_object) {
     } 
             
     catch (error) {
-        //build console.error(`generateFeedback: error:`, error);
+        console.error(`generateFeedback: error:`, error);
         throw error;
     }
 }

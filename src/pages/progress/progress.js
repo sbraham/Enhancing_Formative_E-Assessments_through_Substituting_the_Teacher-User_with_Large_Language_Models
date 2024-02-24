@@ -1,4 +1,4 @@
-//build console.log('Loading: progress.js');
+console.log('Loading: progress.js');
 
 
 /* Importing Firebase helper functions from setup file */
@@ -52,7 +52,7 @@ function createGraph(index, quiz) {
     const y_values = [];
 
     for (let i = 0; i < attempts.length; i++) {
-        //build console.log(attempts[i]);
+        console.log(attempts[i]);
         x_values.push(`Attempt ${i + 1}`);
         y_values.push(attempts[i].score);
     }
@@ -168,7 +168,7 @@ function addQuizToAccordion(index, quiz) {
         const attempt_view = document.getElementById(`attempt_view_${index}`);
 
         if (!attempt_view) {
-            //build console.warn(`Attempt view not found.`);
+            console.warn(`Attempt view not found.`);
             return;
         }
 
@@ -238,7 +238,7 @@ user_quizzes.sort((a, b) => {
     return 0;
 });
 
-//build console.log("user_quizzes:", user_quizzes);
+console.log("user_quizzes:", user_quizzes);
 
 /* Creating new Accordion Elements */
 for (let i = 0; i < user_quizzes.length; i++) {

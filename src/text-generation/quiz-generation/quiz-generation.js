@@ -25,16 +25,16 @@ import { generateManyDistractors } from "./3-distractor-generation.js";
 //     let options = [];
 
 //     /* Step 1: Generate a question */
-//     //build console.debug(`LM-studio-helper.js: SWQG: Step 1: Generate a question`);
+//     console.debug(`LM-studio-helper.js: SWQG: Step 1: Generate a question`);
 //     question = await generateOneQuestion(context, existing_questions);
 
 //     /* Step 2: Generate the answer */
-//     //build console.debug(`LM-studio-helper.js: SWQG: Step 2: Generate the answer`);
+//     console.debug(`LM-studio-helper.js: SWQG: Step 2: Generate the answer`);
 //     answer = await generateAnswer(context, question);
 
 //     if (quiz_type == `multiple_choice`) {
 //         /* Step 3: Generate the distractors */
-//         //build console.debug(`LM-studio-helper.js: SWQG: Step 3: Generate the distractors`);
+//         console.debug(`LM-studio-helper.js: SWQG: Step 3: Generate the distractors`);
 //         options.push(answer)
 
 //         for (let i = 0; i < number_of_options - 1; i++) {
@@ -45,7 +45,7 @@ import { generateManyDistractors } from "./3-distractor-generation.js";
 
 //     // Stop the timer
 //     //const time = timer.stop();
-//     //build console.debug(`LM-studio-helper.js: SWQG: ${time}`);
+//     console.debug(`LM-studio-helper.js: SWQG: ${time}`);
 
 //     return { question: question, answer: answer, options: options };
 // }
@@ -59,10 +59,11 @@ import { generateManyDistractors } from "./3-distractor-generation.js";
  * @param {number} number_of_questions - The number of questions to generate.
  * @param {string} quiz_type - The type of quiz (e.g., "multiple_choice").
  * @param {string} context - The context for generating the questions.
- * @param {number} [number_of_options=4] - The number of options for multiple-choice questions.
+ * @param {number} [number_of_options=4] - The number of options for multiple-choice questions.#
+ * @param {boolean} hallucination_detection - Whether or not to use hallucination detection. Default is true.
  * @returns {Promise<Array<Object>>} - An array of question objects, each containing the question, answer, and options.
  */
-export async function BatchSWQG(number_of_questions, quiz_type, context, number_of_options = 4) {
+export async function BatchSWQG(number_of_questions, quiz_type, context, number_of_options = 4, hallucination_detection = true) {
     // Start the timer
     //timer.reset();
     //timer.start();
@@ -73,28 +74,28 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
     let distractors = [];
 
     /* Step 1: Generate a question */
-    //build console.debug(`LM-studio-helper.js: BatchSWQG: Step 1: Generate all the questions`);
-    array_of_questions = await generateManyQuestions(number_of_questions, context);
+    console.debug(`LM-studio-helper.js: BatchSWQG: Step 1: Generate all the questions`);
+    array_of_questions = await generateManyQuestions(number_of_questions, context, hallucination_detection, 0.80);
 
     array_of_questions.forEach(question => {
         question_objects.push({ question: question, answer: ``, options: [] });
     });
 
     /* Step 2: Generate the answer */
-    //build console.debug(`LM-studio-helper.js: BatchSWQG: Step 2: Generate an answer for each question`);
+    console.debug(`LM-studio-helper.js: BatchSWQG: Step 2: Generate an answer for each question`);
     for (const question of question_objects) {
-        answer = await generateAnswer(context, question.question);
+        answer = await generateAnswer(context, question.question, hallucination_detection);
         question.answer = answer;
     }
 
     if (quiz_type == `multiple_choice`) {
         /* Step 3: Generate the distractors */
-        //build console.debug(`LM-studio-helper.js: BatchSWQG: Step 3: Generate the distractors for each question`);
+        console.debug(`LM-studio-helper.js: BatchSWQG: Step 3: Generate the distractors for each question`);
 
         for (const question of question_objects) {
             question.options.push(question.answer);
 
-            distractors = await generateManyDistractors(number_of_options - 1, context, question.question, question.answer);
+            distractors = await generateManyDistractors(number_of_options - 1, context, question.question, question.answer, hallucination_detection);
 
             distractors.forEach(distractor => {
                 question.options.push(distractor);
@@ -104,7 +105,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
 
     // Stop the timer
     //const time = timer.stop();
-    //build console.debug(`LM-studio-helper.js: SWQG: ${time}`);
+    console.debug(`LM-studio-helper.js: SWQG: ${time}`);
 
     return question_objects;
 }
@@ -126,7 +127,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
 
 //     let question = { question: ``, answer: ``, options: [] }
 
-//     //build console.error(`LM-studio-helper.js: EEQG: Not implemented yet`);
+//     console.error(`LM-studio-helper.js: EEQG: Not implemented yet`);
 
 //     // Stop the timer
 //     const time = timer.stop();
@@ -150,7 +151,7 @@ export async function BatchSWQG(number_of_questions, quiz_type, context, number_
 
 //     let question = { question: ``, answer: ``, options: [] }
 
-//     //build console.error(`LM-studio-helper.js: EEQG: Not implemented yet`);
+//     console.error(`LM-studio-helper.js: EEQG: Not implemented yet`);
 
 //     // Stop the timer
 //     const time = timer.stop();
