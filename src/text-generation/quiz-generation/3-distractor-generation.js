@@ -47,7 +47,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string[]|string>} - An array of distractor answers or an error message if an error occurs.
  * @throws {Error} - If an error occurs during the distractor generation process.
  */
-export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection = true) {
+export async function generateManyDistractors(number_of_distractors, context, question, answer, hallucination_detection) {
     try {
         let attempts = 5
         let distractors = [];

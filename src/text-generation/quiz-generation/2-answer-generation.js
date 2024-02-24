@@ -11,7 +11,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string>} - The generated answer.
  * @throws {Error} - If an error occurs during the answer generation process.
  */
-export async function generateAnswer(context, question, hallucination_detection = true) {
+export async function generateAnswer(context, question, hallucination_detection) {
     try {
         let attempts = 5;
         let answer = '';

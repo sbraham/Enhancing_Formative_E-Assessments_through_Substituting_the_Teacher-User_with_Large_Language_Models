@@ -87,7 +87,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string[]>} - An array of generated questions.
  * @throws {Error} - If an error occurs during the question generation process.
  */
-export async function generateManyQuestions(number_of_questions, context, hallucination_detection = true, relevence_threshold = 0.80) {
+export async function generateManyQuestions(number_of_questions, context, hallucination_detection, relevence_threshold = 0.80) {
     try {
         let attempts = 5;
         let questions = [];
