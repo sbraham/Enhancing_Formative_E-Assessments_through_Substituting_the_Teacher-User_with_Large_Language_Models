@@ -1,6 +1,5 @@
 console.log('Loading: progress.js');
 
-
 /* Importing Firebase helper functions from setup file */
 import { checkLogin } from "../../firebase/auth-helper.js";
 import { getUserQuizzes } from "../../firebase/database-helper.js";
