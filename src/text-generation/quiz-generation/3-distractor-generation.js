@@ -125,7 +125,7 @@ export async function prompDistractors(number_of_distractors, context, question,
             potential_distractors = potential_distractors.map(distractor => distractor.trim()) // Remove leading and trailing punctuation
             //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
-            potential_distractors = potential_distractors.filter(distractor => /[a-zA-Z+\-*/^()]/.test(distractor)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
+            potential_distractors = potential_distractors.filter(distractor => /[a-zA-Z0-9+\-*/^()]/.test(distractor)) // Remove strings that don't contain letters, numbers or mathematical symbols (including empty strings)
             //console.debug(`generateManyDistractors: potential_distractors: ${potential_distractors}`);
 
             potential_distractors = potential_distractors.map(distractor => distractor.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation

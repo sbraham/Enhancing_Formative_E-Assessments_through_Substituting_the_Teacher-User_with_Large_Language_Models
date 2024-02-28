@@ -125,7 +125,7 @@ export async function promptAnswers(context, question) {
         potential_answers = potential_answers.map(answer => answer.trim()) // Remove leading and trailing punctuation
         //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
-        potential_answers = potential_answers.filter(answer => /[a-zA-Z+\-*/^()]/.test(answer)) // Remove strings that don't contain letters or mathematical symbols (including empty strings)
+        potential_answers = potential_answers.filter(answer => /[a-zA-Z0-9+\-*/^()]/.test(answer)) // Remove strings that don't contain letters, numbers or mathematical symbols (including empty strings)
         //console.debug(`generateAnswer: potential_answers: ${potential_answers}`);
 
         potential_answers = potential_answers.map(answer => answer.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
