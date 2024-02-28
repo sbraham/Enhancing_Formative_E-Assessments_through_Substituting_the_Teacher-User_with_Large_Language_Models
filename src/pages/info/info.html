@@ -17,13 +17,13 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 
+    <!-- Include the pages logic -->
+    <script defer type="module" src="./progress.js"></script>
+
     <!-- Include the email.js script -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
     <script type="text/javascript">
-        import { checkLogin } from "../../firebase/auth-helper.js";
-        checkLogin("../../pages/login/login.html");
-
         emailjs.init({
             publicKey: "PnMnyYWLSXTnTQaYx",
         });
