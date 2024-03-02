@@ -13,15 +13,15 @@ import { callLMStudio } from './LM-studio-helper.js';
  * @returns {Promise<boolean>} - A promise that resolves to true if the given answer is close to the expected answer, false otherwise.
  * @throws {Error} - If an error occurs during the process.
  */
-export async function isGivenQuestionCorrect(context, question, expected_answer, given_answer, number_of_attempts = 10, temperature = 0) {    
+export async function isGivenQuestionCorrect(context, question, expected_answer, given_answer, number_of_attempts = 5, temperature = 0) {    
     let system_content = `Consider the given question. `;
     system_content += `Is the given answer close to the expected answer? `;
     system_content += `Output output either YES or NO. `;
     
-    let user_content = `question: ${question}. `;
+    let user_content = `context: ${context}. `;
+    user_content += `question: ${question}. `;
     user_content += `expected_answer: ${expected_answer}. `;
     user_content += `given_answer: ${given_answer}. `;
-    user_content += `context: ${context}. `;
 
     try {
         let response = '';

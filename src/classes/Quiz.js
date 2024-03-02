@@ -291,10 +291,10 @@ export class Quiz {
 
         else if (this.quiz_type == 'short_answer') {
             isCorrect = await isGivenQuestionCorrect(
+                `${this.title} (${this.description})`,
                 this._current_question.question, 
                 this._current_question.answer, 
-                given_answer, 
-                number_of_attempts = 5)
+                given_answer)
         }
 
         /* Create an answer_object detailing the given answer */
@@ -441,7 +441,7 @@ export class Quiz {
 
     /** For saving quiz */
 
-    static fromObject(object) {
+    static fromJSONObject(object) {
         const quiz = new Quiz(
             object.title,
             object.description,

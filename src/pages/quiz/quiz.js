@@ -27,7 +27,7 @@ const quiz_data = await getQuizById(quiz_id);
 console.debug(`quiz: getQuizById: returned`);
 
 /* Create quiz object */
-const quiz = Quiz.fromObject(quiz_data.quiz);
+const quiz = Quiz.fromJSONObject(quiz_data.quiz);
 
 /* Set previous_button listener */
 document.getElementById('previous_button').addEventListener('click', () => {

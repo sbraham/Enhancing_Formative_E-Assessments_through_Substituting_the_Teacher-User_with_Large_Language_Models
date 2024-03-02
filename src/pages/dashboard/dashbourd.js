@@ -397,7 +397,7 @@ const user_quizzes = [];
 
 /* converting raw JSON to quiz objects */
 quizzes_data.forEach(quiz_data => {
-    const quiz = Quiz.fromObject(quiz_data.quiz);
+    const quiz = Quiz.fromJSONObject(quiz_data.quiz);
     user_quizzes.push(quiz); // Add quiz to user quizzes
 });
 
