@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>SXB1567 - FormAtiveQuIz</title>
+    <title>SXB1567 - FormAtIveQuiz</title>
 
     <!-- Ensures the web-page correctly interprets a wide range of characters -->
     <meta charset="utf-8">
@@ -16,9 +16,6 @@
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-
-    <!-- Include the pages logic -->
-    <script defer type="module" src="./info.js"></script>
 
     <!-- Include the email.js script -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -35,7 +32,7 @@
             let email = document.getElementById('email_input').value;
 
             var templateParams = {
-                to_name: 'FormAtiveQuIz Team',
+                to_name: 'FormAtIveQuiz Team',
                 from_name: email,
                 message: message,
             };
@@ -74,56 +71,50 @@
             <h2 class="cut-text-1"> Information </h2>
         </div>
 
-        <h4>What is FormAtiveQuIz?</h4>
+        <h4>What is FormAtIveQuiz?</h4>
 
         <p>
-            We, at the FormAtiveQuIz Team, understand the importance of educating our users about what our application
-            is
-            and, notably, what is isn’t. Artificial Intelligence is a complicated field with many misconceptions and
-            we want to use to page to detail what it is good for you to know.
+            We, at the FormAtIveQuiz Team, understand the importance of educating our users about what our application is
+            and, notably, what is isn't. Artificial Intelligence (AI) is a complicated field with many misconceptions and
+            we would like to use this page to inform you about how we use it.
         </p>
 
         <hr>
 
         <p>
-            Our system create questions using a pre-trained general purpose Large Lanauge Model (LLM), similar to
-            products like ChatGPT. These models are trained on large amount of textual data collected of the
-            internet. They then find patterns in these data, most notably the probability that a word follows
-            another word in a sentence. <br>
+            Our system creates questions using a pre-trained general purpose Large Language Model (LLM), 
+            similar to products like ChatGPT. These models are trained on large amount of text. 
+            The model finds patterns in this data, most notably the probability that a word follows another word. <br>
             <br>
             If the LLM were to be given the sentence, <br>
             <em>“The first colour in a rainbow is ”</em> <br>
-            Might out put <em></em>“red”</em>. This output can be added onto the end of the sentence, and the process
-            can repeat
+            The model may know that the most likely word to follow this is <em>“red”</em>. 
+            This word can then be added onto the end of the sentence, and the process can repeat
             to produce whole new sentences and paragraphs. <br>
             <br>
             <em>“The first colour in a rainbow is red. The second colour in a rainbow is orange. The third colour in a
                 rainbow is yellow.”</em> <br>
             <br>
             From this we can understand that, despite the complicated algorithms, the LLM is generating questions
-            through finding probabilistic patterns in existing text.<br>
+            through finding probabilistic patterns in existing text, and using these patterns to construct new highly-likely sentence.<br>
             <br>
-            This constroles randomness is why the same prompt can produce multiple different question, and also why
-            sometimes the prompts may be unusual. We work hard to ensure the best questlity questions regenerated
-            every time, but something this doesn’t work.
+            This controlled randomness is why the same prompt can produce multiple different question, and also why
+            sometimes the prompts may be unusual. We work hard to ensure the best quality questions generated
+            every time, but this does not always happen due to random chance.
+
+            These unusual outputs, called “hallucinations”, such as when information is wrong on unrelated to the topic, are
+            a common problem with LLMs. You can let us know if you find any of these and we will work to improve out system accordingly.
         </p>
 
         <hr>
 
         <h6>Things to keep in mind.</h6>
 
-        <p>
-            The program doesn’t understand the topics it creates questions one so there is always a chance it gets
-            topics wrong.<br>
-            <br>
-            The system is “pre-trained” so none of the prompts you give us are used to train the model permanently,
-            although the models prompts do benefit from the information you give it. Note that the prompts are
-            stored on our database and so personal data should not be used in them.<br>
-            <br>
-            The information you give in the description of the prompts makes it more likely for outputs to be
-            generated with that specific topic in mind. The more you give it on a topic, the more questions it will
-            generate about that topic.
-        </p>
+        <ul>
+            <li>The program doesn't understand the topics it creates questions about, it just knows likely patters of words, so there is always a chance it gets facts wrong.</li>
+            <li>The system is “pre-trained” so none of the prompts you give us are used to train the model permanently. Note that the prompts are stored on our database and so they should not contain personal data.</li>
+            <li>The information you give in the description of the prompts makes it more likely for outputs to be generated with that specific topic in mind. The more you give it on a topic, the better the questions it will generate about that topic.</li>
+        </ul>
 
         <!-- Give user feedback -->
         <div class="alert alert-dark">
