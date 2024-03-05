@@ -87,7 +87,7 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @returns {Promise<string[]>} - An array of generated questions.
  * @throws {Error} - If an error occurs during the question generation process.
  */
-export async function generateManyQuestions(number_of_questions, context, hallucination_detection, relevence_threshold = 0.80) {
+export async function generateManyQuestions(number_of_questions, context, hallucination_detection) {
     let attempts = 5;
     let questions = [];
     hallucination_detection = false;
@@ -98,28 +98,6 @@ export async function generateManyQuestions(number_of_questions, context, halluc
         /* Generate all questions */
         let response = await promptQuestions(number_of_questions, context);
         questions = response;
-
-        /* Hallucination Detection */
-        if (!hallucination_detection) {
-            console.debug(`generateManyQuestions: Hallucination Detection: OFF`);
-            break;
-        }
-
-        /* Otherwise */
-        console.debug(`generateManyQuestions: Hallucination Detection: ON`);
-        let relevant_questions = 0;
-        for (let question of questions) {
-            if (await isQuestionRelevent(context, question)) {
-                relevant_questions++;
-            }
-        }
-
-        if (relevant_questions / number_of_questions >= relevence_threshold) {
-            console.debug(`generateManyQuestions: Questions are relevant`);
-            break;
-        }
-
-        console.debug(`generateManyQuestions: Questions are not relevant`);
     }
 
     return questions;
