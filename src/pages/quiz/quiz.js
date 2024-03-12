@@ -8,8 +8,10 @@ const quiz_form = document.getElementById('quiz_form');
 
 /* Set return_button listener */
 return_button.addEventListener('click', () => {
+    const response = confirm("Are you sure you want to return to the dashboard? All progress will be lost.");
+    if (!response) return;
+    
     /* Return to dashboard */
-
     console.log('Redirecting to dashboard page...');
     console.log('--------------------------------');
 
