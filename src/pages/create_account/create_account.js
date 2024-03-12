@@ -15,6 +15,14 @@ create_account_form.addEventListener("submit", async (event) => {
     const password = create_account_form.password.value;
     const confirm_password = create_account_form.confirmPassword.value;
 
+    // Password pattern: At least 6 characters, at least one number, at least one special character
+    let password_pattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
+    if (!password_pattern.test(password)) {
+        alert('Password should be at least 6 characters long, contain at least one number, and at least one special character.');
+        return;
+    }
+
+
     if (password !== confirm_password) {
         console.warn(`create_account_form: Passwords do not match.`);
         alert(`Passwords do not match. Please take care when inputting your password.`);
