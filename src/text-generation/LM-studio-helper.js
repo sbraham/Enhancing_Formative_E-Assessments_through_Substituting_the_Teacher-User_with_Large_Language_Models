@@ -81,7 +81,7 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
                     // Handle the error here
                     console.error('Error occurred during API call:', error);
                     alert('Error occurred during API call. Please check network connection. Press ok to continue.');
-                    resolve('');
+                    reject(error);
                 }
             });
         });
