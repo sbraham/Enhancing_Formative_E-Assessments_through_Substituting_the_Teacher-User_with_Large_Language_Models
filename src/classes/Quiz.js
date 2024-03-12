@@ -137,7 +137,6 @@ export class Quiz {
     /** Set initial quiz UI */
 
     displayQuiz() {
-
         /* Set quiz title */
         try {
             document.getElementById(`quiz_title`).innerHTML = this.title;
@@ -145,7 +144,7 @@ export class Quiz {
             
         catch (error) {
             console.error(`Quiz.displayQuiz(): Error setting quiz title!`);
-            throw error;
+            console.error(`Quiz.displayQuiz(): Error:`, error);
         }
     }
 
@@ -236,7 +235,7 @@ export class Quiz {
             
         catch (error) {
             console.error(`Quiz.displayQuestion(): Error setting question!`);
-            throw error;
+            console.error(`Quiz.displayQuestion(): Error:`, error);
         }
     }
 
@@ -266,12 +265,12 @@ export class Quiz {
                 loading_wheel.remove();
             }
         } catch (error) {
-            return;
+            console.error(`Quiz.removeWheel(): Error removing loading wheel!`);
+            console.error(`Quiz.removeWheel(): Error:`, error);
         }
     }
 
     /** Submit answer */
-
 
     async submitAnswer(given_answer) {
         /* Enable the previous button as quiz index will be at least 2 */
@@ -341,7 +340,6 @@ export class Quiz {
     /* Quiz form controls */
 
     disableQuizForm() {
-        
         /* Disable the quiz form */
         try {
             if (this.quiz_type == 'multiple_choice') {
@@ -357,12 +355,11 @@ export class Quiz {
             
         catch (error) {
             console.error(`Quiz.disableQuizForm(): Error disabling quiz form!`);
-            throw error;
+            console.error(`Quiz.disableQuizForm(): Error:`, error);
         }
     }
 
     enableQuizForm() {
-
         /* Enable the quiz form */
         try {
             if (this.quiz_type == 'multiple_choice') {
@@ -378,12 +375,11 @@ export class Quiz {
             
         catch (error) {
             console.error(`Quiz.enableQuizForm(): Error enabling quiz form!`);
-            throw error;
+            console.error(`Quiz.enableQuizForm(): Error:`, error);
         }
     }
 
     resetQuizForm() {
-
         /* Reset the quiz form */
         try {
             if (this.quiz_type === 'multiple_choice') {
@@ -399,7 +395,7 @@ export class Quiz {
             
         catch (error) {
             console.error(`Quiz.resetQuizForm(): Error resetting quiz form!`);
-            throw error;
+            console.error(`Quiz.resetQuizForm(): Error:`, error);
         }
     }
     

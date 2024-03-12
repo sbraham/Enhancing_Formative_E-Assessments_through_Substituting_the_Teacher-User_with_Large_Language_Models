@@ -111,11 +111,7 @@ export async function promptQuestions(number_of_questions, context) {
     number_of_questions = Number(number_of_questions);
     let system_content = ``;
 
-    if (number_of_questions > 1) {
-        system_content += `Generate exactly ${number_of_questions} different short answer question relating to the following context. `;
-    } else {
-        system_content += `Generate a short answer question relating to the following context. `;
-    }
+    system_content += `Generate exactly ${number_of_questions} different short answer question relating to the following context. `;
 
     system_content += `The question must be answerable by a single word or phrase. `;
     system_content += `Only write the question, do not state the answer or any examples. `;
