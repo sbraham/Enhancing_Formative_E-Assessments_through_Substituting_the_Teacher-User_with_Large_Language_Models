@@ -26,20 +26,18 @@ export async function isGivenQuestionCorrect(context, question, expected_answer,
     try {
         let response = '';
 
-        for (let i = 1; i <= number_of_attempts; i++) {
-            response = await callLMStudio(system_content, user_content, 2, temperature);
+        response = await callLMStudio(system_content, user_content, 2, temperature);
 
-            //console.debug(`isGivenQuestionCorrect: response_${i}: ${response}`);
+        //console.debug(`isGivenQuestionCorrect: response_${i}: ${response}`);
 
-            if (response.toLowerCase().includes('yes')) {
-                return true;
-            } else if (response.toLowerCase().includes('no')) {
-                return false;
-            }
+        if (response.toLowerCase().includes('yes')) {
+            return true;
+        } else if (response.toLowerCase().includes('no')) {
+            return false;
+        } else {
+            console.warn(`isGivenQuestionCorrect: Unexpected response: ${response}`);
+            return false;
         }
-
-        console.error(`isGivenQuestionCorrect: Too many failed attempts. Return false.`);
-        return false;
     } 
             
     catch (error) {

@@ -21,7 +21,7 @@ let wrong_answers = [];
  * @param {number} index - The index of the question.
  */
 function createCard(answer, index) {
-    if (answer.isCorrect) {
+    if (answer.is_correct) {
         card = (`
             <div class="card m-3 bg-success-subtle">
                 <div class="card-header">
@@ -98,7 +98,7 @@ given_answers.forEach((answer) => {
     console.log("index: ", index);
 
     /* If the answer is incorrect, add it to the wrong_answers array */
-    if (answer.isCorrect === false) {
+    if (answer.is_correct === false) {
         wrong_answers.push([answer, index]);
     }
 

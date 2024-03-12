@@ -193,7 +193,7 @@ function addQuizToAccordion(index, quiz) {
 
         given_answer_table.innerHTML = `
             ${given_answers.map((given_answer, index) => {
-                const result = given_answer.isCorrect ? '✅' : '❌';
+                const result = given_answer.is_correct ? '✅' : '❌';
                 return `
                         <tr>
                             <td>${given_answer.question}</td>

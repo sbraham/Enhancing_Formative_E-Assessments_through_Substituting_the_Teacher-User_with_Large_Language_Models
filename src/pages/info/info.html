@@ -25,11 +25,13 @@
             publicKey: "PnMnyYWLSXTnTQaYx",
         });
 
-        function sendEmail() {
+        async function sendEmail() {
             event.preventDefault(); /* Prevents the default behaviour of the form */
 
             let message = document.getElementById('feedback_textarea').value;
             let email = document.getElementById('email_input').value;
+
+            let submit_button = document.getElementById('submit_button');
 
             var templateParams = {
                 to_name: 'FormAtIveQuiz Team',
@@ -42,7 +44,9 @@
                 return;
             }
 
-            emailjs.send('gmail', 'template_dgv5keo', templateParams).then(
+            submit_button.disabled = true;
+
+            await emailjs.send('gmail', 'template_dgv5keo', templateParams).then(
                 (response) => {
                     console.log('EMAIL SUCCESS!', response.status, response.text);
                     alert('Email sent successfully');
@@ -54,6 +58,8 @@
                     alert('Email failed to send');
                 },
             );
+
+            submit_button.disabled = false;
         }
     </script>
 
@@ -129,7 +135,7 @@
                 <div class="mb-3">
                     <label for="email_input" class="form-label">Email:</label>
                     <input type="email" class="form-control" id="email_input" aria-describedby="emailHelp">
-                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                    <div id="emailHelp" class="form-text">We'll never share your email with any third party.</div>
                 </div>
 
                 <!-- Feedback Text Area -->
@@ -138,7 +144,7 @@
                     <textarea class="form-control" id="feedback_textarea" rows="3"></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button id="submit_button" type="submit" class="btn btn-primary">Submit</button>
             </form>
 
         </div>

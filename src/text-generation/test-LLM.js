@@ -486,7 +486,7 @@ if (is_feedback_evaluation) {
                 question: question.question,
                 correct_answer: question.answer,
                 given_answer: given_answer,
-                isCorrect: false
+                is_correct: false
             }
 
             let feedback = await generateFeedback(answer_object);

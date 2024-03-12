@@ -281,16 +281,16 @@ export class Quiz {
         this.addWheel();
         this.disableQuizForm();
 
-        let isCorrect = false;
+        let is_correct = false;
 
         /* Check if the answer is correct */
 
         if (this._current_question.answer == given_answer) {
-            isCorrect = true;
+            is_correct = true;
         }
 
         else if (this.quiz_type == 'short_answer') {
-            isCorrect = await isGivenQuestionCorrect(
+            is_correct = await isGivenQuestionCorrect(
                 `${this.title} (${this.description})`,
                 this._current_question.question, 
                 this._current_question.answer, 
@@ -303,7 +303,7 @@ export class Quiz {
             "question": this._current_question.question,
             "given_answer": given_answer,
             "correct_answer": this._current_question.answer,
-            "isCorrect": isCorrect,
+            "is_correct": is_correct,
         }
 
         /* Add the answer_object to the given_answers array */
@@ -407,7 +407,7 @@ export class Quiz {
 
     async endQuiz() {
         /* Save this attempt */
-        const score = this._given_answers.filter(answer => answer.isCorrect).length;
+        const score = this._given_answers.filter(answer => answer.is_correct).length;
 
         const attempt_duration = ( new Date().getTime() ) - this._quiz_start_time;
 
