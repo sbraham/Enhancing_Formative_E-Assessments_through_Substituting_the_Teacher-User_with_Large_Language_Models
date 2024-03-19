@@ -80,13 +80,13 @@ export async function generateManyDistractors(number_of_distractors, context, qu
         }
 
         if (is_false_count = number_of_distractors /* && is_false_count = number_of_distractors */) {
-            console.debug(`generateManyDistractors: Distractors are relevant`);
+            console.debug(`generateManyDistractors: Distractors are false`);
             break;
         }
 
         /* Otherwise */
         /* If the distractor is not correct, try again */
-        console.debug(`generateManyDistractors: Distractors are not relevant`);
+        console.debug(`generateManyDistractors: Distractors are not false`);
     }
 
     return distractors;

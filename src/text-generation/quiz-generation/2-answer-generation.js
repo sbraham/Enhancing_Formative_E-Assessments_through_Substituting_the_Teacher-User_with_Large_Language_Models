@@ -31,11 +31,11 @@ export async function generateAnswer(context, question, hallucination_detection)
         /* Otherwise */
         console.debug(`generateAnswer: Hallucination Detection: ON`);
         if (await isAnswerCorrect(question, answer)) {
-            console.debug(`generateAnswer: Answers are relevant`);
+            console.debug(`generateAnswer: Answer is correct`)
             break;
         }
 
-        console.debug(`generateAnswer: Questions are not relevant`);
+        console.debug(`generateAnswer: Answer is not correct`)
     }
     
     return answer;

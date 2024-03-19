@@ -12,7 +12,7 @@ let is_hallucination_evaluaton = false;
 let is_feedback_evaluation = true;
 
 /* Variables */
-let number_of_questions = 2;
+let number_of_questions = 5;
 let quiz = [];
 let data = ""
 
@@ -27,6 +27,24 @@ function shuffleArray(array) {
     }
 
     return random_array;
+}
+
+function selectRandomElements(arr, numElements) {
+    // Make a copy of the original array to avoid modifying it
+    const copyArr = [...arr];
+    const selectedElements = [];
+    
+    // Loop to select random elements
+    for (let i = 0; i < numElements; i++) {
+        // Generate a random index within the range of the array length
+        const randomIndex = Math.floor(Math.random() * copyArr.length);
+        // Remove the selected element from the copy to avoid duplicates
+        const selectedElement = copyArr.splice(randomIndex, 1)[0];
+        // Push the selected element to the result array
+        selectedElements.push(selectedElement);
+    }
+    
+    return selectedElements;
 }
 
 // Topic with no title or context - 1
@@ -477,24 +495,28 @@ if (is_write_answer_evaluation) {
 }
 
 if (is_feedback_evaluation) {
+    let i = 0;
     let feedbacks = [];
 
     for (const question of twenty_questions) {
-        for (const given_answer of question.given_answers) {
+        let wrong_answers = question.given_answers.slice(-2)
+
+        for (const given_ans of wrong_answers) {
+            console.log("Count:", i++)
             let answer_object = {
                 context: question.context,
                 question: question.question,
                 correct_answer: question.answer,
-                given_answer: given_answer,
+                given_answer: given_ans,
                 is_correct: false
             }
 
             let feedback = await generateFeedback(answer_object);
-            feedbacks.push([answer_object, feedback]);
+            console.log("context:", answer_object.context)
+            console.log("question:", answer_object.question)
+            console.log("correct_answer:", answer_object.correct_answer)
+            console.log("given_answer:", answer_object.given_answer)
+            console.log("feedback:", feedback)
         }
-    }
-
-    for (const feedback of feedbacks) {
-        console.log(feedback[1]);
     }
 }

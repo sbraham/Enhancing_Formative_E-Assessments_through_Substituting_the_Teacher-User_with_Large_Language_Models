@@ -88,12 +88,12 @@ import { callLMStudio } from '../LM-studio-helper.js';
  * @throws {Error} - If an error occurs during the question generation process.
  */
 export async function generateManyQuestions(number_of_questions, context, hallucination_detection) {
-    let attempts = 5;
+    let attempts = 1;
     let questions = [];
     hallucination_detection = false;
 
     for (let i = 0; i < attempts; i++) {
-        console.debug(`generateManyQuestions: Attempt ${i + 1} of ${attempts}`);
+        //console.debug(`generateManyQuestions: Attempt ${i + 1} of ${attempts}`);
 
         /* Generate all questions */
         let response = await promptQuestions(number_of_questions, context);
@@ -142,12 +142,17 @@ export async function promptQuestions(number_of_questions, context) {
             potential_questions = potential_questions.filter(question => /[a-zA-Z]/.test(question)) // Remove strings that don't contain letters (including empty strings)
             //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
 
+            potential_questions = potential_questions.filter(question => question.includes('?'));
+            //console.debug(`generateManyQuestions: potential_questions: ${potential_questions}`);
+
             if (potential_questions.length > number_of_questions) {
                 potential_questions = potential_questions.slice(0, number_of_questions);
             }
 
             questions = potential_questions;
         }
+
+        console.debug(`generateManyQuestions: questions: ${questions}`)
 
         return questions;
 

@@ -158,7 +158,7 @@ function createAddNewQuizCard() {
     card_container.className = 'card-container col-sm-4';
     card_container.innerHTML = `
         <button class="btn btn-secondary new-card-button" data-bs-toggle="modal" data-bs-target="#new_quiz_modal">
-            <p style="font-size: 64px;">+</p>
+            <p style="font-size: 32px;">Create a quiz</p>
         </button>
 
         <!-- Modal -->
