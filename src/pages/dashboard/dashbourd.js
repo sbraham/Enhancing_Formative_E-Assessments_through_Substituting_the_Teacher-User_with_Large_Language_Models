@@ -345,6 +345,7 @@ async function addNewQuiz() {
     index++;
 
     /* It would be nice for the modal to close automatically, but I don't know how that can be done and it's not a priority */
+    alert('Quiz created!');
 }
 
 /**
@@ -356,15 +357,22 @@ async function addNewQuiz() {
 function deleteQuiz(quiz, index_to_delete) {
     console.log('deleteQuiz: Deleting quiz:', quiz.id);
 
-    /* Remove the quiz from the database */
-    removeQuizFromDB(quiz);
+    const response = confirm('Are you sure you want to delete this quiz?');
 
-    /* Remove the quiz card from the page */
-    const card_container = document.getElementById(index_to_delete);
-    card_container.remove();
+    if (!response) return;
+    else {
+        /* Remove the quiz from the database */
+        removeQuizFromDB(quiz);
 
-    /* Refresh the page */
-    window.location.href = window.location.href;
+        /* Remove the quiz card from the page */
+        const card_container = document.getElementById(index_to_delete);
+        card_container.remove();
+
+        alert('Quiz deleted!');
+
+        /* Refresh the page */
+        location.reload();
+    }
 }
 
 /**
