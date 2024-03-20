@@ -222,7 +222,7 @@ function createAddNewQuizCard() {
                                 <div class="row align-items-center">
                                     <div class="col-sm-9">
                                         <input type="number" class="form-control" id="number_of_questions" 
-                                            required min="1" max="50" placeholder="Enter number of questions">
+                                            required min="1" max="30" placeholder="Enter number of questions">
                                     </div>
                                 </div>
                             </div>
