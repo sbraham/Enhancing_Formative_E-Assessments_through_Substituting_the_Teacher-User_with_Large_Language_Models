@@ -96,6 +96,15 @@ export async function generateManyDistractors(number_of_distractors, context, qu
 /* Currated LM Studio Prompt */
 /*****************************/
 
+/**
+ * Generates false distractor answers for a given question and answer.
+ * @param {number} number_of_distractors - The number of distractors to generate.
+ * @param {string} context - The context for the question.
+ * @param {string} question - The question.
+ * @param {string} answer - The true answer.
+ * @returns {Promise<string[]>} - A promise that resolves to an array of false distractor answers.
+ * @throws {Error} - If an error occurs during the generation process.
+ */
 export async function prompDistractors(number_of_distractors, context, question, answer) {
     let system_content = `Given the context, generate exactly ${number_of_distractors + 2} FALSE distractor answers to the following question. `;
     system_content += `The true answer is "${answer}". Each distractor must be different from the true answer and from each other. Distractors should look similar to the answer in form. `;
