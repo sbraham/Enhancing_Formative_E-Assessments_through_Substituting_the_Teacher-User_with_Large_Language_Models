@@ -33,7 +33,7 @@ import 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
  * @param {string} response - The response to be cleaned.
  * @returns {string} The cleaned response.
  */
-function responseCleaning(response) {
+function cleanResponse(response) {
     const specialCharactersRegex = /[<>[\]\n]|SYS|INST|:|QUESTION|Question|ANSWER|Answer|Option|Distractor/g;
 
     // Remove special characters and keywords
@@ -86,7 +86,7 @@ export async function callLMStudio(system_content, user_content, max_tokens = -1
             });
         });
 
-        response = responseCleaning(response);
+        response = cleanResponse(response);
 
         return response;
     } 
