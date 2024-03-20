@@ -18,7 +18,7 @@ login_form.addEventListener("submit", async (event) => {
     let responce = await loginUser(email, password);
     console.log(`login_form: loginUser: received`);
 
-    if (responce === `successful-login`) {
+    if (responce.code === 'auth/successful-login') {
         /* Redirect to dashboard */
         console.log(`Redirecting to dashboard...`);
         console.log('--------------------------------');

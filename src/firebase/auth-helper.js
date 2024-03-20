@@ -163,11 +163,10 @@ export async function loginUser(email, password) {
 
 		console.assert(userCredential.user.email != null && userCredential.user.email != undefined, `ERROR: userCredential.user.email is null or undefined`);
 
-		return `successful-login`;
+		return {code: `auth/successful-login`};
 	} 
             
     catch (error) {
-		console.error(`loginUser: error:`, error);
 		throw error;
 	}
 }
