@@ -133,13 +133,12 @@ export async function createUser(email, password) {
 		console.debug(`createUserWithEmailAndPassword: received`);
 
 		console.assert(userCredential.user.email != null && userCredential.user.email != undefined, `ERROR: userCredential.user.email is null or undefined`);
+	
+		console.warn(`create_account_form: ${userCredential}`);
 
-		return `successful-sign-up`;
-	} 
-            
-    catch (error) {
-        console.error(`createUser: error:`, error);
-		throw error;
+		return {code: `auth/successful-sign-up`};
+	} catch (error) {
+		return error;
 	}
 }
 

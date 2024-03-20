@@ -18,7 +18,7 @@ create_account_form.addEventListener("submit", async (event) => {
     // Password pattern: At least 6 characters, at least one number, at least one special character
     let password_pattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,}$/;
     if (!password_pattern.test(password)) {
-        alert('Password should be at least 6 characters long, contain at least one number, and at least one special character.');
+        alert('Passwords should be at least 6 characters long, contain at least one number, and at least one special character.');
         return;
     }
 
@@ -26,6 +26,8 @@ create_account_form.addEventListener("submit", async (event) => {
     if (password !== confirm_password) {
         console.warn(`create_account_form: Passwords do not match.`);
         alert(`Passwords do not match. Please take care when inputting your password.`);
+        create_account_form.password.value = '';
+        create_account_form.confirmPassword.value = '';
         return;
     }
     
@@ -33,28 +35,30 @@ create_account_form.addEventListener("submit", async (event) => {
     let responce = await createUser(email, password);
     console.log(`createUser: received`);
 
-    if (responce === 'successful-sign-up') {
+    if (responce.code === `auth/successful-sign-up`) {
         
         /* Redirect to dashboard */
         console.log(`Redirecting to dashboard...`);
         console.log('--------------------------------');
         
         window.location.href = "../dashboard/dashboard.html";
-    }
-
-    else {
-        if (responce === 'auth/email-already-in-use') {
-            console.warn(`create_account_form: Email, ${email}, is already in use.`);
-            alert(`Email, ${email}, is already in use. Log in or use a different email.`);
-        } else if (responce === 'auth/invalid-email') {
-            console.warn(`create_account_form: Email, ${email}, is invalid.`);
-            alert(`Email, ${email}, is invalid. Please enter a valid email.`);
-        } else if (responce === 'auth/weak-password') {
-            console.warn(`create_account_form: Password is too weak.`);
-            alert(`Password is too weak. Try a mix of letters, numbers and symbols.`);
-        } else {
-            throw responce;
-        }
+    } else {
+        if (responce.code === 'auth/email-already-in-use') {
+			console.warn(`create_account_form: Email, ${email}, is already in use.`);
+			alert(`Email, ${email}, is already in use. Log in or use a different email.`);
+			return;
+		} else if (responce.code === 'auth/invalid-email') {
+			console.warn(`create_account_form: Email, ${email}, is invalid.`);
+			alert(`Email, ${email}, is invalid. Please enter a valid email.`);
+			return;
+		} else if (responce.code === 'auth/weak-password') {
+			console.warn(`create_account_form: Password is too weak.`);
+			alert(`Password is too weak. Try a mix of letters, numbers and symbols.`);
+			return;
+		} else {
+			alert(`Error when creating account:`, error.code);
+			return;
+		}
     }
 });
 
