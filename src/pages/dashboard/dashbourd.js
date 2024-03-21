@@ -323,6 +323,8 @@ async function addNewQuiz() {
 
     isGenerating = true;
 
+    alert('Quiz creation started. This may take a few minutes...');
+
     /* Generate the questions */
     await quiz.generateQuestions();
 
