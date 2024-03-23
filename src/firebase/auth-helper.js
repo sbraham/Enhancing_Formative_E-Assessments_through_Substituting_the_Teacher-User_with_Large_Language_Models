@@ -167,7 +167,7 @@ export async function loginUser(email, password) {
 	} 
             
     catch (error) {
-		throw error;
+		return error;
 	}
 }
 

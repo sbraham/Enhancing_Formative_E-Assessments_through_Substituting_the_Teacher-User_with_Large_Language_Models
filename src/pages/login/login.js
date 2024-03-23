@@ -27,11 +27,11 @@ login_form.addEventListener("submit", async (event) => {
     } else {
         if (responce.code === 'auth/invalid-login-credentials' || responce.code === 'auth/user-not-found') {
             console.warn(`login_form: Email and/or password are incorrect.`);
-            alert(`Email and/or password are incorrect.\nPlease sign up or use a different email.`);
+            alert(`Email and/or password are incorrect. Please sign up or use a different email.`);
         }
         else if (responce.code === 'auth/too-many-requests') {
             console.warn(`login_form: Too many failed login attempts.`);
-            alert(`Access to this account has been temporarily disabled due to many failed login attempts.\nPlease try again later.`);
+            alert(`Access to this account has been temporarily disabled due to many failed login attempts. Please try again later.`);
         }        
         else {
             throw responce;
