@@ -125,15 +125,23 @@ export async function prompDistractors(number_of_distractors, context, question,
         while (distractors.length !== number_of_distractors) {
             let response = await callLMStudio(system_content, user_content, 1000);
 
-            let potential_distractors = response.split('|'); // Split the response into an array of potential distractors
-            potential_distractors = potential_distractors.map(distractor => String(distractor)) // Convert to string
-            potential_distractors = potential_distractors.map(distractor => distractor.trim()) // Remove leading and trailing punctuation
-            potential_distractors = potential_distractors.filter(distractor => /[a-zA-Z0-9+\-*/^()]/.test(distractor)) // Remove strings that don't contain letters, numbers or mathematical symbols (including empty strings)
-            potential_distractors = potential_distractors.map(distractor => distractor.replace(/^[.,?!]+|[.,?!]+$/g, '')); // Remove leading and trailing punctuation
-            potential_distractors = potential_distractors.map(distractor => /[a-zA-Z]/.test(distractor) ? distractor + "." : distractor); // Add a period to the end of each answer if it contains a text character
-            potential_distractors = potential_distractors.filter(distractor => distractor !== answer); // Remove the true answer from the list of potential distractors
-            potential_distractors = potential_distractors.filter(distractor => !distractors.includes(distractor)); // Remove any distractors that have already been added to the list
-            
+            // Split the response into an array of potential distractors
+            let potential_distractors = response.split('|');
+            // Convert to string
+            potential_distractors = potential_distractors.map(distractor => String(distractor))
+            // Remove leading and trailing punctuation
+            potential_distractors = potential_distractors.map(distractor => distractor.trim())
+            // Remove strings that don't contain letters, numbers or mathematical symbols (including empty strings)
+            potential_distractors = potential_distractors.filter(distractor => /[a-zA-Z0-9+\-*/^()]/.test(distractor))
+            // Remove leading and trailing punctuation
+            potential_distractors = potential_distractors.map(distractor => distractor.replace(/^[.,?!]+|[.,?!]+$/g, ''));
+            // Add a period to the end of each answer if it contains a text character
+            potential_distractors = potential_distractors.map(distractor => /[a-zA-Z]/.test(distractor) ? distractor + "." : distractor);
+            // Remove the true answer from the list of potential distractors
+            potential_distractors = potential_distractors.filter(distractor => distractor !== answer);
+            // Remove any distractors that have already been added to the list
+            potential_distractors = potential_distractors.filter(distractor => !distractors.includes(distractor));
+
             if (potential_distractors.length > number_of_distractors) {
                 potential_distractors = potential_distractors.slice(0, number_of_distractors);
             }
